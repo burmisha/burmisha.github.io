@@ -1,8 +1,9 @@
 @base: hsl(195, 30%, 50%);
-@text: lighten(@base,30%);
+@text: lighten(@base,20%);
 @dark: darken(@base,35%);
+@delta: #222;
 @link: @text;
-@highlight: lighten(@link,10%);
+@highlight: lighten(@link,15%);
 @fast: 0.3s;
 
 .transition (@range: all, @time: 1s, @ease: ease-in-out) { 
@@ -16,33 +17,57 @@
 .showborder (@color: red) {
 	border: 1pt solid @color;
 }
+.background-gradient (@color, @diff: @delta) {
+	background: -webkit-gradient(linear, left top, left bottom, from(@color + @diff), to(@color - @diff));
+    background: -moz-linear-gradient(top,  @color + @diff,  @color - @diff);
+}
 
 body {
+	box-sizing: border-box;
 	background-color: @dark;
 	color: @text;
 	font-family: Marmelad, arial;
 	font-size: 10pt;
-	line-height:1.3;
+	line-height:1.33;
+	padding: 0pt 0pt;
 }
 div#wrapper {
-	width: 65%;
-	clear: both;
+	width: 60%;
+	clear: right;
 	position: relative;
-	/*.showborder(blue);*/
+	margin: 0pt 0pt;
 }
+
 h1 {
 	font-family: Lobster;
 	font-size: 18pt;
 	font-weight: normal;
 }
+
+h2 {
+	font-size: 12pt;
+	text-decoration: none;
+	margin: 0pt 0pt;
+}
+
+p {
+	padding: 0pt 0pt;
+	margin: 2pt 0pt;
+}
+
+ul {
+	list-style-type: none; 
+	padding: 0pt 0pt; 
+	margin: 0pt 12pt;
+}
 a.profile {
 	color: @link;
-	display:block;
+	display:inline;
+	clear:both;
 	text-decoration: underline;
 	.transition(color, @fast);
   	-webkit-target-name: new; 
   	-webkit-target-new: tab;
-  	/*.showborder;*/
 }
 a.profile:hover {
 	color: @highlight; 
@@ -50,10 +75,47 @@ a.profile:hover {
 	opacity: 1;
 	.transition(color, @fast);
 }
+
 img#avatar {
 	max-height: 61.8%;
-	max-width: 30%;
+	max-width: 35%;
 	position: fixed;
-	top:10%;
+	top:12%;
 	right:5%;
+	padding: 5pt 0pt; 
 }
+
+.button {
+    .background-gradient(@base, @delta);
+    border: 1pt solid @base - @delta*2;
+    color: @highlight;
+    padding: 2pt 4pt;
+    text-align: center;
+}
+.button:hover {
+	.background-gradient(@base + @delta, @delta);
+	color: @highlight + @delta;
+}
+.button#set-mobile {
+	position:fixed;
+	display: block;
+	left: 0pt;
+   	bottom:0pt;
+   	width:100%;
+}
+
+/*@media screen and (max-width: 500px) {*/
+div#wrapper.mobile {
+	width: 100%;
+}
+img#avatar.mobile {
+	max-height: 100%;
+	max-width: 100%;
+	width: 240pt;
+	position: static;
+}
+.button.mobile {
+	max-height: 100%;
+	max-width: 100%;
+}
+/*}*/
