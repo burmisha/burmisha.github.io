@@ -44,6 +44,11 @@ li {
 	text-decoration: none;
 	list-style-type: none;
 }
-#avatar img {
-	align:right;
+img#avatar {
+	align:center;
+	max-height: 61.8%;
+	max-width: 30%;
+	position: fixed;
+	top:19.6%;
+	right:5%;
 }
