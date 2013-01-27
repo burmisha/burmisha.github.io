@@ -20,59 +20,62 @@
 .background-gradient (@color, @diff: @delta) {
 	background: -webkit-gradient(linear, left top, left bottom, from(@color + @diff), to(@color - @diff));
     background: -moz-linear-gradient(top,  @color + @diff,  @color - @diff);
+	background-color: @color;
+}
+.box-sizing {
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+}
+
+* {
+	margin: 0pt;
+	padding: 0pt;
+	.showborder;
+	.box-sizing;
 }
 
 body {
-	box-sizing: border-box;
 	background-color: @dark;
 	color: @text;
 	font-family: Marmelad, arial;
 	font-size: 10pt;
 	line-height:1.33;
-	padding: 0pt 0pt;
 }
+
 div#wrapper {
 	width: 60%;
 	clear: right;
 	position: relative;
-	margin: 0pt 0pt;
+	padding: 40pt 12%;
 }
 
 h1 {
 	font-family: Lobster;
 	font-size: 18pt;
 	font-weight: normal;
+
 }
 
 h2 {
 	font-size: 12pt;
-	text-decoration: none;
-	margin: 0pt 0pt;
 }
 
 p {
-	padding: 0pt 0pt;
-	margin: 2pt 0pt;
+	padding: 2pt 0pt;
 }
 
 ul {
 	list-style-type: none; 
-	padding: 0pt 0pt; 
-	margin: 0pt 12pt;
+	margin-left: 12pt;
 }
 a.profile {
 	color: @link;
-	display:inline;
-	clear:both;
-	text-decoration: underline;
 	.transition(color, @fast);
-  	-webkit-target-name: new; 
-  	-webkit-target-new: tab;
 }
 a.profile:hover {
 	color: @highlight; 
 	text-decoration: none;
-	opacity: 1;
 	.transition(color, @fast);
 }
 
@@ -82,7 +85,7 @@ img#avatar {
 	position: fixed;
 	top:12%;
 	right:5%;
-	padding: 5pt 0pt; 
+	margin-top: 5pt; 
 }
 
 .button {
@@ -97,19 +100,17 @@ img#avatar {
 	color: @highlight + @delta;
 }
 .button#set-mobile {
-	position:fixed;
+	position: fixed;
 	display: block;
 	left: 0pt;
    	bottom:0pt;
    	width:100%;
 }
 
-/*@media screen and (max-width: 500px) {*/
 div#wrapper.mobile {
 	width: 100%;
 }
 img#avatar.mobile {
-	max-height: 100%;
 	max-width: 100%;
 	width: 240pt;
 	position: static;
@@ -118,4 +119,3 @@ img#avatar.mobile {
 	max-height: 100%;
 	max-width: 100%;
 }
-/*}*/
