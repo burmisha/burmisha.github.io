@@ -39,7 +39,7 @@ body {
 	background-color: @dark;
 	color: @text;
 	font-family: Marmelad, arial;
-	font-size: 10pt;
+	font-size: 13pt;
 	line-height:1.3;
 	padding: 40pt 5%;
 	float: left;
@@ -49,23 +49,24 @@ body {
 article {
 	float: left;
 	width: 55%;
-	max-width: 800px;
+	max-width: 500px;
 	display: block;
+	margin: 0pt 0pt; 
 }
 
 h1 {
 	font-family: Lobster;
-	font-size: 24pt;
+	font-size: 48pt;
 	font-weight: normal;
 	margin: 20pt 0pt;
 }
 
 h2 {
-	font-size: 12pt;
+	font-size: 18pt;
 }
 
 p {
-	padding: 10pt 0pt;
+	margin: 10pt 0pt;
 }
 
 ul {
@@ -112,17 +113,14 @@ img#avatar {
 body.mobile {
 	padding: 5pt;
 }
-article.mobile{
-	width: 100%;
-	clear:both;
-}
-img#avatar.mobile {
+
+img#avatar.mobile, article.mobile{
 	width: 100%;
 	max-width: 240pt;
 	float:left;
 	margin: 5pt 0pt; 
+	clear:both;
 }
-.button.mobile {
-	max-height: 100%;
-	max-width: 100%;
+h1.mobile, h2.mobile , p.mobile {
+	margin: 0pt;
 }
