@@ -18,9 +18,9 @@
 	border: 1pt solid @color;
 }
 .background-gradient (@color, @diff: @delta) {
+	background-color: @color;
 	background: -webkit-gradient(linear, left top, left bottom, from(@color + @diff), to(@color - @diff));
     background: -moz-linear-gradient(top,  @color + @diff,  @color - @diff);
-	background-color: @color;
 }
 .box-sizing {
 	box-sizing:border-box;
@@ -31,7 +31,7 @@
 * {
 	margin: 0pt;
 	padding: 0pt;
-	.showborder;
+	/*.showborder;*/
 	.box-sizing;
 }
 
@@ -40,21 +40,24 @@ body {
 	color: @text;
 	font-family: Marmelad, arial;
 	font-size: 10pt;
-	line-height:1.33;
+	line-height:1.3;
+	padding: 40pt 5%;
+	float: left;
+	width: 100%;
 }
 
-div#wrapper {
-	width: 60%;
-	clear: right;
-	position: relative;
-	padding: 40pt 12%;
+article {
+	float: left;
+	width: 55%;
+	max-width: 800px;
+	display: block;
 }
 
 h1 {
 	font-family: Lobster;
-	font-size: 18pt;
+	font-size: 24pt;
 	font-weight: normal;
-
+	margin: 20pt 0pt;
 }
 
 h2 {
@@ -62,13 +65,14 @@ h2 {
 }
 
 p {
-	padding: 2pt 0pt;
+	padding: 10pt 0pt;
 }
 
 ul {
 	list-style-type: none; 
 	margin-left: 12pt;
 }
+
 a.profile {
 	color: @link;
 	.transition(color, @fast);
@@ -80,12 +84,9 @@ a.profile:hover {
 }
 
 img#avatar {
-	max-height: 61.8%;
-	max-width: 35%;
-	position: fixed;
-	top:12%;
-	right:5%;
-	margin-top: 5pt; 
+	float: right;
+	max-height: 450pt;
+	max-width: 40%;
 }
 
 .button {
@@ -100,6 +101,7 @@ img#avatar {
 	color: @highlight + @delta;
 }
 .button#set-mobile {
+	float:bottom;
 	position: fixed;
 	display: block;
 	left: 0pt;
@@ -107,13 +109,18 @@ img#avatar {
    	width:100%;
 }
 
-div#wrapper.mobile {
+body.mobile {
+	padding: 5pt;
+}
+article.mobile{
 	width: 100%;
+	clear:both;
 }
 img#avatar.mobile {
-	max-width: 100%;
-	width: 240pt;
-	position: static;
+	width: 100%;
+	max-width: 240pt;
+	float:left;
+	margin: 5pt 0pt; 
 }
 .button.mobile {
 	max-height: 100%;
