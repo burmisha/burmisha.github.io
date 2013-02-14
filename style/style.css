@@ -35,6 +35,10 @@
 	/*.box-sizing;*/
 }
 
+html {
+	width: 100%;
+}
+
 body {
 	background-color: @dark;
 	color: @text;
@@ -43,6 +47,7 @@ body {
 	line-height:1.3;
 	padding: 40pt 5%;
 	float: left;
+	width: 90%;
 }
 
 article {
@@ -84,21 +89,27 @@ a.profile:hover {
 
 #avatar {
 	float: right;
-	max-height: 300pt;
+	max-height: 360pt;
+	min-width: 150pt;
 	max-width: 40%;
-	height: auto;
 }
 
-#avatar:hover {
-	/*border: solid 20pt red;*/
-}
-
-@media screen and (max-width: 600pt) {
-	#avatar {
+@media screen and (max-width: 450pt) {
+	#avatar, article{
 		float: none;
-		min-width: 200pt;
+		min-width: 100pt;
+		width: auto;
+		height: auto;
+	}
+	#avatar {
+		max-width: 180pt;
 	}
 	body {
 		padding: 5pt;
+		font-size: 11pt;
+	}
+	h1, h2 {
+		margin: 2pt 0pt;
+		font-size: 14pt
 	}
 }
