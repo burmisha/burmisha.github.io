@@ -32,7 +32,7 @@
 	margin: 0pt;
 	padding: 0pt;
 	/*.showborder;*/
-	.box-sizing;
+	/*.box-sizing;*/
 }
 
 body {
@@ -43,15 +43,13 @@ body {
 	line-height:1.3;
 	padding: 40pt 5%;
 	float: left;
-	width: 100%;
 }
 
 article {
 	float: left;
-	width: 55%;
-	max-width: 500px;
-	display: block;
-	margin: 0pt 0pt; 
+	width: 50%;
+	max-width: 400pt;
+	min-width: 200pt;
 }
 
 h1 {
@@ -84,43 +82,23 @@ a.profile:hover {
 	.transition(color, @fast);
 }
 
-img#avatar {
+#avatar {
 	float: right;
-	max-height: 450pt;
+	max-height: 300pt;
 	max-width: 40%;
+	height: auto;
 }
 
-.button {
-    .background-gradient(@base, @delta);
-    border: 1pt solid @base - @delta*2;
-    color: @highlight;
-    padding: 2pt 4pt;
-    text-align: center;
-}
-.button:hover {
-	.background-gradient(@base + @delta, @delta);
-	color: @highlight + @delta;
-}
-.button#set-mobile {
-	float:bottom;
-	position: fixed;
-	display: block;
-	left: 0pt;
-   	bottom:0pt;
-   	width:100%;
+#avatar:hover {
+	/*border: solid 20pt red;*/
 }
 
-body.mobile {
-	padding: 5pt;
-}
-
-img#avatar.mobile, article.mobile{
-	width: 100%;
-	max-width: 240pt;
-	float:left;
-	margin: 5pt 0pt; 
-	clear:both;
-}
-h1.mobile, h2.mobile , p.mobile {
-	margin: 0pt;
+@media screen and (max-width: 600pt) {
+	#avatar {
+		float: none;
+		min-width: 200pt;
+	}
+	body {
+		padding: 5pt;
+	}
 }
