@@ -46,7 +46,6 @@ body {
 	font-size: 13pt;
 	line-height:1.3;
 	padding: 40pt 5%;
-	float: left;
 	width: 90%;
 }
 
@@ -61,11 +60,12 @@ h1 {
 	font-family: Lobster;
 	font-size: 48pt;
 	font-weight: normal;
-	margin: 20pt 0pt;
+	margin: 15pt 0pt;
 }
 
 h2 {
 	font-size: 18pt;
+	margin-top: 5pt;
 }
 
 p {
@@ -94,6 +94,13 @@ a.profile:hover {
 	max-width: 40%;
 }
 
+/*@media screen and (max-width: 600pt) {
+	body {
+		padding: 40pt 1%;
+		width: 97%;
+	}
+}
+*/
 @media screen and (max-width: 450pt) {
 	#avatar, article{
 		float: none;
@@ -108,8 +115,15 @@ a.profile:hover {
 		padding: 5pt;
 		font-size: 11pt;
 	}
-	h1, h2 {
+	h1 {
 		margin: 2pt 0pt;
-		font-size: 14pt
+		font-size: 18pt
 	}
+	h2 {
+		margin: 2pt 0pt 0pt 0pt;
+		font-size: 11pt
+	}
+
 }
+
+
