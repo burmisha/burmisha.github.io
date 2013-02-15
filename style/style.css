@@ -60,7 +60,7 @@ h1 {
 	font-family: Lobster;
 	font-size: 48pt;
 	font-weight: normal;
-	margin: 15pt 0pt;
+	margin: 15pt 0pt 0pt 0pt;
 }
 
 h2 {
@@ -69,19 +69,34 @@ h2 {
 }
 
 p {
-	margin: 10pt 0pt;
+	margin-top: 5pt;
+	clear:both;
 }
 
 ul {
 	list-style-type: none; 
-	margin-left: 12pt;
+	margin-left: 0pt;
 }
 
-a.profile {
+.menu_item {
+	float:left;
+	display: inline;
+	min-width: 66pt;
+	width: 32%;
+}
+
+#menu {
+	clear:both;
+	margin-bottom: 25pt;
+}
+
+
+#profiles a {
 	color: @link;
 	.transition(color, @fast);
 }
-a.profile:hover {
+
+#profiles a:hover {
 	color: @highlight; 
 	text-decoration: none;
 	.transition(color, @fast);
@@ -94,13 +109,6 @@ a.profile:hover {
 	max-width: 40%;
 }
 
-/*@media screen and (max-width: 600pt) {
-	body {
-		padding: 40pt 1%;
-		width: 97%;
-	}
-}
-*/
 @media screen and (max-width: 450pt) {
 	#avatar, article{
 		float: none;
