@@ -131,7 +131,14 @@ ul {
 		margin: 2pt 0pt 0pt 0pt;
 		font-size: 11pt
 	}
+}
 
+
+.photoset div {
+	height: 100pt;
+	width: 100pt;
+	float: left;
+	margin: 2pt
 }
 
 
