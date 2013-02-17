@@ -52,7 +52,7 @@ body {
 article {
 	float: left;
 	width: 50%;
-	max-width: 400pt;
+	max-width: 500pt;
 	min-width: 200pt;
 }
 
@@ -64,8 +64,8 @@ h1 {
 }
 
 h2 {
-	font-size: 18pt;
-	margin-top: 5pt;
+	font-size: 15pt;
+	margin: 5pt 0pt 2pt 0pt;
 }
 
 p {
@@ -137,6 +137,10 @@ ul {
 .photoset {
 	float:left;
 	clear: both;
+}
+
+.photoset p{
+	margin-bottom: 10pt;
 }
 
 .smallphoto {
