@@ -30,20 +30,33 @@ $(function(){
 			};
 
 			//$('#content').on('click', "{id: $(this).attr("id")}", function(event){
-			$('#content').on('click', "div.photoset", function(){
+			$('#content').on('click', "div.photoset", function(event){
 				var p = findSet($(this).attr("id"));
 				var h = allPhotos[p];
 				var hid = "#" + h.id;
+				small = $(hid+" div").hasClass("smallphoto");
 				$(hid).empty();
-				//alert('cleared ' + hid);
-				for (var i = 0; i < h.middles.length; i++) {
-					var url = h.path + h.prefix + h.middles[i] + h.suffix;
-					$(hid).append('<div class="bigphoto" style="background-image:url('+ url + ')"></div>');
-				};
+				alert(small)
+				if (small) {
+					for (var i = 0; i < h.middles.length; i++) {
+						var url = h.path + h.prefix + h.middles[i] + h.suffix;
+						$(hid).append('<div style="background-image:url('+ url + ')"></div>');
+					};
+					$(hid+" div").addClass("bigphoto");
+					alert('ok');
+				} else {
+					for (var i = 0; i < h.middles.length; i++) {
+						var url = h.path_small + h.prefix + h.middles[i] + h.suffix;
+						$(hid).append('<div style="background-image:url('+ url + ')"></div>');
+					};
+					$(hid+" div").addClass("smallphoto");
+					alert('ok');
+				}
+				event.stopPropagation();
 				return false;
 			});
 
-			$(hid).on('click', ".bigphoto", function(){
+			/*$(hid).on('click', ".bigphoto", function(){
 				$(hid).empty();
 				//alert('cleared ' + hid);
 				for (var i = 0; i < h.middles.length; i++) {
@@ -51,7 +64,7 @@ $(function(){
 					$(hid).append('<div class="smallphoto" style="background-image:url('+ url + ')"></div>');
 				};
 				return false;
-			});
+			});*/
 			hid = "qqu";
 		};
 	});
