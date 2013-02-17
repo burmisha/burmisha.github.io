@@ -138,10 +138,12 @@ ul {
 }
 
 .photoset div {
-	height: 100pt;
-	width: 100pt;
+	height: 100px;
+	width: 100px;
 	float: left;
 	margin: 2pt;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
 }
 
 
