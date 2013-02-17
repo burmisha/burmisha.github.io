@@ -115,6 +115,7 @@ ul {
 		min-width: 100pt;
 		width: auto;
 		height: auto;
+		clear: both;
 	}
 	#avatar {
 		max-width: 180pt;
@@ -134,16 +135,27 @@ ul {
 }
 
 .photoset {
+	float:left;
 	clear: both;
 }
 
-.photoset div {
+.smallphoto {
 	height: 100px;
 	width: 100px;
 	float: left;
 	margin: 2pt;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
+}
+
+.bigphoto {
+	height: 600px;
+	width: 900px;
+	float: left;
+	margin: 2pt;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	clear: both;
 }
 
 
