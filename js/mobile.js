@@ -8,35 +8,36 @@ $(function(){
 	});
 
 	$("#photo").click(function(){
-		$("#content").load("photo.html", function(){
-			for (var j = 0; j < allPhotos.length; j++) {
-				h = allPhotos[j];
-				for (var i = 0; i < h.middles.length; i++) {
-					var url = h.path_small + h.prefix + h.middles[i]+h.suffix;
-					$(h.id).append('<div class="smallphoto" style="background-image:url('+ url + ')"></div>');
-				};
+
+		$("#content").empty();
+		for (var j = 0; j < allPhotos.length; j++) {
+			h = allPhotos[j];
+			$("#content").append('<div class="photoset" id='+ h.id + '></div>');
+			for (var i = 0; i < h.middles.length; i++) {
+				var url = h.path_small + h.prefix + h.middles[i]+h.suffix;
+				$("#"+h.id).append('<div class="smallphoto" style="background-image:url('+ url + ')"></div>');
 			};
-		});
+		};
 
 		for (var j = 0; j < allPhotos.length; j++) {
 			var h = allPhotos[j];
-			$('#content').on('click', h.id+" .smallphoto", function(){
-				$(h.id).empty();
-				// alert(h.id);
+			var hid = "#"+h.id;
+			$('#content').on('click', hid+" .smallphoto", function(){
+				$(hid).empty();
 				for (var i = 0; i < h.middles.length; i++) {
 					var url = h.path + h.prefix + h.middles[i]+h.suffix;
-					$(h.id).append('<div class="bigphoto" style="background-image:url('+ url + ')"></div>');
+					$(hid).append('<div class="bigphoto" style="background-image:url('+ url + ')"></div>');
 				};
-				return false;
+				//return false;
 			});
 
-			$('#content').on('click', h.id + " .bigphoto", function(){
-				$(h.id).empty();
+			$('#content').on('click', hid + " .bigphoto", function(){
+				$(hid).empty();
 				for (var i = 0; i < h.middles.length; i++) {
 					var url = h.path_small + h.prefix + h.middles[i]+h.suffix;
-					$(h.id).append('<div class="smallphoto" style="background-image:url('+ url + ')"></div>');
+					$(hid).append('<div class="smallphoto" style="background-image:url('+ url + ')"></div>');
 				};
-				return false;
+				//return false;
 			});
 		};
 	});
