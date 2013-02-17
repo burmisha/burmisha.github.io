@@ -26,11 +26,28 @@ $(function(){
 	});
 
 	var h = Diana_21;
-	$('#avatar').click(function(){
+	$('#content').on('click', ".smallphoto",function(){
 		$(h.id).empty();
-			for (var i = 0; i < h.middles.length; i++) {
+		for (var i = 0; i < h.middles.length; i++) {
 			var url = h.path + h.prefix + h.middles[i]+h.suffix;
 			$(h.id).append('<div class="bigphoto" style="background-image:url('+ url + ')"></div>');
 		};
-	});	
+		return false;
+	});
+
+	$('#content').on('click', ".bigphoto",function(){
+		$(h.id).empty();
+		for (var i = 0; i < h.middles.length; i++) {
+			var url = h.path_small + h.prefix + h.middles[i]+h.suffix;
+			$(h.id).append('<div class="smallphoto" style="background-image:url('+ url + ')"></div>');
+		};
+		return false;
+	});
+
+	/*$('#Diana_20130212 .bigphoto').click(function(){
+		alert("фыфы");
+	});
+	$('#Diana_20130212 .smallphoto').click(function(){
+		alert("dd");
+	});*/
 })
