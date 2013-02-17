@@ -8,6 +8,13 @@ findSet = function(hid) {
 };
 
 
+addPhotoset = function(h, cl, prefix) {
+	for (var i = 0; i < h.middles.length; i++) {
+		$("#" + h.id).append('<div style="background-image:url('+ prefix + h.prefix + h.middles[i] + h.suffix + ')"></div>');
+	};
+	$("#" + h.id + " div").addClass(cl);
+}
+
 $(function(){
 	$("#links").click(function(){
 		$("#content").load("links.html");
@@ -23,24 +30,18 @@ $(function(){
 			var h = allPhotos[j];
 			var hid = "#" + h.id;
 			$("#content").append('<div class="photoset" id='+ h.id + '></div>');
-			for (var i = 0; i < h.middles.length; i++) {
-				var url = h.path_small + h.prefix + h.middles[i] + h.suffix;
-				$(hid).append('<div class="smallphoto" style="background-image:url('+ url + ')"></div>');
-			};
+			addPhotoset(h, "smallphoto", h.path_small);
 
 			$('#content').on('click', "div.photoset", function(event){
 				var h = allPhotos[findSet($(this).attr("id"))];
-				var hid = "#" + h.id;
-				small = $(hid+" div").hasClass("smallphoto");
-				$(hid).empty();
-				var prefix;
-				if (small) { prefix = h.path; } 
-				else { prefix = h.path_small; };
-				for (var i = 0; i < h.middles.length; i++) {
-					$(hid).append('<div style="background-image:url('+ prefix + h.prefix + h.middles[i] + h.suffix + ')"></div>');
+				var small = $("#" + h.id +" div").hasClass("smallphoto");
+				$("#" + h.id).empty();
+				if (small) { 
+					addPhotoset(h, "bigphoto", h.path); 
+				} 
+				else { 
+					addPhotoset(h, "smallphoto", h.path_small); 
 				};
-				if (small) { $(hid+" div").addClass("bigphoto"); } 
-				else { $(hid+" div").addClass("smallphoto"); };
 				event.stopImmediatePropagation()
 			});
 		};
