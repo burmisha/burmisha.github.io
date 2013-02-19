@@ -19,7 +19,7 @@ addPhotoset = function(photoset) {
 		cl = "smallphoto";
 	};
 	for (var i = 0; i < filenames.length; i++) {
-		var newdiv = '<div style="background-image:url('+ filenames[i] + ')"></div>';
+		var newdiv = '<div style="background-image:url('+ filenames[i] + ')" id="' + photoset.id + "_" + ('000'+i).slice(-3) +'"></div>';
 		$(id).append(newdiv);
 	};
 	$(id + " div").addClass(cl);
@@ -41,11 +41,14 @@ $(function(){
 			var photoset = allPhotos[j];
 			$("#content").append('<div class="photoset" id="'+ photoset.id + '"></div>');
 			addPhotoset(photoset);
-			$('#content').on('click', "div.photoset", function(event){
-				var photoset = allPhotos[findSet($(this).attr("id"))];
+			$("#" + photoset.id).on('click', 'div', function(event){
+				var id = $(this).attr("id");
+				var photoset = allPhotos[findSet((id).slice(0,-4))];
+				var number = parseInt(id.slice(-4), 10)
 				$("#" + photoset.id).empty();
 				photoset.size = 1 - photoset.size;
 				addPhotoset(photoset); 
+				$("html, body").animate({scrollTop: $('#' + id).position().top}, 800);
 				event.stopImmediatePropagation()
 			});
 		};
