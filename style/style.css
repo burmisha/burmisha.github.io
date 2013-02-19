@@ -90,13 +90,13 @@ ul {
 	margin-bottom: 25pt;
 }
 
-
-#profiles a {
+#profiles a, #menu div.menu_item span {
 	color: @link;
+	text-decoration: underline;
 	.transition(color, @fast);
 }
 
-#profiles a:hover {
+#profiles a:hover, #menu div.menu_item span:hover {
 	color: @highlight; 
 	text-decoration: none;
 	.transition(color, @fast);
