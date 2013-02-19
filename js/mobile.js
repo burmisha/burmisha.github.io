@@ -7,14 +7,23 @@ findSet = function(hid) {
 	alert("none for " + hid);
 };
 
-addPhotoset = function(h, cl, prefix) {
-	hid = "#" + h.id;
-	$(hid).append('<h2>' + h.title + '</ph2>');
-	for (var i = 0; i < h.middles.length; i++) {
-		$(hid).append('<div style="background-image:url('+ prefix + h.prefix + h.middles[i] + h.suffix + ')"></div>');
+addPhotoset = function(photoset) {
+	var id = "div#" + photoset.id;
+	$(id).append('<h2>' + photoset.title + '</h2>');
+	var filenames = "", cl = "";
+	if (photoset.size == 1) {
+		filenames = photoset.filenames;
+		cl = "bigphoto";
+	} else {
+		filenames = photoset.filenames_small;
+		cl = "smallphoto";
 	};
-	$(hid + " div").addClass(cl);
-	$(hid).append('<p>' + h.text + '</p>');
+	for (var i = 0; i < filenames.length; i++) {
+		var newdiv = '<div style="background-image:url('+ filenames[i] + ')"></div>';
+		$(id).append(newdiv);
+	};
+	$(id + " div").addClass(cl);
+	$(id).append('<p>' + photoset.text + '</p>');
 }
 
 $(function(){
@@ -29,21 +38,14 @@ $(function(){
 	$("#photo").click(function(){
 		$("#content").empty();
 		for (var j = 0; j < allPhotos.length; j++) {
-			var h = allPhotos[j];
-			var hid = "#" + h.id;
-			$("#content").append('<div class="photoset" id='+ h.id + '></div>');
-			addPhotoset(h, "smallphoto", h.path_small);
-
+			var photoset = allPhotos[j];
+			$("#content").append('<div class="photoset" id="'+ photoset.id + '"></div>');
+			addPhotoset(photoset);
 			$('#content').on('click', "div.photoset", function(event){
-				var h = allPhotos[findSet($(this).attr("id"))];
-				var small = $("#" + h.id +" div").hasClass("smallphoto");
-				$("#" + h.id).empty();
-				if (small) { 
-					addPhotoset(h, "bigphoto", h.path); 
-				} 
-				else { 
-					addPhotoset(h, "smallphoto", h.path_small); 
-				};
+				var photoset = allPhotos[findSet($(this).attr("id"))];
+				$("#" + photoset.id).empty();
+				photoset.size = 1 - photoset.size;
+				addPhotoset(photoset); 
 				event.stopImmediatePropagation()
 			});
 		};
