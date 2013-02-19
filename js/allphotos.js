@@ -1,3 +1,8 @@
+/* Regexps for Yandex.Fotki and Sublime:
+^(.*)$
+\t\t'$1',
+*/
+
 var Diana_21 = {
 	id: 'Diana_20130212',
 	title: '12 февраля. Как нам хватило одной бутылки шампанского.',
