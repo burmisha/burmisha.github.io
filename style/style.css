@@ -52,7 +52,7 @@ body {
 article {
 	float: left;
 	width: 50%;
-	max-width: 500pt;
+	max-width: 900pt;
 	min-width: 200pt;
 }
 
@@ -104,12 +104,31 @@ ul {
 
 #avatar {
 	float: right;
-	max-height: 360pt;
-	min-width: 150pt;
+	max-height: 450px;
+	min-width: 150px;
 	max-width: 40%;
+	width: auto;
+	height: auto;
 }
 
-@media screen and (max-width: 450pt) {
+@media screen and (max-width: 1350px) {
+	#avatar, article{
+		float: left;
+		clear: both;
+	}
+}
+
+@media screen and (max-width: 1000px) {
+	body {
+		padding: 5pt;
+	}
+	#avatar, article{
+		float: left;
+		clear: both;
+	}
+}
+
+@media screen and (max-width: 900px) {
 	#avatar, article{
 		float: none;
 		min-width: 100pt;
@@ -120,10 +139,7 @@ ul {
 	#avatar {
 		max-width: 180pt;
 	}
-	body {
-		padding: 5pt;
-		font-size: 11pt;
-	}
+
 	h1 {
 		margin: 2pt 0pt;
 		font-size: 18pt
@@ -131,6 +147,9 @@ ul {
 	h2 {
 		margin: 2pt 0pt 0pt 0pt;
 		font-size: 11pt
+	}
+	.menu_item {
+		width: 66pt;
 	}
 }
 
