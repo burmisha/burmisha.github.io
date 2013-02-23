@@ -132,6 +132,9 @@ ul {
 	.menu_item {
 		width: 66pt;
 	}
+	#resume li ul li{
+		margin: 0pt 0pt;
+	}
 }
 
 .photoset {
@@ -168,28 +171,35 @@ ul {
 	clear: both;
 }
 
-#resume li ul li, #resume li ul li ul, #resume li ul li ul li{
+#resume li ul li{
 	margin: 2pt 0pt;
 	float: left;
 	width: auto;
 }
 
+#resume li ul li p {
+	clear:both;
+	margin: 0pt;
+	max-width: 100%;
+}
 #resume li ul li:nth-child(odd)  {
 	clear: left;
-	width: 110pt;
+	min-width: 110pt;
+	width: 20%;
+	max-width: 140pt;
 }
 
 #resume li ul li:nth-child(even) {
 	clear:right;
 	max-width: 500pt;
+	width:80%;
 }
 
 #resume li ul li ul li:nth-child(odd)  {
-	clear: left;
-	width: 70pt;
+	min-width: 50pt;
+	width:15%;
 }
 
 #resume li ul li ul li:nth-child(even)  {
-	clear: right;
 	max-width: 430pt;
 }
