@@ -105,7 +105,14 @@ ul {
 	height: auto;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 980px) {
+	body{
+		margin: 3pt;
+	}
+}
+
+
+@media screen and (max-width: 600px) {
 	#avatar{
 		float: none;
 		min-width: 100pt;
@@ -114,7 +121,7 @@ ul {
 		height: auto;
 	}
 	body{
-		margin: 3pt;
+		/*margin: 3pt;*/
 		font-size: 12pt;
 	}
 	h1 {
@@ -171,11 +178,16 @@ ul {
 	clear: both;
 }
 
+#resume li{
+	clear: both;
+}
+
 #resume li ul {
 	li{
 		margin: 2pt 0pt;
 		float: left;
 		width: auto;
+		clear: both;
 	}
 
 	li p {
@@ -186,14 +198,14 @@ ul {
 
 	li:nth-child(odd)  {
 		clear: left;
-		min-width: 110pt;
+		min-width: 130pt;
 		width: 20%;
-		max-width: 140pt;
+		max-width: 150pt;
 	}
 	
 	li:nth-child(even) {
 		clear:right;
-		max-width: 500pt;
+		/*max-width: 500pt;*/
 		width:80%;
 	}
 
