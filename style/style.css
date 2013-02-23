@@ -180,7 +180,7 @@ ul {
 
 #resume li ul {
 	li{
-		margin: 2pt 0pt;
+		margin: 1pt 0pt;
 		float: left;
 		width: auto;
 		clear: both;
@@ -207,4 +207,8 @@ ul {
 	clear: both;
 	margin: 0pt;
 	max-width: 100%;
+}
+
+#resume > li > p {
+	padding-top: 10pt;
 }
