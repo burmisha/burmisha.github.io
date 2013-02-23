@@ -188,6 +188,16 @@ ul {
 		float: left;
 		width: auto;
 		clear: both;
+		&:nth-child(odd)  {
+			clear: left;
+			min-width: 130pt;
+			width: 20%;
+			max-width: 150pt;
+		}
+		&:nth-child(even) {
+			clear:right;
+			width:80%;
+		}
 	}
 
 	li p {
@@ -196,26 +206,8 @@ ul {
 		max-width: 100%;
 	}
 
-	li:nth-child(odd)  {
-		clear: left;
-		min-width: 130pt;
-		width: 20%;
-		max-width: 150pt;
-	}
-	
-	li:nth-child(even) {
-		clear:right;
-		/*max-width: 500pt;*/
-		width:80%;
-	}
-
 	li ul li:nth-child(odd)  {
 		min-width: 50pt;
 		width:15%;
 	}
-	
-	li ul li:nth-child(even)  {
-		max-width: 430pt;
-	}
-
 }
