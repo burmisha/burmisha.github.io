@@ -1,6 +1,6 @@
-@base: hsl(195, 30%, 50%);
+@base: hsl(195, 15%, 50%);
 @text: lighten(@base,20%);
-@dark: darken(@base,35%);
+@dark: darken(@base,38%);
 @delta: #222;
 @link: @text;
 @highlight: lighten(@link,15%);
@@ -45,15 +45,8 @@ body {
 	font-family: Marmelad, arial;
 	font-size: 13pt;
 	line-height:1.3;
-	padding: 40pt 5%;
-	width: 90%;
-}
-
-article {
-	float: left;
-	width: 50%;
-	max-width: 900pt;
-	min-width: 200pt;
+	margin: 40pt 5%;
+	width: auto;
 }
 
 h1 {
@@ -70,7 +63,7 @@ h2 {
 
 p {
 	margin-top: 5pt;
-	clear:both;
+	max-width: 400pt;
 }
 
 ul {
@@ -86,8 +79,9 @@ ul {
 }
 
 #menu {
-	clear:both;
+	clear: both;
 	margin-bottom: 25pt;
+	max-width: 600pt;
 }
 
 #profiles a, #menu div.menu_item span {
@@ -111,42 +105,29 @@ ul {
 	height: auto;
 }
 
-@media screen and (max-width: 1350px) {
-	#avatar, article{
-		float: left;
-		clear: both;
-	}
-}
-
 @media screen and (max-width: 1000px) {
-	body {
-		padding: 5pt;
-	}
-	#avatar, article{
-		float: left;
-		clear: both;
-	}
-}
-
-@media screen and (max-width: 900px) {
-	#avatar, article{
+	#avatar{
 		float: none;
 		min-width: 100pt;
+		max-width: 180pt;
 		width: auto;
 		height: auto;
-		clear: both;
 	}
-	#avatar {
-		max-width: 180pt;
+	body{
+		margin: 3pt;
+		font-size: 12pt;
 	}
-
 	h1 {
 		margin: 2pt 0pt;
 		font-size: 18pt
 	}
 	h2 {
 		margin: 2pt 0pt 0pt 0pt;
-		font-size: 11pt
+		font-size: 12pt
+	}
+	h3 {
+		margin: 2pt 0pt 0pt 0pt;
+		font-size: 12pt
 	}
 	.menu_item {
 		width: 66pt;
@@ -154,12 +135,18 @@ ul {
 }
 
 .photoset {
-	float:left;
+	float: left;
 	clear: both;
+	max-width: 900px;
 }
 
 .photoset p{
 	margin-bottom: 10pt;
+}
+
+.description {
+	clear: both;
+	max-width: 900px;
 }
 
 .smallphoto {
@@ -175,10 +162,34 @@ ul {
 	height: 600px;
 	width: 900px;
 	float: left;
-	margin: 2pt;
+	margin: 2pt 0pt;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
 	clear: both;
 }
 
+#resume li ul li, #resume li ul li ul, #resume li ul li ul li{
+	margin: 2pt 0pt;
+	float: left;
+	width: auto;
+}
 
+#resume li ul li:nth-child(odd)  {
+	clear: left;
+	width: 110pt;
+}
+
+#resume li ul li:nth-child(even) {
+	clear:right;
+	max-width: 500pt;
+}
+
+#resume li ul li ul li:nth-child(odd)  {
+	clear: left;
+	width: 70pt;
+}
+
+#resume li ul li ul li:nth-child(even)  {
+	clear: right;
+	max-width: 430pt;
+}

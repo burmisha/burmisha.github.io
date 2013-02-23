@@ -23,7 +23,7 @@ addPhotoset = function(photoset) {
 		$(id).append(newdiv);
 	};
 	$(id + " div").addClass(cl);
-	$(id).append('<p>' + photoset.text + '</p>');
+	$(id).append('<p class="description">' + photoset.text + '</p>');
 }
 
 $(function(){
@@ -33,6 +33,10 @@ $(function(){
 
 	$("#bio").click(function(){
 		$("#content").load("bio.html");
+	});
+
+	$("#main").click(function(){
+		$("#content").load("main.html");
 	});
 
 	$("#photo").click(function(){
