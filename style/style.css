@@ -171,35 +171,39 @@ ul {
 	clear: both;
 }
 
-#resume li ul li{
-	margin: 2pt 0pt;
-	float: left;
-	width: auto;
-}
+#resume li ul {
+	li{
+		margin: 2pt 0pt;
+		float: left;
+		width: auto;
+	}
 
-#resume li ul li p {
-	clear:both;
-	margin: 0pt;
-	max-width: 100%;
-}
-#resume li ul li:nth-child(odd)  {
-	clear: left;
-	min-width: 110pt;
-	width: 20%;
-	max-width: 140pt;
-}
+	li p {
+		clear:both;
+		margin: 0pt;
+		max-width: 100%;
+	}
 
-#resume li ul li:nth-child(even) {
-	clear:right;
-	max-width: 500pt;
-	width:80%;
-}
+	li:nth-child(odd)  {
+		clear: left;
+		min-width: 110pt;
+		width: 20%;
+		max-width: 140pt;
+	}
+	
+	li:nth-child(even) {
+		clear:right;
+		max-width: 500pt;
+		width:80%;
+	}
 
-#resume li ul li ul li:nth-child(odd)  {
-	min-width: 50pt;
-	width:15%;
-}
+	li ul li:nth-child(odd)  {
+		min-width: 50pt;
+		width:15%;
+	}
+	
+	li ul li:nth-child(even)  {
+		max-width: 430pt;
+	}
 
-#resume li ul li ul li:nth-child(even)  {
-	max-width: 430pt;
 }
