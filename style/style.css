@@ -1,5 +1,5 @@
 @base: hsl(195, 15%, 50%);
-@text: lighten(@base,20%);
+@text: lighten(@base,25%);
 @dark: darken(@base,38%);
 @delta: #222;
 @link: @text;
