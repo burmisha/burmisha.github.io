@@ -178,10 +178,6 @@ ul {
 	clear: both;
 }
 
-#resume li{
-	clear: both;
-}
-
 #resume li ul {
 	li{
 		margin: 2pt 0pt;
@@ -195,19 +191,20 @@ ul {
 			max-width: 150pt;
 		}
 		&:nth-child(even) {
-			clear:right;
-			width:80%;
+			clear: right;
+			width: 80%;
 		}
-	}
-
-	li p {
-		clear:both;
-		margin: 0pt;
-		max-width: 100%;
 	}
 
 	li ul li:nth-child(odd)  {
 		min-width: 50pt;
-		width:15%;
+		width: 15%;
 	}
+}
+
+#resume p {
+	float: left;
+	clear: both;
+	margin: 0pt;
+	max-width: 100%;
 }
