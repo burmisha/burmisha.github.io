@@ -175,7 +175,7 @@ ul {
 	clear: both;
 }
 
-#resume li ul {
+#resume > li > ul {
 	li{
 		margin: 1pt 0pt;
 		float: left;
@@ -193,14 +193,14 @@ ul {
 		}
 	}
 
-	li ul li:nth-child(odd)  {
+	li > ul > li:nth-child(odd)  {
 		min-width: 50pt;
 		width: 15%;
 	}
 }
 
 @media screen and (max-width: 660pt) {
-	#resume li ul li{
+	#resume > li > ul > li{
 		&:nth-child(odd)  {
 			min-width: 70pt;
 			width: 33%;
@@ -208,7 +208,7 @@ ul {
 		&:nth-child(even) {
 			width: 67%;
 		}
-		ul li:nth-child(odd)  {
+		ul > li:nth-child(odd)  {
 			width: 20%;
 		}
 	}
