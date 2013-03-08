@@ -74,9 +74,8 @@ $(function(){
 	$("#photo").click(function(){
 		$("#content").empty();
 		for (var j = 0; j < allPhotos.length; j++) {
-			var photoset = allPhotos[j];
-			$("#content").append('<div class="photoset" id="'+ photoset.id + '"></div>');
-			addPhotoset(photoset);
+			$("#content").append('<div class="photoset" id="'+ allPhotos[j].id + '"></div>');
+			addPhotoset(allPhotos[j]);
 		};
 	});
 })
