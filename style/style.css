@@ -166,13 +166,13 @@ ul {
 }
 
 .bigphoto {
-	height: 600px;
-	width: @photowidth;
-	float: left;
-	margin: 2pt 0pt;
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
-	clear: both;
+	max-width: @photowidth;
+	max-height: 600px;
+	width: auto;
+	/*float: left;*/
+	/*align: center;*/
+	margin: 2px auto 0px auto
+	/*clear: both;*/
 }
 
 #resume > li > ul {
