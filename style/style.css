@@ -50,6 +50,7 @@ body {
 	line-height: 1.3;
 	margin: 40pt 10%;
 	width: 80%;
+	text-align: center;
 }
 
 h1 {
@@ -62,28 +63,32 @@ h1 {
 h2 {
 	font-size: 15pt;
 	margin: 5pt 0pt 2pt 0pt;
+	text-align: left;
 }
 
 p {
 	margin-top: 5pt;
 	max-width: 400pt;
+	text-align: left;
 }
 
 ul {
 	list-style-type: none; 
+	text-align: left;
 }
 
-.menu_item {
+div.menu_item {
 	float: left;
-	display: inline;
-	min-width: 66pt;
+	/*display: inline;*/
+	min-width: 100pt;
+	text-align: center;
 	width: 33%;
+	;
 }
 
 #menu {
-	clear: both;
 	margin-bottom: 25pt;
-	max-width: 600pt;
+	text-align: center;
 }
 
 #profiles a, #menu div.menu_item span {
@@ -105,6 +110,10 @@ ul {
 	max-width: 35%;
 	width: auto;
 	height: auto;
+}
+
+#content {
+	text-align: center;
 }
 
 @media screen and (max-width: 980px) {
@@ -142,8 +151,9 @@ ul {
 }
 
 .photoset {
-	float: left;
-	clear: both;
+	margin: 0 auto;
+	/*float: left;*/
+	/*clear: both;*/
 	max-width: @photowidth;
 }
 
