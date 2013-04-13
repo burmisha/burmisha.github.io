@@ -170,7 +170,7 @@ div.menu_item {
 	height: 100px;
 	width: 100px;
 	float: left;
-	margin: 2pt;
+	margin: 2px;
 	background-position: 50% 50%;
 	background-repeat: no-repeat;
 }
@@ -181,7 +181,7 @@ div.menu_item {
 	width: auto;
 	/*float: left;*/
 	/*align: center;*/
-	margin: 2px auto 0px auto
+	margin: 1px 2px
 	/*clear: both;*/
 }
 
