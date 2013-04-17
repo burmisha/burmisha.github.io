@@ -1,9 +1,10 @@
-@base: hsl(195, 15%, 50%);
-@text: lighten(@base,25%);
+@base: hsl(195, 12%, 50%);
+@text: lighten(@base,30%);
 @dark: darken(@base,38%);
 @delta: #222;
 @link: @text;
-@highlight: lighten(@link,15%);
+@highlight: lighten(@link,12%);
+@darklight: darken(@text,12%);
 @fast: 0.3s;
 @photowidth: 900px;
 
@@ -196,6 +197,12 @@ div.menu_item {
 			min-width: 130pt;
 			width: 20%;
 			max-width: 150pt;
+			color: @darklight;
+			.transition(color, @fast);
+			&:hover {
+				color: @text;
+				.transition(color, @fast);
+			};
 		}
 		&:nth-child(even) {
 			clear: right;
