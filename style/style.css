@@ -96,12 +96,11 @@ div.menu_item {
 	color: @link;
 	text-decoration: underline;
 	.transition(color, @fast);
-}
-
-#profiles a:hover, #menu div.menu_item span:hover {
-	color: @highlight; 
-	text-decoration: none;
-	.transition(color, @fast);
+	&:hover {
+		color: @highlight; 
+		text-decoration: none;
+		.transition(color, @fast);
+	};
 }
 
 #avatar {
@@ -156,10 +155,9 @@ div.menu_item {
 	/*float: left;*/
 	/*clear: both;*/
 	max-width: @photowidth;
-}
-
-.photoset p{
-	margin-bottom: 10pt;
+	p {
+		margin-bottom: 10pt;
+	}
 }
 
 .description {
