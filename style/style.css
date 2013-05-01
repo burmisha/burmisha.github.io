@@ -176,7 +176,7 @@ div.menu_item {
 
 .bigphoto {
 	max-width: @photowidth;
-	max-height: 600px;
+	height: 600px;
 	width: auto;
 	/*float: left;*/
 	/*align: center;*/

@@ -38,7 +38,7 @@ addPhotoset = function(photoset) {
 		t = small;
 	} else {
 		filenames = photoset.filenames;
-		t = large
+		t = large;
 	};
 	for (var i = 0; i < filenames.length; i++) {
 		var newdiv = t.prefix + filenames[i] + t.middle + photoset.id + idSuffix(i) + t.postfix;
