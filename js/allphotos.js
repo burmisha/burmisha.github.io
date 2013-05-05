@@ -445,7 +445,6 @@ var Eesti_4 = {
 	title: 'Эстония. День 4.',
 	text: 'Без музеев и истории никуда. ',
 	filenames : [	
-		'http://img-fotki.yandex.ru/get/6427/82500796.9/0_a398b_3fd5ffe8_orig.jpg',
 		'http://img-fotki.yandex.ru/get/6432/82500796.9/0_a3993_4d5c643a_orig.jpg',
 		'http://img-fotki.yandex.ru/get/5629/82500796.9/0_a3995_6a702def_orig.jpg',
 		'http://img-fotki.yandex.ru/get/6440/82500796.9/0_a3996_31f0cabe_orig.jpg',
@@ -453,6 +452,7 @@ var Eesti_4 = {
 		'http://img-fotki.yandex.ru/get/5624/82500796.9/0_a399a_d5cb3e8f_orig.jpg',
 		'http://img-fotki.yandex.ru/get/6426/82500796.9/0_a399c_38ae4c08_orig.jpg',
 		'http://img-fotki.yandex.ru/get/6445/82500796.9/0_a399e_67304358_orig.jpg',
+		'http://img-fotki.yandex.ru/get/6427/82500796.9/0_a398b_3fd5ffe8_orig.jpg',
 		'http://img-fotki.yandex.ru/get/5641/82500796.9/0_a39a1_6adcac5b_orig.jpg',
 		'http://img-fotki.yandex.ru/get/6443/82500796.9/0_a39a5_8e9e26e5_orig.jpg',
 		'http://img-fotki.yandex.ru/get/6439/82500796.9/0_a39a8_17b48d08_orig.jpg',
