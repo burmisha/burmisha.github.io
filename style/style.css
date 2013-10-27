@@ -1,241 +1,221 @@
-@base: hsl(195, 12%, 50%);
-@text: lighten(@base,30%);
-@dark: darken(@base,38%);
-@delta: #222;
-@link: @text;
-@highlight: lighten(@link,12%);
-@darklight: darken(@text,12%);
-@fast: 0.3s;
-@photowidth: 900px;
-
-.transition (@range: all, @time: 1s, @ease: ease-in-out) { 
-	/* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
-	-moz-transition: @range @time @ease; 	/* Firefox 4 */
-	-ms-transition: @range @time @ease;
-	-webkit-transition: @range @time @ease; /* Safari and Chrome */
-	-o-transition: @range @time @ease; 		/* Opera */
-	transition: @range @time @ease;
-}
-.showborder (@color: red) {
-	border: 1pt solid @color;
-}
-.background-gradient (@color, @diff: @delta) {
-	background-color: @color;
-	background: -webkit-gradient(linear, left top, left bottom, from(@color + @diff), to(@color - @diff));
-    background: -moz-linear-gradient(top,  @color + @diff,  @color - @diff);
-}
 .box-sizing {
-	box-sizing:border-box;
-	-moz-box-sizing:border-box;
-	-webkit-box-sizing:border-box;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
-
 * {
-	margin: 0pt;
-	padding: 0pt;
-	/*.showborder;*/
-	/*.box-sizing;*/
+  margin: 0pt;
+  padding: 0pt;
+  /*.showborder;*/
+  /*.box-sizing;*/
 }
-
 html {
-	width: 100%;
-	padding: 2pt;
-	.box-sizing;
+  width: 100%;
+  padding: 2pt;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
-
 body {
-	background-color: @dark;
-	color: @text;
-	font-family: Marmelad, arial;
-	font-size: 13pt;
-	line-height: 1.3;
-	margin: 40pt 10%;
-	width: 80%;
-	text-align: center;
+  background-color: #1b2022;
+  color: #c6cfd2;
+  font-family: Marmelad, arial;
+  font-size: 13pt;
+  line-height: 1.3;
+  margin: 40pt 10%;
+  width: 80%;
+  text-align: center;
 }
-
 h1 {
-	font-family: Lobster;
-	font-size: 48pt;
-	font-weight: normal;
-	margin: 15pt 0pt 0pt 0pt;
+  font-family: Lobster;
+  font-size: 48pt;
+  font-weight: normal;
+  margin: 15pt 0pt 0pt 0pt;
 }
-
 h2 {
-	font-size: 15pt;
-	margin: 5pt 0pt 2pt 0pt;
-	text-align: left;
+  font-size: 15pt;
+  margin: 5pt 0pt 2pt 0pt;
+  text-align: left;
 }
-
 p {
-	margin-top: 5pt;
-	max-width: 400pt;
-	text-align: left;
+  margin-top: 5pt;
+  max-width: 400pt;
+  text-align: left;
 }
-
 ul {
-	list-style-type: none; 
-	text-align: left;
+  list-style-type: none;
+  text-align: left;
 }
-
 div.menu_item {
-	float: left;
-	/*display: inline;*/
-	min-width: 100pt;
-	text-align: center;
-	width: 33%;
-	;
+  float: left;
+  /*display: inline;*/
+  min-width: 100pt;
+  text-align: center;
+  width: 33%;
 }
-
 #menu {
-	margin-bottom: 25pt;
-	text-align: center;
+  margin-bottom: 25pt;
+  text-align: center;
 }
-
-#profiles a, #menu div.menu_item span {
-	color: @link;
-	text-decoration: underline;
-	.transition(color, @fast);
-	&:hover {
-		color: @highlight; 
-		text-decoration: none;
-		.transition(color, @fast);
-	};
+#profiles a,
+#menu div.menu_item span {
+  color: #c6cfd2;
+  text-decoration: underline;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
 }
-
+#profiles a:hover,
+#menu div.menu_item span:hover {
+  color: #e8eced;
+  text-decoration: none;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
 #avatar {
-	float: right;
-	max-height: 450px;
-	min-width: 180px;
-	max-width: 35%;
-	width: auto;
-	height: auto;
+  float: right;
+  max-height: 450px;
+  min-width: 180px;
+  max-width: 35%;
+  width: auto;
+  height: auto;
 }
-
 #content {
-	text-align: center;
+  text-align: center;
 }
-
 @media screen and (max-width: 980px) {
-	body{
-		margin: 0pt;
-		width: 100%;
-	}
+  body {
+    margin: 0pt;
+    width: 100%;
+  }
 }
-
-
 @media screen and (max-width: 600px) {
-	#avatar{
-		float: none;
-		min-width: 100pt;
-		max-width: 200pt;
-	}
-	body{
-		font-size: 12pt;
-	}
-	h1 {
-		margin: 2pt 0pt;
-		font-size: 18pt
-	}
-	h2 {
-		margin: 2pt 0pt 0pt 0pt;
-		font-size: 12pt
-	}
-	h3 {
-		margin: 2pt 0pt 0pt 0pt;
-		font-size: 12pt
-	}
-	.menu_item {
-		width: 66pt;
-	}
+  #avatar {
+    float: none;
+    min-width: 100pt;
+    max-width: 200pt;
+  }
+  body {
+    font-size: 12pt;
+  }
+  h1 {
+    margin: 2pt 0pt;
+    font-size: 18pt;
+  }
+  h2 {
+    margin: 2pt 0pt 0pt 0pt;
+    font-size: 12pt;
+  }
+  h3 {
+    margin: 2pt 0pt 0pt 0pt;
+    font-size: 12pt;
+  }
+  .menu_item {
+    width: 66pt;
+  }
 }
-
 .photoset {
-	margin: 0 auto;
-	/*float: left;*/
-	/*clear: both;*/
-	max-width: @photowidth;
-	p {
-		margin-bottom: 10pt;
-	}
+  margin: 0 auto;
+  /*float: left;*/
+  /*clear: both;*/
+  max-width: 900px;
 }
-
+.photoset p {
+  margin-bottom: 10pt;
+}
 .description {
-	clear: both;
-	max-width: @photowidth;
+  clear: both;
+  max-width: 900px;
 }
-
 .smallphoto {
-	height: 100px;
-	width: 100px;
-	float: left;
-	margin: 2px;
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
+  height: 100px;
+  width: 100px;
+  float: left;
+  margin: 2px;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
 }
-
 .bigphoto {
-	max-width: @photowidth;
-	height: 600px;
-	width: auto;
-	/*float: left;*/
-	/*align: center;*/
-	margin: 1px 2px
-	/*clear: both;*/
+  max-width: 900px;
+  height: 600px;
+  width: auto;
+  /*float: left;*/
+  /*align: center;*/
+  margin: 1px 2px /*clear: both;*/;
 }
-
-#resume > li > ul {
-	li{
-		margin: 1pt 0pt;
-		float: left;
-		width: auto;
-		clear: both;
-		&:nth-child(odd)  {
-			clear: left;
-			min-width: 130pt;
-			width: 20%;
-			max-width: 150pt;
-			color: @darklight;
-			.transition(color, @fast);
-			&:hover {
-				color: @text;
-				.transition(color, @fast);
-			};
-		}
-		&:nth-child(even) {
-			clear: right;
-			width: 80%;
-		}
-	}
-
-	li > ul > li:nth-child(odd)  {
-		min-width: 50pt;
-		width: 15%;
-	}
+#resume > li > ul li {
+  margin: 1pt 0pt;
+  float: left;
+  width: auto;
+  clear: both;
 }
-
+#resume > li > ul li:nth-child(odd) {
+  clear: left;
+  min-width: 130pt;
+  width: 20%;
+  max-width: 150pt;
+  color: #a4b2b7;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+#resume > li > ul li:nth-child(odd):hover {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+#resume > li > ul li:nth-child(even) {
+  clear: right;
+  width: 80%;
+}
+#resume > li > ul li > ul > li:nth-child(odd) {
+  min-width: 50pt;
+  width: 15%;
+}
 @media screen and (max-width: 660pt) {
-	#resume > li > ul > li{
-		&:nth-child(odd)  {
-			min-width: 70pt;
-			width: 33%;
-		}
-		&:nth-child(even) {
-			width: 67%;
-		}
-		ul > li:nth-child(odd)  {
-			width: 20%;
-		}
-	}
+  #resume > li > ul > li:nth-child(odd) {
+    min-width: 70pt;
+    width: 33%;
+  }
+  #resume > li > ul > li:nth-child(even) {
+    width: 67%;
+  }
+  #resume > li > ul > li ul > li:nth-child(odd) {
+    width: 20%;
+  }
 }
-
 #resume p {
-	float: left;
-	clear: both;
-	margin: 0pt;
-	max-width: 100%;
+  float: left;
+  clear: both;
+  margin: 0pt;
+  max-width: 100%;
 }
-
 #resume > li > p {
-	padding-top: 10pt;
+  padding-top: 10pt;
 }
