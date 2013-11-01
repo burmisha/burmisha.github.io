@@ -11,13 +11,16 @@ idSuffix = function(i) {
 	return "_" + ('000'+i).slice(-3);
 }
 
+photoId = function(photoset_id, i) {
+	return photoset_id + idSuffix(i);
+}
+
 var small = {
 	"id": SMALL,
 	"prefix": '<div style="background-image:url(',
 	"middle": ')" id="',
 	"postfix": '"></div>',
 	"class": 'smallphoto',
-	"type": 'div'
 }
 
 var large = {
@@ -26,7 +29,23 @@ var large = {
 	"middle": '" id="',
 	"postfix": '"/>',
 	"class": 'bigphoto',
-	"type": 'img'
+}
+
+addPhoto = function(size, photo_url, id) {
+	var t
+	switch (size) {
+		case small.id:
+			t = small
+			break
+		case large.id:
+			t = large
+			break		
+	}
+	return t.prefix + photo_url + t.middle + id + t.postfix
+}
+
+addDescription = function(text) {
+	return '<p class="description">' + text + '</p>'
 }
 
 addPhotoset = function(photoset) {
@@ -41,13 +60,12 @@ addPhotoset = function(photoset) {
 		t = large;
 	};
 	for (var i = 0; i < filenames.length; i++) {
-		var newdiv = t.prefix + filenames[i] + t.middle + photoset.id + idSuffix(i) + t.postfix;
-		$(id).append(newdiv);
+		$(id).append(addPhoto(t.id, filenames[i], photoId(photoset.id, i)));
+		$("#" + photoId(photoset.id, i)).addClass(t.class);
 	};
-	$(id + " " + t.type).addClass(t.class);
-	$(id).append('<p class="description">' + photoset.text + '</p>');
+	$(id).append(addDescription(photoset.text));
 
-	$(id).on('click', t.type, function(event){
+	$(id).on('click', 'img, div', function(event){
 		var id = $(this).attr("id");
 		var photoset = allPhotos[findSet((id).slice(0,-4))];
 		$("#" + photoset.id).empty();
