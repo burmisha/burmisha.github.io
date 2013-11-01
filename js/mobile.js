@@ -63,12 +63,12 @@ $(function(){
 		$("#content").load("links.html");
 	});
 
-	$("#bio").click(function(){
-		$("#content").load("bio.html");
+	$("#cv").click(function(){
+		$("#content").load("cv.html");
 	});
 
-	$("#main").click(function(){
-		$("#content").load("main.html");
+	$("#about").click(function(){
+		$("#content").load("about.html");
 	});
 
 	$("#photo").click(function(){
