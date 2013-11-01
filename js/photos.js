@@ -17,16 +17,16 @@ photoId = function(photoset_id, i) {
 
 var small = {
 	"id": SMALL,
-	"prefix": '<div style="background-image:url(',
-	"middle": ')" id="',
+	"prefix": '<div style="background-image:url(http://img-fotki.yandex.ru/get/',
+	"middle": '_orig.jpg)" id="',
 	"postfix": '"></div>',
 	"class": 'smallphoto',
 }
 
 var large = {
 	"id": LARGE,
-	"prefix": '<img src="',
-	"middle": '" id="',
+	"prefix": '<img src="http://img-fotki.yandex.ru/get/',
+	"middle": '_orig.jpg" id="',
 	"postfix": '"/>',
 	"class": 'bigphoto',
 }
