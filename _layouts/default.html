@@ -14,12 +14,14 @@
 	<script src="/js/ga.js"></script>
 	<script>
 	$(document).ready(function(event){
+		if(window.location.hash) {
+		} else {
 		$("html, body").animate({scrollTop: $("#content").position().top}, 600);
 		event.stopImmediatePropagation()
+		}		
 	});
 	</script>
 
-	
 	{%if page.twitter %}	
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:creator" content="@burmisha">
@@ -48,7 +50,9 @@
 					{% endif %}
 				</p>
 				<div class="bigphoto"> 
+				<a name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
 				<img src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
+				</a>
 				</div>
 			{% endfor %}
 		{% endif %}
