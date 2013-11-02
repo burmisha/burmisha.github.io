@@ -3,26 +3,49 @@
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width; initial-scale=1.0">
-	<title>burmisha</title>
+	<title>burmisha &middot {{ page.title }}</title>
 	<link rel="icon" type="image/png" href="http://img-fotki.yandex.ru/get/4129/82500796.1/0_96722_8003ecc8_orig" />
 	<link href="http://fonts.googleapis.com/css?family=Lobster" media="screen" rel="stylesheet" type="text/css">
 	<link href='http://fonts.googleapis.com/css?family=Marmelad&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="style/style.css">
-	<base target="_blank">
+	<link href='http://fonts.googleapis.com/css?family=Roboto:100&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="/style/style.css">
+	<!-- <base target="_blank"> -->
 	<script src="http://yandex.st/jquery/1.8.3/jquery.js"></script>
- 	<script src="js/allphotos.js"></script>
-	<script src="js/photos.js"></script>
-	<script src="js/ga.js"></script>	
+	<script src="/js/ga.js"></script>
+	<script>
+	$(document).ready(function(event){
+		$("html, body").animate({scrollTop: $("#content").position().top}, 600);
+		event.stopImmediatePropagation()
+	});
+	</script>	
 </head>
 
 <body>
-	<h1 id="about">burmisha</h1>
-	<div id="menu">
-		<div class="menu_item"><span id="photo">photo</span></div>
-		<div class="menu_item"><span id="links">links</span></div>
-		<div class="menu_item"><span id="cv">CV</span></div>
-	</div>
+	<h1><a href="/">burmisha</a></h1>
+	<ul id="menu">
+		<li class="menu_item"><a href="/blog/">blog</a></li>
+		<li class="menu_item"><a href="/links/">links</a></li>
+		<li class="menu_item"><a href="/cv/">CV</a></li>
+	</ul>
 	<div id="content">
+		<a name="content"></a>
+		{% if page.photos %}
+			<h2>{{page.title}}</h2>
+			{% for photo in page.photos %}
+				<p class="caption">
+					{% if photo.caption %}
+					{{photo.caption}}
+					{% endif %}
+					&nbsp
+				</p>
+				<div class="bigphoto"> 
+				<img src="http://img-fotki.yandex.ru/get/{{ photo.url }}_orig.jpg">
+				</div>
+			{% endfor %}
+		{% endif %}
+
+		{{content}}
 	</div>
 </body>
 </html>
+
