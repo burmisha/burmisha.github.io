@@ -17,7 +17,17 @@
 		$("html, body").animate({scrollTop: $("#content").position().top}, 600);
 		event.stopImmediatePropagation()
 	});
-	</script>	
+	</script>
+
+	
+	{%if page.twitter %}	
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:creator" content="@burmisha">
+	<meta name="twitter:title" content="{{page.title}}">
+	<meta name="twitter:description" content="{{ page.twitter.text}}">
+	<meta name="twitter:image:src" content="http://img-fotki.yandex.ru/get/{{ page.twitter.photo }}_L.jpg">
+	{% endif %}
+	<meta name="twitter:domain" content="{{page.url}}">	
 </head>
 
 <body>
@@ -36,7 +46,6 @@
 					{% if photo.caption %}
 					{{photo.caption}}
 					{% endif %}
-					
 				</p>
 				<div class="bigphoto"> 
 				<img src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
