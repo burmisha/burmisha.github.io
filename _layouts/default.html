@@ -44,15 +44,15 @@
 		{% if page.photos %}
 			<h2>{{page.title}}</h2>
 			{% for photo in page.photos %}
-				<a name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
 				<p class="caption">
 					{% if photo.caption %}
 					{{photo.caption}}
 					{% endif %}
 				</p>
-				</a>
 				<div class="bigphoto"> 
+				<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
 				<img src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
+				</a>
 				</div>
 			{% endfor %}
 		{% endif %}
