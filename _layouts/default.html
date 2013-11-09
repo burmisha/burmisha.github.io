@@ -43,6 +43,7 @@
 		<a name="content"></a>
 		{% if page.photos %}
 			<h2>{{page.title}}</h2>
+			{{page.photo.size}}
 			{% for photo in page.photos %}
 				<p class="caption">
 					{% if photo.caption %}
@@ -54,10 +55,7 @@
 				<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
 				<img src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
 				</a>
-				</div>
-			{% endfor %}
-		{% endif %}
-
+				</div>{% endfor %}{% endif %}
 		{{content}}
 	</div>
 
