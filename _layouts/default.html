@@ -48,6 +48,7 @@
 					{% if photo.caption %}
 					{{photo.caption}}
 					{% endif %}
+					<!-- {{photo.url}} -->
 				</p>
 				<div class="bigphoto"> 
 				<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
