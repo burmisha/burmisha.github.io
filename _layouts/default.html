@@ -52,9 +52,9 @@
 	{% for photo in page.photos %}
 	<div class="preview">
 		<div class="caption">
-			{% assign i = i | plus: 1 %}{% if page.enumerate == true %}<h2> <a href="#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}" class="enumeration"><span class="hidden">&para;&nbsp;</span>{{i}}</a></h2>{% endif %}
+			&nbsp;{% assign i = i | plus: 1 %}{% if page.enumerate == true %}<h2><a href="#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}" class="enumeration"><span class="hidden">&para;&nbsp;</span>{{i}}</a></h2>{% endif %}
 			{% if photo.caption %}{{photo.caption}}{% endif %}
-			&nbsp;<!-- {{photo.url}} -->
+			<!-- {{photo.url}} -->
 		</div>
 		<div class="content"> 
 		<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
