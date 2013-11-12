@@ -51,7 +51,7 @@ ul {
 }
 #menu li {
   float: left;
-  min-width: 100pt;
+  min-width: 70pt;
   text-align: center;
   width: 33%;
 }
@@ -91,31 +91,6 @@ a:hover {
   min-width: 180px;
   max-width: 35%;
 }
-@media screen and (max-width: 600px) {
-  #avatar {
-    float: none;
-    min-width: 100pt;
-    max-width: 200pt;
-  }
-  body {
-    font-size: 12pt;
-  }
-  h1 {
-    margin: 2pt 0pt;
-    font-size: 18pt;
-  }
-  h2 {
-    margin: 2pt 0pt 0pt 0pt;
-    font-size: 12pt;
-  }
-  h3 {
-    margin: 2pt 0pt 0pt 0pt;
-    font-size: 12pt;
-  }
-  .menu_item {
-    width: 66pt;
-  }
-}
 .smallphoto {
   height: 71px;
   width: 71px;
@@ -131,17 +106,19 @@ a:hover {
   max-width: 100%;
 }
 #resume > li > p {
-  padding-top: 10pt;
+  padding-top: 12pt;
+}
+#resume > li > ul {
+  padding-bottom: 3pt;
 }
 #resume > li > ul li {
-  margin: 1pt 0pt;
   float: left;
 }
 #resume > li > ul li:nth-child(odd) {
   clear: left;
-  min-width: 130pt;
+  min-width: 140pt;
   width: 20%;
-  max-width: 150pt;
+  max-width: 160pt;
   color: #9babb0;
   /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
   -moz-transition: color 0.3s ease-in-out;
@@ -167,7 +144,8 @@ a:hover {
 }
 #resume > li > ul li:nth-child(even) {
   clear: right;
-  width: 80%;
+  max-width: 66%;
+  min-width: 50%;
 }
 #resume > li > ul li > ul > li:nth-child(odd) {
   min-width: 50pt;
@@ -223,16 +201,4 @@ a:hover {
 }
 .bigphoto {
   max-width: 800px;
-}
-@media screen and (max-width: 660pt) {
-  #resume > li > ul > li:nth-child(odd) {
-    min-width: 70pt;
-    width: 33%;
-  }
-  #resume > li > ul > li:nth-child(even) {
-    width: 67%;
-  }
-  #resume > li > ul > li ul > li:nth-child(odd) {
-    width: 20%;
-  }
 }

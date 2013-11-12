@@ -87,7 +87,7 @@ ul {
 	margin: 0pt 17% 0pt 17%;
 	li {
 		float: left;
-		min-width: 100pt;
+		min-width: 70pt;
 		text-align: center;
 		width: 33%;
 	}
@@ -114,32 +114,6 @@ a {
 	max-width: 35%;
 }
 
-@media screen and (max-width: 600px) {
-	#avatar {
-		float: none;
-		min-width: 100pt;
-		max-width: 200pt;
-	}
-	body {
-		font-size: 12pt;
-	}
-	h1 {
-		margin: 2pt 0pt;
-		font-size: 18pt
-	}
-	h2 {
-		margin: 2pt 0pt 0pt 0pt;
-		font-size: 12pt
-	}
-	h3 {
-		margin: 2pt 0pt 0pt 0pt;
-		font-size: 12pt
-	}
-	.menu_item {
-		width: 66pt;
-	}
-}
-
 .smallphoto {
 	height: 71px;
 	width: 71px;
@@ -157,18 +131,17 @@ a {
 }
 
 #resume > li > p {
-	padding-top: 10pt;
+	padding-top: 12pt;
 }
 
 #resume > li > ul{
 	li{
-		margin: 1pt 0pt;
 		float: left;
 		&:nth-child(odd)  {
 			clear: left;
-			min-width: 130pt;
+			min-width: 140pt;
 			width: 20%;
-			max-width: 150pt;
+			max-width: 160pt;
 			.smoothcolor(@darklight);
 			&:hover {
 				.smoothcolor(@text);
@@ -176,10 +149,11 @@ a {
 		}
 		&:nth-child(even) {
 			clear: right;
-			width: 80%;
+			max-width: 66%;
+			min-width: 50%;
 		}
 	}
-
+	padding-bottom: 3pt;
 	li > ul > li:nth-child(odd)  {
 		min-width: 50pt;
 		width: 15%;
@@ -221,20 +195,3 @@ a {
 .bigphoto {
 	max-width: 800px;
 }
-
-
-@media screen and (max-width: 660pt) {
-	#resume > li > ul > li{
-		&:nth-child(odd)  {
-			min-width: 70pt;
-			width: 33%;
-		}
-		&:nth-child(even) {
-			width: 67%;
-		}
-		ul > li:nth-child(odd)  {
-			width: 20%;
-		}
-	}
-}
-
