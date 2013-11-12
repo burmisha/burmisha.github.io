@@ -57,11 +57,12 @@ body {
 	text-align: left;
 }
 
-h1 {
+#burmisha {
 	font-family: Lobster;
 	font-size: 32pt;
 	font-weight: normal;
-	margin: 0pt 0pt 8pt 0pt;
+	margin-bottom: 8pt;
+	text-align: center;
 }
 
 h2 {

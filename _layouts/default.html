@@ -33,13 +33,17 @@
 </head>
 
 <body>
-<h1><a href="/">burmisha</a></h1>
+<div class="preview" id="burmisha">
+	<a href="/">burmisha</a>
+</div>
+<div class="preview">
 <ul id="menu">
 	<li class="menu_item"><a href="/blog/">blog</a></li>
 	<li class="menu_item"><a href="/links/">links</a></li>
 	<li class="menu_item"><a href="/cv/">CV</a></li>
 </ul>
-<div id="content">
+</div>
+
 <a name="content"></a>
 {% if page.photos %}
 	<div class="preview">
@@ -62,7 +66,6 @@
 {% endif %}
 <div class="preview">
 	{{content}}
-</div>
 </div>
 
 <!-- Yandex.Metrika counter -->
