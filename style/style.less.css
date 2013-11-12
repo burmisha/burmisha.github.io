@@ -54,7 +54,7 @@ body {
 	font-size: 13pt;
 	line-height: 1.3;
 	top-margin: 20pt;
-	text-align: center;
+	text-align: left;
 }
 
 h1 {
@@ -98,6 +98,21 @@ a {
 	&:hover {
 		text-decoration: none;
 		.smoothcolor(@highlight);
+	};
+}
+
+a.enumeration {
+	text-decoration: none;
+	.transition(all, @fast);
+	.smoothcolor(@darklight);
+	.hidden {
+		.smoothcolor(@dark);
+	}
+	&:hover {
+		.hidden{
+			.smoothcolor(@text);
+		}
+		.smoothcolor(@text);
 	};
 }
 
@@ -171,6 +186,7 @@ a {
 	float: left;
 	clear: left;
 	width: 28%;
+	min-width: 28%;
 	margin-right: 2%;
 	.smoothcolor(@darklight);
 	&:hover {

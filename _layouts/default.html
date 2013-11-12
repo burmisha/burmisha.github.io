@@ -45,15 +45,14 @@
 	<div class="preview">
 		<h2>{{page.title}}</h2>
 	</div>
-	{{page.photo.size}}
+	{% assign i = 0 %}
 	{% for photo in page.photos %}
 	<div class="preview">
-		<p class="caption">
-			{% if photo.caption %}
-			{{photo.caption}}
-			{% endif %}
-			<!-- {{photo.url}} -->
-		</p>
+		<div class="caption">
+			{% assign i = i | plus: 1 %}{% if page.enumerate == true %}<h2> <a href="#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}" class="enumeration"><span class="hidden">&para;&nbsp;</span>{{i}}</a></h2>{% endif %}
+			{% if photo.caption %}{{photo.caption}}{% endif %}
+			&nbsp;<!-- {{photo.url}} -->
+		</div>
 		<div class="content"> 
 		<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
 		<img class="bigphoto" src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">

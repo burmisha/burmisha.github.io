@@ -22,7 +22,7 @@ body {
   font-size: 13pt;
   line-height: 1.3;
   top-margin: 20pt;
-  text-align: center;
+  text-align: left;
 }
 h1 {
   font-family: Lobster;
@@ -70,6 +70,64 @@ a {
 a:hover {
   text-decoration: none;
   color: #e8eced;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration {
+  text-decoration: none;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: all 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: all 0.3s ease-in-out;
+  /* Opera */
+  transition: all 0.3s ease-in-out;
+  color: #9babb0;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration .hidden {
+  color: #1b2022;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration:hover {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration:hover .hidden {
+  color: #c6cfd2;
   /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
   -moz-transition: color 0.3s ease-in-out;
   /* Firefox 4 */
@@ -162,6 +220,7 @@ a:hover {
   float: left;
   clear: left;
   width: 28%;
+  min-width: 28%;
   color: #9babb0;
   /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
   -moz-transition: color 0.3s ease-in-out;
