@@ -16,7 +16,7 @@
 	$(document).ready(function(event){
 		if(window.location.hash) {
 		} else {
-		$("html, body").animate({scrollTop: $("#content").position().top}, 600);
+		$("html, body").animate({scrollTop: $("#menu").position().top}, 600);
 		event.stopImmediatePropagation()
 		}		
 	});
@@ -44,7 +44,6 @@
 </ul>
 </div>
 
-<a name="content"></a>
 {% if page.photos %}
 	<div class="preview">
 		<h2>{{page.title}}</h2>
