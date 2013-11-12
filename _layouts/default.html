@@ -33,31 +33,38 @@
 </head>
 
 <body>
-	<h1><a href="/">burmisha</a></h1>
-	<ul id="menu">
-		<li class="menu_item"><a href="/blog/">blog</a></li>
-		<li class="menu_item"><a href="/links/">links</a></li>
-		<li class="menu_item"><a href="/cv/">CV</a></li>
-	</ul>
-	<div id="content">
-		<a name="content"></a>
-		{% if page.photos %}
-			<h2>{{page.title}}</h2>
-			{{page.photo.size}}
-			{% for photo in page.photos %}
-				<p class="caption">
-					{% if photo.caption %}
-					{{photo.caption}}
-					{% endif %}
-					<!-- {{photo.url}} -->
-				</p>
-				<div class="bigphoto"> 
-				<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
-				<img src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
-				</a>
-				</div>{% endfor %}{% endif %}
-		{{content}}
+<h1><a href="/">burmisha</a></h1>
+<ul id="menu">
+	<li class="menu_item"><a href="/blog/">blog</a></li>
+	<li class="menu_item"><a href="/links/">links</a></li>
+	<li class="menu_item"><a href="/cv/">CV</a></li>
+</ul>
+<div id="content">
+<a name="content"></a>
+{% if page.photos %}
+	<div class="preview">
+		<h2>{{page.title}}</h2>
 	</div>
+	{{page.photo.size}}
+	{% for photo in page.photos %}
+	<div class="preview">
+		<p class="caption">
+			{% if photo.caption %}
+			{{photo.caption}}
+			{% endif %}
+			<!-- {{photo.url}} -->
+		</p>
+		<div class="content"> 
+		<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
+		<img class="bigphoto" src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
+		</a>
+		</div>
+	</div>{% endfor %}
+{% endif %}
+<div class="preview">
+	{{content}}
+</div>
+</div>
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
