@@ -3,29 +3,26 @@ require 'exifr'
 require 'net/http'
 require 'yaml'
 
-folder="/Users/burmisha/Dropbox/Photo/2013/2013.08 London/DB/"
-thing = YAML.load_file('db/index.html')
+file = 'db/index.html'
+thing = YAML.load_file(file)
 
-File.open('coordinates.tmp', 'w') do |output|
-  Net::HTTP.start("img-fotki.yandex.ru") do |http|
-    #Dir.glob(folder + '*.jpg') do |file|
-    for file_id in thing['photos']
-      path = "/get/" + file_id['url'] + "_orig.jpg"
-      resp = http.get(path)
-      jpeg = StringIO.new
-      jpeg << resp.body
-      begin
-        jpeg.rewind
-        latitude = EXIFR::JPEG.new(jpeg).gps.latitude
-        jpeg.rewind
-        longitude = EXIFR::JPEG.new(jpeg).gps.longitude
-        output.puts "#{latitude.round(6)},#{longitude.round(6)}"
-        puts path + ": " +"#{latitude.round(6)},#{longitude.round(6)}"
-      rescue
-        output.puts "\n"
-        puts path + ": " + "\n"
-      end
+Net::HTTP.start("img-fotki.yandex.ru") do |http|
+  thing['photos'].each_with_index { |file_id, index|
+    path = "/get/" + file_id['url'] + "_orig.jpg"
+    resp = http.get(path)
+    jpeg = StringIO.new
+    jpeg << resp.body
+    begin
+      jpeg.rewind
+      latitude = EXIFR::JPEG.new(jpeg).gps.latitude
+      jpeg.rewind
+      longitude = EXIFR::JPEG.new(jpeg).gps.longitude
+      thing['photos'].at(index)['gps'] = "#{latitude.round(6)},#{longitude.round(6)}"
+      puts path + ": " +"#{latitude.round(6)},#{longitude.round(6)}"
+    rescue
+      puts path + ": " + "\n"
     end
-  end
+  }
 end
 
+File.open(file + '.gps', 'w') {|f| f.write thing.to_yaml }
