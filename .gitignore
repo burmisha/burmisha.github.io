@@ -5,4 +5,5 @@ Gemfile
 Gemfile.lock
 *.DS_Store
 *.tmp
+*.json
 *.gps
