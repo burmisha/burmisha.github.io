@@ -5,15 +5,13 @@ require 'yaml'
 require 'json'
 
 file = 'db/index.html'
-thing = YAML.load_file(file)
 gps = []
 
 Net::HTTP.start("img-fotki.yandex.ru") do |http|
-  thing['photos'].each_with_index { |image, index|
+  YAML.load_file(file)['photos'].each_with_index { |image, index|
     path = "/get/" + image['url'] + "_orig.jpg"
-    resp = http.get(path)
     jpeg = StringIO.new
-    jpeg << resp.body
+    jpeg << http.get(path).body
     begin
       jpeg.rewind
       latitude = EXIFR::JPEG.new(jpeg).gps.latitude.round(6)
