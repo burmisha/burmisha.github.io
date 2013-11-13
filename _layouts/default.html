@@ -10,8 +10,9 @@
 	<link href='http://fonts.googleapis.com/css?family=Roboto:100&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="/style/style.css">
 	<!-- <base target="_blank"> -->
-	<script src="http://yandex.st/jquery/1.8.3/jquery.js"></script>
+	<script src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script>
 	<script src="/js/ga.js"></script>
+	<script src="/js/jquery.unveil.js"></script>
 	<script>
 	$(document).ready(function(event){
 		if(window.location.hash) {
@@ -58,7 +59,9 @@
 		</div>
 		<div class="content"> 
 		<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
-		<img class="bigphoto" src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
+		<img class="bigphoto" 
+			src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg"
+			data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
 		</a>
 		</div>
 	</div>{% endfor %}
