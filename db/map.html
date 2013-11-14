@@ -49,7 +49,7 @@
 
 	    markers.on('click', function (e) {
 			var feature = e.layer.options;
-			document.getElementById('info').innerHTML = '<h1>' + feature.properties.title + '</h1>' + '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.
+			document.getElementById('info').innerHTML = '<h1>' + feature.properties.title + '</h1>' + '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"></img>';
 		});
 
 		markers.on('clusterclick', function (a) {
