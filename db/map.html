@@ -6,6 +6,10 @@
 	<script src='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.js'></script>
 	<script src="/db/index.html.json"></script>
 	<link href='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.css' rel='stylesheet' />
+	<!-- <script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script> -->
+	<script src="/js/leaflet.markercluster.js"></script>
+	<link rel="stylesheet" href="https://www.mapbox.com/mapbox.js/assets/MarkerCluster.css" />
+	<link rel="stylesheet" href="https://www.mapbox.com/mapbox.js/assets/MarkerCluster.Default.css" />
 	<style>
 		body { margin:0; padding:0; }
 		#map { position:absolute; top:0; bottom:0; width:100%; }
@@ -27,15 +31,46 @@
 
 	<script>
 		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([50, 0], 6);
-		map.markerLayer.setGeoJSON(geoJson);
-		map.markerLayer.on('click',function(e) { // Listen for individual marker clicks
-			e.layer.unbindPopup();
-			var feature = e.layer.feature;
-			var info = '<h1>' + feature.properties.title + '</h1>' +
-						'<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + 
-						feature.properties.image_url+'_M.jpg"></img>';
-			document.getElementById('info').innerHTML = info;
+
+		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false});
+
+		for (var i = 0; i < geoJson.length; i++) {
+	        var a = geoJson[i];
+	        var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), {
+	            icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
+	            title: a.properties.title,
+	            properties: a.properties
+	        });
+	        marker.bindPopup(a.properties.title);
+	        markers.addLayer(marker);
+	    }
+	    map.addLayer(markers);
+
+	    markers.on('click', function (e) {
+	    	// console.log('marker ' + e.layer);
+			//   	for(var property in e.layer.options) {
+			//     console.log(property);
+			// }
+			var feature = e.layer.options;
+			document.getElementById('info').innerHTML = '<h1>' + feature.properties.title + '</h1>' + '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"></img>';
+			// document.getElementById('info').innerHTML = 'qq';
+
 		});
+
+		markers.on('clusterclick', function (a) {
+    		console.log('cluster ' + a.layer.getAllChildMarkers().length + a.layer);
+		});
+
+
+		// map.markerLayer.setGeoJSON(geoJson);
+		// map.markerLayer.on('click',function(e) { // Listen for individual marker clicks
+		// 	e.layer.unbindPopup();
+		// 	var feature = e.layer.feature;
+		// 	var info = '<h1>' + feature.properties.title + '</h1>' +
+		// 				'<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + 
+		// 				feature.properties.image_url+'_M.jpg"></img>';
+		// 	document.getElementById('info').innerHTML = info;
+		// });
 
 		map.on('click',function(e){ // Clear the tooltip when map is clicked
 			document.getElementById('info').innerHTML = '';
