@@ -10,6 +10,7 @@
 	<script src="/js/leaflet.markercluster.js"></script>
 	<link rel="stylesheet" href="/style/MarkerCluster.css"/>
 	<link rel="stylesheet" href="/style/MarkerCluster.Default.css" />
+	<link rel="stylesheet" type="text/css" href="/style/style.css">
 	<style>
 		body { margin:0; padding:0; }
 		#map { position:absolute; top:0; bottom:0; width:100%; }
@@ -33,7 +34,11 @@
 	<script>
 		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([50, 0], 6);
 
-		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false});
+		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
+			iconCreateFunction: function(cluster) {
+				    return new L.DivIcon({ html: '<div style="background-image:url(http://img-fotki.yandex.ru/get/' + cluster.getAllChildMarkers()[0].options.properties.image_url + '_S.jpg)" class="smallphoto"></div>'});
+				}
+		});
 
 		for (var i = 0; i < geoJson.length; i++) {
 	        var a = geoJson[i];
