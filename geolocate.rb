@@ -5,7 +5,7 @@ require 'yaml'
 require 'json'
 
 file = 'db/index.html'
-gps = []
+gps = {'type' => 'FeatureCollection', 'features' => []}
 
 Net::HTTP.start("img-fotki.yandex.ru") do |http|
   YAML.load_file(file)['photos'].each_with_index { |image, index|
@@ -18,15 +18,13 @@ Net::HTTP.start("img-fotki.yandex.ru") do |http|
       jpeg.rewind
       longitude = EXIFR::JPEG.new(jpeg).gps.longitude.round(6)
       puts path + ": " +"#{latitude},#{longitude}"
-      gps << {'type' => 'Feature' ,
+      gps['features'] << {'type' => 'Feature' ,
               'geometry' => {'type'=> 'Point', 'coordinates' => ["#{longitude}", "#{latitude}"]} ,
-              'properties'=> { 'title' => "Marker #{index}",
-                               'image_url' => image['url'],
-                               'marker-color' => '#CC0033'} }
+              'properties'=> { 'image_url' => image['url']} }
     rescue
       puts path + ": " + "\n"
     end
   }
 end
 
-File.open(file + '.json', 'w') {|f| f.write 'var geoJson = ' + gps.to_json + ';'}
+File.open(file + '.geojson', 'w') {|f| f.write JSON.pretty_generate gps}

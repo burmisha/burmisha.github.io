@@ -4,9 +4,7 @@
 	<meta charset=utf-8 />
 	<title>Map</title>
 	<script src='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.js'></script>
-	<script src="/db/index.html.json"></script>
 	<link href='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.css' rel='stylesheet' />
-	<!-- <script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script> -->
 	<script src="/js/leaflet.markercluster.js"></script>
 	<link rel="stylesheet" href="/style/MarkerCluster.css"/>
 	<link rel="stylesheet" href="/style/MarkerCluster.Default.css" />
@@ -32,29 +30,33 @@
 	<div id='info'></div>
 
 	<script>
+		var request = new XMLHttpRequest();
+		request.open("GET", '/db/index.html.geojson', false);
+		request.send(null);
+		var geoJson = JSON.parse(request.responseText);
+		
 		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([50, 0], 6);
 
 		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
 			iconCreateFunction: function(cluster) {
 				    return new L.DivIcon({ html: '<div style="background-image:url(http://img-fotki.yandex.ru/get/' + cluster.getAllChildMarkers()[0].options.properties.image_url + '_S.jpg)" class="smallphoto"></div>'});
-				}
+			},
+			singleMarkerMode: true
 		});
 
-		for (var i = 0; i < geoJson.length; i++) {
-	        var a = geoJson[i];
+		for (var i = 0; i < geoJson.features.length; i++) {
+	        var a = geoJson.features[i];
 	        var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), {
 	            icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
-	            title: a.properties.title,
 	            properties: a.properties
 	        });
-	        marker.bindPopup(a.properties.title);
 	        markers.addLayer(marker);
 	    }
 	    map.addLayer(markers);
 
 	    markers.on('click', function (e) {
 			var feature = e.layer.options;
-			document.getElementById('info').innerHTML = '<h1>' + feature.properties.title + '</h1>' + '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"></img>';
+			document.getElementById('info').innerHTML = '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"></img>';
 		});
 
 		markers.on('clusterclick', function (a) {
