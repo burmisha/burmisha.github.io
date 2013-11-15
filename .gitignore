@@ -6,3 +6,5 @@ Gemfile.lock
 *.DS_Store
 *.tmp
 *.gps
+db/test.html
+db/test.html.geojson

@@ -31,11 +31,11 @@
 
 	<script>
 		var request = new XMLHttpRequest();
-		request.open("GET", '/db/index.html.geojson', false);
+		request.open("GET", '{{ page.geojson }}', false);
 		request.send(null);
 		var geoJson = JSON.parse(request.responseText);
 		
-		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([50, 0], 6);
+		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([53, 2], 6);
 
 		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
 			iconCreateFunction: function(cluster) {
