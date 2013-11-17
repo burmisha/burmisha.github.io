@@ -39,34 +39,34 @@
 
 		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
 			iconCreateFunction: function(cluster) {
-				    return new L.DivIcon({ html: '<div style="background-image:url(http://img-fotki.yandex.ru/get/' + cluster.getAllChildMarkers()[0].options.properties.image_url + '_S.jpg)" class="smallphoto"></div>'});
+				return new L.DivIcon({ html: '<div style="background-image:url(http://img-fotki.yandex.ru/get/' + cluster.getAllChildMarkers()[0].options.properties.image_url + '_S.jpg)" class="smallphoto"></div>'});
 			},
 			singleMarkerMode: true
 		});
 
 		for (var i = 0; i < geoJson.features.length; i++) {
-	        var a = geoJson.features[i];
-	        var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), {
-	            icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
-	            properties: a.properties
-	        });
-	        markers.addLayer(marker);
-	    }
-	    map.addLayer(markers);
+			var a = geoJson.features[i];
+			var marker = L.marker(new L.LatLng(a.geometry.coordinates[1], a.geometry.coordinates[0]), {
+				icon: L.mapbox.marker.icon({'marker-symbol': 'post', 'marker-color': '0044FF'}),
+				properties: a.properties
+			});
+			markers.addLayer(marker);
+		}
+		map.addLayer(markers);
 
-	    markers.on('click', function (e) {
+		markers.on('click', function (e) {
 			var feature = e.layer.options;
 			document.getElementById('info').innerHTML = '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"></img>';
 		});
 
 		markers.on('clusterclick', function (a) {
-    		var children = a.layer.getAllChildMarkers();
-    		var info = ""
+			var children = a.layer.getAllChildMarkers();
+			var info = ""
 			for (var i = 0; i < children.length; i++) {
-		        var feature = children[i].options;
-		        info = info + '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"></img>';
-		    }
-		    document.getElementById('info').innerHTML = info;
+				var feature = children[i].options;
+				info = info + '<img class="bigphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"></img>';
+			}
+			document.getElementById('info').innerHTML = info;
 		});
 
 		map.on('click',function(e){ // Clear the tooltip when map is clicked
