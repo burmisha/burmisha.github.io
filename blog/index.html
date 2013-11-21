@@ -6,7 +6,7 @@ title: blog
 ---
 {% for post in site.posts %}
 {% assign number = 0 %}{% assign i = 0 %}{% assign pick = 1 %}{% assign every = 1 %}{% for photo in post.photos %}{% assign number = number | plus: 1 %}{% endfor %}
-{% if number <= 10 %}{% assign every = 1 %}{% elsif number <= 20 %}{% assign every = 1.5 %}{% elsif number <= 30 %}{% assign every = 2 %}{% elsif number <= 45 %}{% assign every = 2.5 %}{% elsif number <= 60 %}{% assign every = 3 %}{% elsif number <= 100 %}{% assign every = 4 %}{% elsif number <= 150 %}{% assign every = 5 %}{% elsif number <= 210 %}{% assign every = 6 %}{% endif %}
+{% if number <= 10 %}{% assign every = 1 %}{% elsif number <= 20 %}{% assign every = 1.5 %}{% elsif number <= 30 %}{% assign every = 2 %}{% elsif number <= 45 %}{% assign every = 2.5 %}{% elsif number <= 60 %}{% assign every = 3 %}{% elsif number <= 100 %}{% assign every = 4 %}{% elsif number <= 150 %}{% assign every = 5 %}{% elsif number <= 240 %}{% assign every = 6 %}{% elsif number <= 320 %}{% assign every = 7 %}{% elsif number <= 400 %}{% assign every = 8 %}{% endif %}
 <div class="info">
 	<h2>{{post.date | date_to_long_string}}</h2>
 	<p>
