@@ -15,10 +15,12 @@
 	$(document).ready(function(event){
 		if(window.location.hash) {
 		} else {
-		$("html, body").animate({scrollTop: $("#menu").position().top}, 600);
-		event.stopImmediatePropagation()
-		}		
+			$("html, body").animate({scrollTop: $("#menu").position().top}, 600);
+			// event.stopImmediatePropagation();
+		}
+		$("img").unveil();
 	});
+
 	</script>
 
 	{%if page.twitter %}	
@@ -57,9 +59,11 @@
 		</div>
 		<div class="content"> 
 		<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
+		<div class="bigphoto_container">
 		<img class="bigphoto" 
-			src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg"
+			src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_orig"
 			data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
+		</div>
 		</a>
 		</div>
 	</div>{% endfor %}
