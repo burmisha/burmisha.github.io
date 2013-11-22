@@ -18,7 +18,7 @@
 			$("html, body").animate({scrollTop: $("#menu").position().top}, 600);
 			// event.stopImmediatePropagation();
 		}
-		$("img").unveil();
+		$("img").unveil(1000);
 	});
 
 	</script>
@@ -61,7 +61,7 @@
 		<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
 		<div class="bigphoto_container">
 		<img class="bigphoto" 
-			src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_orig"
+			src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_L"
 			data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
 		</div>
 		</a>

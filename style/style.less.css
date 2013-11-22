@@ -210,11 +210,14 @@ a.enumeration {
 }
 
 .bigphoto {
-	/*max-width: 800px;*/
+  max-width: 800px;
+  max-height: 600px;
 }
 
 .bigphoto_container {
-	width: 800px;
-	height: 800px;
+  width: 800px;
+  height: 600px;
+  margin: 2px 0px;
 }
+
 
