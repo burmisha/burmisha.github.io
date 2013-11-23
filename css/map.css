@@ -1,0 +1,25 @@
+#map {
+	position: absolute;
+	top: 0; 
+	bottom: 0; 
+	right: 340px; 
+	left: 0; }
+#info {
+	position: absolute; 
+	top: 0; 
+	right: 0;
+	bottom: 0; 
+	width: 300px; 
+	padding: 20px;
+	overflow: auto;
+}
+.mapphoto {
+	height: 80px;
+	width: 80px;
+	margin: -40px 0px 0px -40px;
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	border-radius: 25px;
+	border: 2px solid rgba(1,1,1,0.5);
+	box-shadow: 1px 2px 2px rgba(0,0,0, 0.29);
+}

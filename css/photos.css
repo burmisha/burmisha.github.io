@@ -11,6 +11,18 @@ img.bigphoto {
   max-height: 600px;
 }
 
+div.mediumphoto {
+	width: 300px;
+	height: 240px;
+	margin: 5px 0px;
+	overflow: hidden;
+}
+
+img.mediumphoto {
+	max-width: 300px;
+	max-height: 240px;
+}
+
 div.smallphoto {
 	height: 71px;
 	width: 71px;
