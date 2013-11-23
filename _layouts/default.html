@@ -58,13 +58,10 @@
 			<!-- {{photo.url}} -->
 		</div>
 		<div class="content"> 
-		<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
-		<div class="bigphoto_container">
-		<img class="bigphoto" 
-			src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_L"
-			data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg">
-		</div>
-		</a>
+			<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}"><div class="bigphoto">
+			<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
+			data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg"/></div>
+			</a>
 		</div>
 	</div>{% endfor %}
 {% endif %}
