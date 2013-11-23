@@ -150,14 +150,6 @@ a.enumeration:hover .hidden {
   min-width: 180px;
   max-width: 35%;
 }
-.smallphoto {
-  height: 71px;
-  width: 71px;
-  float: left;
-  margin: 2px;
-  background-position: 50% 50%;
-  background-repeat: no-repeat;
-}
 #resume p {
   float: left;
   clear: both;
@@ -267,4 +259,14 @@ a.enumeration:hover .hidden {
   width: 800px;
   height: 600px;
   margin: 2px 0px;
+}
+div.smallphoto {
+  height: 71px;
+  width: 71px;
+  float: left;
+  margin: 2px;
+  overflow: hidden;
+}
+img.smallphoto {
+  transform: translate(-25%, -25%);
 }
