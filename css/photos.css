@@ -1,0 +1,24 @@
+
+div.bigphoto {
+  width: 800px;
+  height: 600px;
+  margin: 2px 0px;
+  overflow: hidden;
+}
+
+img.bigphoto {
+  max-width: 800px;
+  max-height: 600px;
+}
+
+div.smallphoto {
+	height: 71px;
+	width: 71px;
+	float: left;
+	margin: 2px;
+	overflow: hidden;
+}
+
+img.smallphoto {
+	transform: translate(-25%, -25%);
+}

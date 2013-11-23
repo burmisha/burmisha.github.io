@@ -1,5 +1,5 @@
 #!/bin/bash
 set -x 
-lessc style/style.less.css style/style.css
+lessc css/colortheme.less.css css/colortheme.css
 bundle exec jekyll serve
 
