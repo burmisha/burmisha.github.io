@@ -6,6 +6,8 @@
 	<script src='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.js'></script>
 	<link href='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.css' rel='stylesheet' />
 	<script src="/js/leaflet.markercluster.js"></script>
+	<!-- // <script src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script> -->
+	<!-- // <script src="/js/jquery.unveil.js"></script> -->
 	<link rel="stylesheet" href="/css/MarkerCluster.css"/>
 	<link rel="stylesheet" href="/css/MarkerCluster.Default.css" />
 	<link rel="stylesheet" type="text/css" href="/css/colortheme.css">
@@ -21,6 +23,11 @@
 		request.send(null);
 		var geoJson = JSON.parse(request.responseText);
 		
+		function mediumPhoto(photo_id) {
+			// return '<div class="mediumphoto"><img class="mediumphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_S" data-src="http://img-fotki.yandex.ru/get/' + photo_id +'_M.jpg"/></div>'
+			return '<div class="mediumphoto"><img class="mediumphoto" src="http://img-fotki.yandex.ru/get/' + photo_id +'_M.jpg"/></div>'
+		}
+
 		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([53, 2], 6);
 
 		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
@@ -44,7 +51,8 @@
 
 		markers.on('click', function (e) {
 			var feature = e.layer.options;
-			document.getElementById('info').innerHTML = '<div class="mediumphoto"><img class="mediumphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"/></div>';
+			document.getElementById('info').innerHTML = mediumPhoto(feature.properties.image_url);
+			// $("img").unveil();
 		});
 
 		markers.on('clusterclick', function (a) {
@@ -52,9 +60,10 @@
 			var info = ""
 			for (var i = 0; i < children.length; i++) {
 				var feature = children[i].options;
-				info = info + '<div class="mediumphoto"><img class="mediumphoto" src="http://img-fotki.yandex.ru/get/' + feature.properties.image_url+'_M.jpg"/></div>';
+				info = info + mediumPhoto(feature.properties.image_url);
 			}
 			document.getElementById('info').innerHTML = info;
+			$("img").unveil();
 		});
 
 		map.on('click',function(e){ // Clear the tooltip when map is clicked
