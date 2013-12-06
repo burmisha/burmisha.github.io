@@ -14,8 +14,8 @@ title: blog
 	</p>
 </div>
 <div class="content">
-	<h2><a href="{{post.url}}">{{post.title}}</a> ({{number}} photos)</h2>
-{% for photo in post.photos %}{% if pick == 1 %}<a href="{{post.url}}#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
-	<div class="smallphoto"><img class="smallphoto" src="http://img-fotki.yandex.ru/get/{{ photo.url }}_S.jpg"/></div></a>
-	{% endif %}{% assign pick = 0 %}{% assign i = i | plus: 1 %}{% if i >= every %}{% assign i = i | minus: every %}{% assign pick = 1 %}{% endif %}{% endfor %}</div>
-{% endfor %}
+<h2><a href="{{post.url}}">{{post.title}}</a> ({{number}} photos)</h2>{% for photo in post.photos %}{% if pick == 1 %}
+	<a href="{{post.url}}#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
+	<div class="smallphoto"><img class="smallphoto" src="http://img-fotki.yandex.ru/get/{{ photo.url }}_S.jpg"/></div>
+	</a>{% endif %}{% assign pick = 0 %}{% assign i = i | plus: 1 %}{% if i >= every %}{% assign i = i | minus: every %}{% assign pick = 1 %}{% endif %}{% endfor %}
+</div>{% endfor %}
