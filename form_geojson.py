@@ -4,6 +4,7 @@ import json
 import urllib
 import collections
 import time
+import argparse
 
 def jsonParam():
 	params = collections.OrderedDict()
@@ -28,22 +29,30 @@ def find_album_by_name(albums, albumName):
 def find_albums_by_root(albums, rootName):
 	for album in albums:
 		if ("album" in album["links"]) and (album["links"]["album"] == rootName):
-			yield album
+			if album["title"].startswith('July') or album["title"].startswith('Aug'):
+				yield album
 
-
-def main():
-	albums_info = get_albums_info('i-like-spam')["entries"]
-	root_album_name = find_album_by_name(albums_info, "2013 UK")["links"]["self"]
-	uk_albums_info = find_albums_by_root(albums_info, root_album_name)
+def get_geojson(user, root_album_name):
+	albums_info = get_albums_info(user)["entries"]
+	root_album_info = find_album_by_name(albums_info, "2013 UK")["links"]["self"]
+	uk_albums_info = find_albums_by_root(albums_info, root_album_info)
 	i = 0
 	for album_info in uk_albums_info:
-		if i > 10: 
+		if i > 100: 
 			return
 		else:
 			i = i + 1
 		photos = get_photos(album_info["links"]["self"].split('?', 1)[0] + 'photos/?format=json')
 		print album_info["title"] + " -> " + str(len(photos))
-	
+	return photos
+
 if __name__ == "__main__":
-	main()
+	parser = argparse.ArgumentParser(description="Form GeoJson file from one album with subalbums.")
+	parser.add_argument("-u", "--user", dest='user', default="i-like-spam", help="username, default: %(default)s")
+	parser.add_argument("-n", "--name", dest='name', default="2013 UK", help="name of root, default: %(default)s")
+	args = parser.parse_args()
+	get_geojson(args.user, args)
+	# with open('uk.geojson', 'w') as fp:
+		# json.dump(data, fp)
+	
 
