@@ -11,22 +11,10 @@ def jsonParam():
 	return urllib.urlencode(params)
 
 def get_photos(album_path):
-	previous = ""
-	answer = {'entries':[],'links':{'next':album_path}}
-	photos = []
-	more = True
-	# print album_path
-	try:
-		while more and (previous != answer["links"]["next"]):
-			previous = answer["links"]["next"]
-			# print previous
-			answer = requests.get(previous).json()
-			# print len(answer["entries"])
-			photos.extend(answer["entries"])
-	except KeyError as e:
-		more = False
-		# print 
-	# print type(photos)
+	answer = requests.get(album_path).json()
+	photos = answer["entries"]
+	if "next" in answer["links"]:		
+		photos.extend(get_photos(answer["links"]["next"]))
 	return photos
 
 def get_albums_info(user):
@@ -39,11 +27,9 @@ def find_album_by_name(albums, albumName):
 
 def find_albums_by_root(albums, rootName):
 	for album in albums:
-		try:
-			if album["links"]["album"] == rootName:
-				yield album
-		except KeyError as e:
-			pass
+		if ("album" in album["links"]) and (album["links"]["album"] == rootName):
+			yield album
+
 
 def main():
 	albums_info = get_albums_info('i-like-spam')["entries"]
@@ -51,7 +37,6 @@ def main():
 	uk_albums_info = find_albums_by_root(albums_info, root_album_name)
 	i = 0
 	for album_info in uk_albums_info:
-		# requests.get(album_info["links"]["self"]).json()
 		if i > 10: 
 			return
 		else:
