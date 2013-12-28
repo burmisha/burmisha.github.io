@@ -38,19 +38,21 @@ def get_photos_from_albums(albums_info):
 		if i > 2: 
 			return
 		else:
-			i = i + 1
+			i = i + 0
 		for photo in get_photos(album_info["links"]["self"].split('?', 1)[0] + 'photos/?format=json'):
 			yield photo
 
 def get_point_from_photo(photo):
+	c = photo["geo"]["coordinates"].split(" ")
 	return {
 				"type": "Feature", 
 				"geometry": { 
 					"type": "Point",
-					"coordinates": photo["geo"]["coordinates"].split(" "),
+					"coordinates": [c[1], c[0]],
 					},
 				"properties": {
 					"M_url": photo["img"]["M"]["href"],
+					"S_url": photo["img"]["S"]["href"],
 				},
 			}
 

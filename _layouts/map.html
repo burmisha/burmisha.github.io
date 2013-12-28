@@ -23,16 +23,15 @@
 		request.send(null);
 		var geoJson = JSON.parse(request.responseText);
 		
-		function mediumPhoto(photo_id) {
-			// return '<div class="mediumphoto"><img class="mediumphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_S" data-src="http://img-fotki.yandex.ru/get/' + photo_id +'_M.jpg"/></div>'
-			return '<div class="mediumphoto"><img class="mediumphoto" src="http://img-fotki.yandex.ru/get/' + photo_id +'_M.jpg"/></div>'
+		function mediumPhoto(photo) {
+			return '<div class="mediumphoto"><img class="mediumphoto" src="' + photo.M_url +'"/></div>'
 		}
 
 		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([53, 2], 6);
 
 		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
 			iconCreateFunction: function(cluster) {
-				return new L.DivIcon({ html: '<div style="background-image:url(http://img-fotki.yandex.ru/get/' + cluster.getAllChildMarkers()[0].options.properties.image_url + '_S.jpg)" class="mapphoto"></div>'});
+				return new L.DivIcon({ html: '<div style="background-image:url(' + cluster.getAllChildMarkers()[0].options.properties.S_url + ')" class="mapphoto"></div>'});
 			}
 			, singleMarkerMode: true
 			, maxClusterRadius: 55
@@ -51,7 +50,7 @@
 
 		markers.on('click', function (e) {
 			var feature = e.layer.options;
-			document.getElementById('info').innerHTML = mediumPhoto(feature.properties.image_url);
+			document.getElementById('info').innerHTML = mediumPhoto(feature.properties);
 			// $("img").unveil();
 		});
 
@@ -60,7 +59,7 @@
 			var info = ""
 			for (var i = 0; i < children.length; i++) {
 				var feature = children[i].options;
-				info = info + mediumPhoto(feature.properties.image_url);
+				info = info + mediumPhoto(feature.properties);
 			}
 			document.getElementById('info').innerHTML = info;
 			$("img").unveil();
