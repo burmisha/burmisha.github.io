@@ -27,7 +27,7 @@
 			return '<div class="mediumphoto"><img class="mediumphoto" src="' + photo.M_url +'"/></div>'
 		}
 
-		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView([53, 2], 6);
+		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView(geoJson.view_point, 7);
 
 		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
 			iconCreateFunction: function(cluster) {

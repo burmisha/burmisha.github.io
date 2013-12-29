@@ -33,22 +33,20 @@ def find_albums_by_root(albums, root_album_path):
 				yield album
 
 def get_photos_from_albums(albums_info):
-	i = 0
 	for album_info in albums_info:
-		if i > 2: 
-			return
-		else:
-			i = i + 0
 		for photo in get_photos(album_info["links"]["self"].split('?', 1)[0] + 'photos/?format=json'):
 			yield photo
 
-def get_point_from_photo(photo):
+def get_coordinates(photo):
 	c = photo["geo"]["coordinates"].split(" ")
+	return [c[1], c[0]]
+
+def get_point_from_photo(photo):
 	return {
 				"type": "Feature", 
 				"geometry": { 
 					"type": "Point",
-					"coordinates": [c[1], c[0]],
+					"coordinates": get_coordinates(photo),
 					},
 				"properties": {
 					"M_url": photo["img"]["M"]["href"],
@@ -56,18 +54,23 @@ def get_point_from_photo(photo):
 				},
 			}
 
+def get_middle_point(photos, idx, reject_rate):
+	coords = sorted([get_coordinates(p)[idx] for p in photos if "geo" in p]);
+	left = float(coords[int(len(coords) * reject_rate)])
+	right = float(coords[int(len(coords) * (1 - reject_rate))])
+	return (left + right) / 2
+
 def form_geojson(user, root_album_name):
 	albums_info = get_albums_info(user)["entries"]
 	root_album_path = find_album_by_name(albums_info, root_album_name)["links"]["self"]
 	uk_albums_info = find_albums_by_root(albums_info, root_album_path)
-	photos = get_photos_from_albums(uk_albums_info)
-	photos = list(photos)
-	print len(photos)
+	photos = list(get_photos_from_albums(uk_albums_info))
 	return {
 				"type": "FeatureCollection", 
+				"view_point": [get_middle_point(photos, i, 0.4) for i in [1,0]],
 				"features": [get_point_from_photo(photo) for photo in photos if "geo" in photo],
 			}
-	
+
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description="Form GeoJson file from one album with subalbums.")
 	parser.add_argument("-u", "--user", dest='user', default="i-like-spam", help="username, default: %(default)s")
