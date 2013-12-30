@@ -18,9 +18,7 @@
 <body>
 	<div id="map-container">
 		<div id='map'></div>
-		<div id="fotorama-container">
-			<div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-hash="true" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>
-		</div>
+		<div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-hash="true" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>
 	</div>
 
 	<script>
@@ -29,11 +27,11 @@
 		request.send(null);
 		var geoJson = JSON.parse(request.responseText);
 		
-		function fotoramaImg(photo) {
-			return '<a href="' + photo.orig_url + '"><img src="' + photo.S_url + '"></a>'
-		}
+		var fotorama = $('.fotorama').fotorama().data('fotorama');
 
-		var fotorama = '<div id="fotorama-container"><div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-hash="true" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>'
+		function fotoramaImg(a) {
+			return { img: a.options.properties.orig_url, thumb: a.options.properties.S_url }
+		}
 
 		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView(geoJson.view_point, 7);
 
@@ -56,23 +54,60 @@
 		}
 		map.addLayer(markers);
 
-		markers.on('clusterclick', function (a) {
-			var children = a.layer.getAllChildMarkers();
-			var photos = "";
-			for (var i = 0; i < children.length; i++) {
-				photos = photos + fotoramaImg(children[i].options.properties);
-			}
-			$("#fotorama-container").remove();
-			$("#map-container").append(fotorama);
-			$("div.fotorama").append(photos);
-			$(function() { $('div.fotorama').fotorama(); });
+		markers.on('click', function (a) {
+			fotorama.destroy();
+			m = [ fotoramaImg(a.layer) ];
+			fotorama.load(m);
+			console.log(m.length);
 			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
 			map.keyboard.disable();
+			map.scrollWheelZoom.disable();
+			map.dragging.disable();
+			map.touchZoom.disable();
+			map.doubleClickZoom.disable();
+			map.scrollWheelZoom.disable();
+			if (map.tap) map.tap.disable();
+		});
+
+		markers.on('clusterclick', function (a) {
+			fotorama.destroy();
+			m = a.layer.getAllChildMarkers().map(fotoramaImg);
+			fotorama.load(m);
+			console.log(m.length);
+			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
+			map.keyboard.disable();
+			map.scrollWheelZoom.disable();
+			map.dragging.disable();
+			map.touchZoom.disable();
+			map.doubleClickZoom.disable();
+			map.scrollWheelZoom.disable();
+			if (map.tap) map.tap.disable();
 		});
 
 		map.on('click',function(e){ // Clear the tooltip when map is clicked
-			console.log("clicked")
-			$("#fotorama-container").remove();
+			fotorama.destroy();
+			map.keyboard.enable();
+			map.scrollWheelZoom.enable();
+			map.dragging.enable();
+			map.touchZoom.enable();
+			map.doubleClickZoom.enable();
+			map.scrollWheelZoom.enable();
+			if (map.tap) map.tap.enable();
+		});
+
+		$(window).scroll(function(){
+			var scrolled = document.documentElement.scrollTop;
+			if (scrolled < 1) {
+				setTimeout( function () {
+					map.keyboard.enable();
+					map.scrollWheelZoom.enable();
+					map.dragging.enable();
+					map.touchZoom.enable();
+					map.doubleClickZoom.enable();
+					map.scrollWheelZoom.enable();
+					if (map.tap) map.tap.enable();
+				} , 800 )
+			}
 		});
 	</script>
 </body>
