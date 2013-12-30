@@ -51,6 +51,7 @@ def get_point_from_photo(photo):
 				"properties": {
 					"M_url": photo["img"]["M"]["href"],
 					"S_url": photo["img"]["S"]["href"],
+					"orig_url": photo["img"]["orig"]["href"],
 				},
 			}
 

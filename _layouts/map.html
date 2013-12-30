@@ -30,7 +30,7 @@
 		var geoJson = JSON.parse(request.responseText);
 		
 		function fotoramaImg(photo) {
-			return '<img src="' + photo.M_url +'">'
+			return '<a href="' + photo.orig_url + '"><img src="' + photo.S_url + '"></a>'
 		}
 
 		var fotorama = '<div id="fotorama-container"><div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-hash="true" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>'
@@ -66,7 +66,8 @@
 			$("#map-container").append(fotorama);
 			$("div.fotorama").append(photos);
 			$(function() { $('div.fotorama').fotorama(); });
-			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 4000);
+			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
+			map.keyboard.disable();
 		});
 
 		map.on('click',function(e){ // Clear the tooltip when map is clicked
