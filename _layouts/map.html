@@ -18,7 +18,7 @@
 <body>
 	<div id="map-container">
 		<div id='map'></div>
-		<div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-hash="true" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>
+		<div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>
 	</div>
 
 	<script>
@@ -96,8 +96,9 @@
 		});
 
 		$(window).scroll(function(){
-			var scrolled = document.documentElement.scrollTop;
-			if (scrolled < 1) {
+			var scrolledFF = document.documentElement.scrollTop;
+			var scrolledWk = $(window).scrollTop();
+			if ((scrolledFF < 1) && (scrolledWk < 1)) {
 				setTimeout( function () {
 					map.keyboard.enable();
 					map.scrollWheelZoom.enable();
