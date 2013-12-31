@@ -74,25 +74,22 @@
 		}
 		map.addLayer(markers);
 
-		markers.on('click', function (a) {
+		function reloadFotorama(Markers) {
 			fotorama.destroy();
-			m = [ fotoramaImg(a.layer) ];
-			fotorama.load(m);
-			console.log(m.length);
-			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
 			disableMap(map);
+			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
+			fotorama.load(Markers.map(fotoramaImg));
+		}
+
+		markers.on('click', function (a) {
+			reloadFotorama([ a.layer ])
 		});
 
 		markers.on('clusterclick', function (a) {
-			fotorama.destroy();
-			m = a.layer.getAllChildMarkers().map(fotoramaImg);
-			fotorama.load(m);
-			console.log(m.length);
-			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
-			disableMap(map);
+			reloadFotorama(a.layer.getAllChildMarkers());
 		});
 
-		map.on('click',function(e){ // Clear the tooltip when map is clicked
+		map.on('click',function(e){
 			fotorama.destroy();
 			enableMap(map);
 		});
