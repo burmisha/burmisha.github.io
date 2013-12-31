@@ -29,6 +29,26 @@
 		
 		var fotorama = $('.fotorama').fotorama().data('fotorama');
 
+		function disableMap(m) {
+			m.keyboard.disable();
+			m.scrollWheelZoom.disable();
+			m.dragging.disable();
+			m.touchZoom.disable();
+			m.doubleClickZoom.disable();
+			m.scrollWheelZoom.disable();
+			if (m.tap) m.tap.disable();
+		}
+
+		function enableMap(m) {
+			m.keyboard.enable();
+			m.scrollWheelZoom.enable();
+			m.dragging.enable();
+			m.touchZoom.enable();
+			m.doubleClickZoom.enable();
+			m.scrollWheelZoom.enable();
+			if (m.tap) m.tap.enable();
+		}
+
 		function fotoramaImg(a) {
 			return { img: a.options.properties.orig_url, thumb: a.options.properties.S_url }
 		}
@@ -60,13 +80,7 @@
 			fotorama.load(m);
 			console.log(m.length);
 			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
-			map.keyboard.disable();
-			map.scrollWheelZoom.disable();
-			map.dragging.disable();
-			map.touchZoom.disable();
-			map.doubleClickZoom.disable();
-			map.scrollWheelZoom.disable();
-			if (map.tap) map.tap.disable();
+			disableMap(map);
 		});
 
 		markers.on('clusterclick', function (a) {
@@ -75,24 +89,12 @@
 			fotorama.load(m);
 			console.log(m.length);
 			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
-			map.keyboard.disable();
-			map.scrollWheelZoom.disable();
-			map.dragging.disable();
-			map.touchZoom.disable();
-			map.doubleClickZoom.disable();
-			map.scrollWheelZoom.disable();
-			if (map.tap) map.tap.disable();
+			disableMap(map);
 		});
 
 		map.on('click',function(e){ // Clear the tooltip when map is clicked
 			fotorama.destroy();
-			map.keyboard.enable();
-			map.scrollWheelZoom.enable();
-			map.dragging.enable();
-			map.touchZoom.enable();
-			map.doubleClickZoom.enable();
-			map.scrollWheelZoom.enable();
-			if (map.tap) map.tap.enable();
+			enableMap(map);
 		});
 
 		$(window).scroll(function(){
@@ -100,13 +102,7 @@
 			var scrolledWk = $(window).scrollTop();
 			if ((scrolledFF < 1) && (scrolledWk < 1)) {
 				setTimeout( function () {
-					map.keyboard.enable();
-					map.scrollWheelZoom.enable();
-					map.dragging.enable();
-					map.touchZoom.enable();
-					map.doubleClickZoom.enable();
-					map.scrollWheelZoom.enable();
-					if (map.tap) map.tap.enable();
+					enableMap(map);
 				} , 800 )
 			}
 		});
