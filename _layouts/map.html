@@ -103,6 +103,12 @@
 				} , 800 )
 			}
 		});
+
+		$(document).keydown(function(e) {
+			if ((e.keyCode === 27) || (e.keyCode === 33)) { // ESC
+				$("html, body").animate({scrollTop: $("#map").position().top}, 800);			
+			}  
+		});
 	</script>
 </body>
 </html>
