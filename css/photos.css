@@ -24,10 +24,11 @@ img.mediumphoto {
 }
 
 div.smallphoto {
-	height: 71px;
-	width: 71px;
+	height: 75px;
+	width: 75px;
 	float: left;
 	margin: 2px;
+	background: no-repeat center;
 	overflow: hidden;
 }
 
