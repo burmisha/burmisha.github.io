@@ -53,7 +53,7 @@
 			return { img: a.options.properties.orig_url, thumb: a.options.properties.S_url }
 		}
 
-		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView(geoJson.view_point, 7);
+		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView(geoJson.view_point, {{ page.scale }});
 
 		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
 			iconCreateFunction: function(cluster) {
