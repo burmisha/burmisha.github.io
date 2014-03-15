@@ -8,9 +8,20 @@ div.photo_group {
 }
 
 div.photo_group > div.photo {
-	width: 50%;
 	padding: 2px 5px;
 	display: inline-block;
+}
+
+div.photo_group > div.photo > img {
+	width: 100%;
+}
+
+div.photo_one_of_2 {
+	width: 50%;
+}
+
+div.photo_one_of_3 {
+	width: 33.3333%;
 }
 
 img.bigphoto {
@@ -38,15 +49,6 @@ div.smallphoto {
 	background: no-repeat center;
 	overflow: hidden;
 	display: inline-block;
-}
-
-img.photo_one_of_2 {
-	width: 100%;
-}
-
-img.photo_one_of_3 {
-	width: 32.6%;
-	margin: 0px 0% 0px 0.7%;
 }
 
 img.smallphoto {
