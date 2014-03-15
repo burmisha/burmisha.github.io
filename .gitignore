@@ -8,3 +8,5 @@ Gemfile.lock
 *.gps
 db/test.html
 db/test.html.geojson
+*.pyc
+
