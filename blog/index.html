@@ -44,9 +44,10 @@ title: blog
 			{% if paginator.previous_page != 1%}
 				<a href="/blog/page{{ paginator.previous_page }}" class="text">Next →</a>
 			{% else %}
-				<a href="/blog" class="text">Next</a>
+				<a href="/blog" class="text">Next →</a>
 			{% endif %}
-		{% endif %}	
+		{% else %}
+			<span class="disabled">Next →</span>
+		{% endif %}
 	</div>
-
 </div>
