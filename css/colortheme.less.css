@@ -72,18 +72,11 @@ body {
 
 h2 {
 	font-size: 15pt;
-	text-align: left;
 	margin: 0pt 0pt 5pt 0pt;
-}
-
-p {
-	margin-bottom: 5pt;
-	text-align: left;
 }
 
 ul {
 	list-style-type: none; 
-	text-align: left;
 }
 
 #menu {
@@ -190,8 +183,6 @@ a.enumeration {
 	clear: left;
 	width: 28%;
 	min-width: 28%;
-	margin-right: 2%;
-
 	margin-right: 2%;
 	h2 {
 		text-align: right;

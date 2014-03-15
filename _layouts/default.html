@@ -44,7 +44,10 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 
 {% if page.photos %}
 <div class="preview">
-	<h2>{{page.title}}</h2>
+	{% if page.title %}
+		<h2>{{page.title}}</h2>
+	{% endif %}
+
 	{% assign i = 1 %}
 	{% for photo in page.photos %}
 		{% if page.enumerate == true %}
@@ -86,9 +89,13 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 	{% endfor %}
 </div>
 {% endif %}
-<div class="preview">
-	{{content}}
-</div>
+
+{% if page.content %}
+	<div class="preview">
+		{{content}}
+	</div>
+{% endif %}
+
 {% if page.YaFotki %}
 <div class="preview">
 	This album at <a href="http://fotki.yandex.ru/users/i-like-spam/album/{{page.YaFotki}}/">Yandex.Fotki</a>.
@@ -97,7 +104,6 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 {% if page.Dropbox %}<div class="preview">
 	This album at <a href="https://www.dropbox.com/sh/{{page.Dropbox}}/">Dropbox</a>.
 </div>{% endif %}
-
 
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
