@@ -28,15 +28,10 @@ title: blog
 </div>
 {% endfor %}
 
-
 <div class="pagination">
 	<div class="pagination_element">
-		{% if paginator.previous_page %}
-			{% if paginator.previous_page != 1%}
-				<a href="/blog/page{{ paginator.previous_page }}" class="text">Previous</a>
-			{% else %}
-				<a href="/blog" class="text">Previous</a>
-			{% endif %}
+		{% if paginator.next_page %}
+			<a href="/blog/page{{ paginator.next_page }}" class="text">← Previous</a>
 		{% else %}
 		<span class="disabled">Previous</span>
 		{% endif %}
@@ -45,10 +40,12 @@ title: blog
 		<span class="text">Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
 	</div>
 	<div class="pagination_element">
-		{% if paginator.next_page %}
-		<a href="/blog/page{{ paginator.next_page }}" class="text">Next</a>
-		{% else %}
-		<span class="disabled" class="text">Next</span>
+		{% if paginator.previous_page %}
+			{% if paginator.previous_page != 1%}
+				<a href="/blog/page{{ paginator.previous_page }}" class="text">Next →</a>
+			{% else %}
+				<a href="/blog" class="text">Next</a>
+			{% endif %}
 		{% endif %}	
 	</div>
 

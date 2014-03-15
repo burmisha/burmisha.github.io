@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>burmisha &middot {{ page.title }}</title>
+	<title>burmisha &middot; {{ page.title }}</title>
 	<link rel="icon" type="image/png" href="http://img-fotki.yandex.ru/get/4129/82500796.1/0_96722_8003ecc8_orig" />
 	<link href="http://fonts.googleapis.com/css?family=Lobster" media="screen" rel="stylesheet" type="text/css">
 	<link href='http://fonts.googleapis.com/css?family=Roboto:100&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
@@ -14,10 +14,6 @@
 	<script src="/js/jquery.unveil.js"></script>
 	<script>
 	$(document).ready(function(event){
-		if(window.location.hash) {
-		} else {
-			$("html, body").animate({scrollTop: $("#menu").position().top}, 600);
-		}
 		$("img").unveil(1000);
 		});
 	</script>
@@ -36,15 +32,13 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 - url: $1
 -->
 <body>
-<div class="preview" id="burmisha">
-	<a href="/">burmisha</a>
-</div>
-<div class="preview">
-<ul id="menu">
-	<li class="menu_item"><a href="/blog/">blog</a></li>
-	<li class="menu_item"><a href="/links/">links</a></li>
-	<li class="menu_item"><a href="/cv/">CV</a></li>
-</ul>
+<div class="preview" id="header">
+	<a href="/" id="burmisha">burmisha</a>
+	<ul id="menu">
+		<li class="menu_item"><a href="/blog/">blog</a></li>
+		<li class="menu_item"><a href="/links/">links</a></li>
+		<li class="menu_item"><a href="/cv/">CV</a></li>
+	</ul>
 </div>
 
 {% if page.photos %}

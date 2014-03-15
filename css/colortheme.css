@@ -25,11 +25,15 @@ body {
   text-align: left;
 }
 #burmisha {
+  float: left;
   font-family: Lobster;
-  font-size: 32pt;
+  font-size: 24pt;
   font-weight: normal;
+  width: 33%;
+}
+#header {
+  margin-top: 8pt;
   margin-bottom: 8pt;
-  text-align: center;
 }
 h2 {
   font-size: 15pt;
@@ -45,15 +49,14 @@ ul {
   text-align: left;
 }
 #menu {
-  float: left;
-  clear: both;
-  width: 66%;
-  margin: 0pt 17% 0pt 17%;
+  float: right;
+  width: 60%;
+  margin-top: 11pt;
 }
 #menu li {
   float: left;
-  min-width: 70pt;
-  text-align: center;
+  min-width: 40pt;
+  text-align: right;
   width: 33%;
 }
 a {
