@@ -43,35 +43,43 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 
 
 {% if page.photos %}
-	<div class="preview">
-		<h2>{{page.title}}</h2>
-	</div>
-	{% assign i = 0 %}
+<div class="preview">
+	<h2>{{page.title}}</h2>
+	{% assign i = 1 %}
 	{% for photo in page.photos %}
-	<div class="preview">
-		<div class="caption">
-			&nbsp;{% assign i = i | plus: 1 %}{% if page.enumerate == true %}<h2><a href="#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}" class="enumeration"><span class="hidden">&para;&nbsp;</span>{{i}}</a></h2>{% endif %}
-			{% if photo.caption %}{{photo.caption}}{% endif %}
-			<!-- {{photo.url}} -->
-		</div>
+		{% if page.enumerate == true %}
+			<div class="enumerate">
+				<a href="#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}" class="enumeration"><span class="hidden">&para;&nbsp;</span>{{i}}</a>
+			</div>
+		{% endif %}
+
+		{% if photo.caption %}
+			<div class="caption">
+				{{ photo.caption }}
+			</div>
+		{% endif %}
+
 		{% if photo.url %}
-		<div class="content"> 
-			<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}"><div class="bigphoto">
-			<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
-			data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg"/></div>
-			</a>
-		</div>
+			{% assign i = i | plus: 1 %}
+			<div> 
+				<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
+				<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
+				data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XXXL.jpg"/>
+				</a>
+			</div>
 		{% endif %}
 
 		{% if photo.urls %}
-		<div class="content"> 
-		{% assign postfix = "" %}{% assign class = "" %}{% assign size = photo.urls | size %}
-		{% case size %}{% when 2 %}{% assign postfix = "L" %}{% assign class = "photo_one_of_2" %}{% when 3 %}{% assign postfix = "M" %}{% assign class = "photo_one_of_3" %}{% endcase %}
-		{% for url in photo.urls %}<img class="{{class}}" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_{{ postfix }}"
-			data-src="http://img-fotki.yandex.ru/get/{{ url }}_{{ postfix }}.jpg"/>{% endfor %}
-		</div>
-		{% endif %}
-	</div>{% endfor %}
+			{% assign i = i | plus: 1 %}
+			<div class="photo_group"> 
+			{% assign postfix = "" %}{% assign size = photo.urls | size %}
+			{% case size %}{% when 2 %}{% assign postfix = "L" %}{% when 3 %}{% assign postfix = "M" %}{% endcase %}
+			{% for url in photo.urls %}<div class="photo box-sizing"><img class="photo_one_of_{{photo.urls | size}}" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_{{ postfix }}"
+				data-src="http://img-fotki.yandex.ru/get/{{ url }}_{{ postfix }}.jpg"/></div>{% endfor %}
+			</div>
+			{% endif %}
+	{% endfor %}
+</div>
 {% endif %}
 <div class="preview">
 	{{content}}

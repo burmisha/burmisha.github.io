@@ -1,14 +1,21 @@
+img.bigphoto, div.photo_group, div.caption {
+	margin: 2pt auto;
+}
 
-div.bigphoto {
-  width: 800px;
-  height: 600px;
-  margin: 2px 0px;
-  overflow: hidden;
+div.photo_group {
+	margin: 0px -5px;
+}
+
+div.photo_group > div.photo {
+	width: 50%;
+	padding: 2px 5px;
+	display: inline-block;
 }
 
 img.bigphoto {
-  max-width: 800px;
-  max-height: 600px;
+	max-height: 720px;
+	max-width: 100%;
+	display: block;
 }
 
 div.mediumphoto {
@@ -33,8 +40,7 @@ div.smallphoto {
 }
 
 img.photo_one_of_2 {
-	width: 49.2%;
-	margin: 0px 0% 0px 0.7%;
+	width: 100%;
 }
 
 img.photo_one_of_3 {

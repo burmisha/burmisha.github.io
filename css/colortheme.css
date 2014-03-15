@@ -235,25 +235,24 @@ a.enumeration:hover .hidden {
   width: 80%;
   margin: 0pt 10%;
 }
-.info,
-.caption {
+.info {
   float: left;
   clear: left;
   width: 28%;
   min-width: 28%;
   margin-right: 2%;
 }
-.info h2,
-.caption h2 {
-  text-align: right;
-}
-.caption {
+.info h2 {
   text-align: right;
 }
 .content {
   float: left;
   clear: right;
   width: 70%;
+}
+.caption {
+  margin-top: 10pt;
+  max-width: 1080px;
 }
 div.pagination {
   float: left;
