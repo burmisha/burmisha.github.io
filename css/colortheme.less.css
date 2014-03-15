@@ -117,6 +117,13 @@ a.enumeration {
 	};
 }
 
+.text {
+	.smoothcolor(@darklight);
+	&:hover {
+		.smoothcolor(@text);
+	};
+}
+
 #hello {
 	float: left;
 	max-width: 60%;
@@ -180,10 +187,7 @@ a.enumeration {
 	width: 28%;
 	min-width: 28%;
 	margin-right: 2%;
-	.smoothcolor(@darklight);
-	&:hover {
-		.smoothcolor(@text);
-	};
+
 	margin-right: 2%;
 	h2 {
 		text-align: right;
@@ -198,4 +202,19 @@ a.enumeration {
 	float: left;
 	clear: right;
 	width: 70%;
+}
+
+div.pagination {
+	float: left;
+	clear: both;
+	width: 66%;
+	margin: 0pt 17% 0pt 17%;
+	text-align: center;
+	.pagination_element {
+		float: left;
+		width: 33%;
+	}
+	.disabled {
+		color: @darklight;
+	}
 }

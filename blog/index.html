@@ -4,18 +4,52 @@ title: blog
 # http://img-fotki.yandex.ru/get/(.*)_.*
 # - url: $1
 ---
-{% for post in site.posts %}
+{% for post in paginator.posts %}
 {% assign number = 0 %}{% assign i = 0 %}{% assign pick = 1 %}{% assign every = 1 %}{% for photo in post.photos %}{% assign number = number | plus: 1 %}{% endfor %}
 {% if number <= 10 %}{% assign every = 1 %}{% elsif number <= 20 %}{% assign every = 1.5 %}{% elsif number <= 30 %}{% assign every = 2 %}{% elsif number <= 45 %}{% assign every = 2.5 %}{% elsif number <= 60 %}{% assign every = 3 %}{% elsif number <= 100 %}{% assign every = 4 %}{% elsif number <= 150 %}{% assign every = 5 %}{% elsif number <= 240 %}{% assign every = 6 %}{% elsif number <= 320 %}{% assign every = 7 %}{% elsif number <= 400 %}{% assign every = 8 %}{% endif %}
+<h2><a href="{{post.url}}">{{post.title}}</a></h2>
 <div class="info">
-	<h2>{{post.date | date_to_long_string}}</h2>
-	<p>
-		{{ post.content }}
-	</p>
+	<p class="text">{{ post.date | date_to_long_string }}</p>
+	{% if number != 0 %}
+		<p class="text">{{number}} photo{% if number != 1 %}s{% endif %}</p>
+		{% if post.YaFotki or post.Dropbox %}
+		<p>{% if post.YaFotki %}<a class="text" href="http://fotki.yandex.ru/users/i-like-spam/album/{{post.YaFotki}}/">Yandex.Fotki</a>{% if post.Dropbox %}, {% endif %}{% endif %}{% if post.Dropbox %}<a class="text" href="https://www.dropbox.com/sh/{{post.Dropbox}}/">Dropbox</a>{% endif %}
+		</p>
+		{% endif %}
+	{% endif %}
 </div>
 <div class="content">
-<h2><a href="{{post.url}}">{{post.title}}</a> ({{number}} photos)</h2>{% for photo in post.photos %}{% if pick == 1 %}
-	<a href="{{post.url}}#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
-	<div class="smallphoto" style="background-image: url(http://img-fotki.yandex.ru/get/{{ photo.url }}_XXS.jpg)"></div>
-	</a>{% endif %}{% assign pick = 0 %}{% assign i = i | plus: 1 %}{% if i >= every %}{% assign i = i | minus: every %}{% assign pick = 1 %}{% endif %}{% endfor %}
-</div>{% endfor %}
+{% if number == 0 %}
+	{{ post.content }}
+{% else %}
+{% for photo in post.photos %}{% if pick == 1 %}
+	<a href="{{post.url}}#{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}"><div class="smallphoto" style="background-image: url(http://img-fotki.yandex.ru/get/{{ photo.url }}_XXS.jpg)"></div></a>{% endif %}{% assign pick = 0 %}{% assign i = i | plus: 1 %}{% if i >= every %}{% assign i = i | minus: every %}{% assign pick = 1 %}{% endif %}{% endfor %}
+{% endif %}
+</div>
+{% endfor %}
+
+
+<div class="pagination">
+	<div class="pagination_element">
+		{% if paginator.previous_page %}
+			{% if paginator.previous_page != 1%}
+				<a href="/blog/page{{ paginator.previous_page }}" class="text">Previous</a>
+			{% else %}
+				<a href="/blog" class="text">Previous</a>
+			{% endif %}
+		{% else %}
+		<span class="disabled">Previous</span>
+		{% endif %}
+	</div>
+	<div class="pagination_element">
+		<span class="text">Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+	</div>
+	<div class="pagination_element">
+		{% if paginator.next_page %}
+		<a href="/blog/page{{ paginator.next_page }}" class="text">Next</a>
+		{% else %}
+		<span class="disabled" class="text">Next</span>
+		{% endif %}	
+	</div>
+
+</div>

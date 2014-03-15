@@ -139,6 +139,30 @@ a.enumeration:hover .hidden {
   /* Opera */
   transition: color 0.3s ease-in-out;
 }
+.text {
+  color: #9babb0;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+.text:hover {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
 #hello {
   float: left;
   max-width: 60%;
@@ -214,30 +238,7 @@ a.enumeration:hover .hidden {
   clear: left;
   width: 28%;
   min-width: 28%;
-  color: #9babb0;
-  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
-  -moz-transition: color 0.3s ease-in-out;
-  /* Firefox 4 */
-  -ms-transition: color 0.3s ease-in-out;
-  -webkit-transition: color 0.3s ease-in-out;
-  /* Safari and Chrome */
-  -o-transition: color 0.3s ease-in-out;
-  /* Opera */
-  transition: color 0.3s ease-in-out;
   margin-right: 2%;
-}
-.info:hover,
-.caption:hover {
-  color: #c6cfd2;
-  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
-  -moz-transition: color 0.3s ease-in-out;
-  /* Firefox 4 */
-  -ms-transition: color 0.3s ease-in-out;
-  -webkit-transition: color 0.3s ease-in-out;
-  /* Safari and Chrome */
-  -o-transition: color 0.3s ease-in-out;
-  /* Opera */
-  transition: color 0.3s ease-in-out;
 }
 .info h2,
 .caption h2 {
@@ -250,4 +251,18 @@ a.enumeration:hover .hidden {
   float: left;
   clear: right;
   width: 70%;
+}
+div.pagination {
+  float: left;
+  clear: both;
+  width: 66%;
+  margin: 0pt 17% 0pt 17%;
+  text-align: center;
+}
+div.pagination .pagination_element {
+  float: left;
+  width: 33%;
+}
+div.pagination .disabled {
+  color: #9babb0;
 }
