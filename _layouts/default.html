@@ -53,6 +53,13 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 			</div>
 		{% endif %}
 
+		{% if photo.text %}
+			<div class="story">
+				{{ photo.text }}
+			</div>
+		{% endif %}
+
+
 		{% if photo.caption %}
 			<div class="caption">
 				{{ photo.caption }}
@@ -61,12 +68,10 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 
 		{% if photo.url %}
 			{% assign i = i | plus: 1 %}
-			<div> 
-				<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
-				<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
+			<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}">
+			<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
 				data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XXXL.jpg"/>
-				</a>
-			</div>
+			</a>
 		{% endif %}
 
 		{% if photo.urls %}

@@ -204,7 +204,11 @@ a.enumeration {
 	width: 70%;
 }
 
-.caption {
+.story {
+	margin-bottom: 10pt;
+}
+
+.caption, .story {
 	margin-top: 10pt;
 	max-width: 1080px;
 }
