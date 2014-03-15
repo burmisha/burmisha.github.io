@@ -32,6 +32,16 @@ div.smallphoto {
 	display: inline-block;
 }
 
+img.photo_one_of_2 {
+	width: 49.2%;
+	margin: 0px 0% 0px 0.7%;
+}
+
+img.photo_one_of_3 {
+	width: 32.6%;
+	margin: 0px 0% 0px 0.7%;
+}
+
 img.smallphoto {
 	transform: translate(-25%, -25%);
 }

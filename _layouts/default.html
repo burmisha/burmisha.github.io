@@ -41,6 +41,7 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 	</ul>
 </div>
 
+
 {% if page.photos %}
 	<div class="preview">
 		<h2>{{page.title}}</h2>
@@ -53,12 +54,23 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 			{% if photo.caption %}{{photo.caption}}{% endif %}
 			<!-- {{photo.url}} -->
 		</div>
+		{% if photo.url %}
 		<div class="content"> 
 			<a style="display:block" name="{{ photo.url | remove: '/' | remove: '.' | remove: '_' }}"><div class="bigphoto">
 			<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
 			data-src="http://img-fotki.yandex.ru/get/{{ photo.url }}_XL.jpg"/></div>
 			</a>
 		</div>
+		{% endif %}
+
+		{% if photo.urls %}
+		<div class="content"> 
+		{% assign postfix = "" %}{% assign class = "" %}{% assign size = photo.urls | size %}
+		{% case size %}{% when 2 %}{% assign postfix = "L" %}{% assign class = "photo_one_of_2" %}{% when 3 %}{% assign postfix = "M" %}{% assign class = "photo_one_of_3" %}{% endcase %}
+		{% for url in photo.urls %}<img class="{{class}}" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_{{ postfix }}"
+			data-src="http://img-fotki.yandex.ru/get/{{ url }}_{{ postfix }}.jpg"/>{% endfor %}
+		</div>
+		{% endif %}
 	</div>{% endfor %}
 {% endif %}
 <div class="preview">
