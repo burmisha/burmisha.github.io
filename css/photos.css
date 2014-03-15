@@ -1,5 +1,6 @@
-img.bigphoto, div.photo_group, div.caption {
-	margin: 2pt auto;
+img.bigphoto, div.photo_group {
+	margin: 0 auto;
+	padding: 2px 0px;
 }
 
 div.photo_group {

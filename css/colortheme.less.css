@@ -200,8 +200,8 @@ a.enumeration {
 }
 
 .caption, .story {
-	margin-top: 10pt;
 	max-width: 1080px;
+	margin: 12pt auto 1px;
 }
 
 div.pagination {
