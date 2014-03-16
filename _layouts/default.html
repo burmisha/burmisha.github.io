@@ -1,32 +1,4 @@
-<!DOCTYPE html>
-<html lang="en-US">
-<head>
-	<meta charset="UTF-8"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>burmisha &middot; {{ page.title }}</title>
-	<link rel="icon" type="image/png" href="http://img-fotki.yandex.ru/get/4129/82500796.1/0_96722_8003ecc8_orig" />
-	<link href="http://fonts.googleapis.com/css?family=Lobster" media="screen" rel="stylesheet" type="text/css">
-	<link href='http://fonts.googleapis.com/css?family=Roboto:100&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
-	<link rel="stylesheet" type="text/css" href="/css/colortheme.css">
-	<link rel="stylesheet" type="text/css" href="/css/photos.css">
-	<script src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script>
-	<script src="/js/ga.js"></script>
-	<script src="/js/jquery.unveil.js"></script>
-	<script>
-	$(document).ready(function(event){
-		$("img").unveil(1000);
-		});
-	</script>
-
-	{%if page.twitter %}	
-	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:creator" content="@burmisha">
-	<meta name="twitter:title" content="{{page.title}}">
-	<meta name="twitter:description" content="{{ page.twitter.text}}">
-	<meta name="twitter:image:src" content="http://img-fotki.yandex.ru/get/{{ page.twitter.photo }}_L.jpg">
-	<meta name="twitter:domain" content="burmisha.com">	
-	{% endif %}
-</head>
+{% include header.html %}
 <!-- 
 http://img-fotki.yandex.ru/get/(.*)_.*
 - url: $1
@@ -40,7 +12,6 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 		<li class="menu_item">{%if page.title == "CV" %}CV{% else %}<a href="/cv/">CV</a>{% endif %}</li>
 	</ul>
 </div>
-
 
 {% if page.photos %}
 <div class="preview">
@@ -86,7 +57,7 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 			{% for url in photo.urls %}<div class="photo box-sizing photo_one_of_{{ row }}"><img src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_{{ postfix }}"
 				data-src="http://img-fotki.yandex.ru/get/{{ url }}_{{ postfix }}.jpg"/></div>{% endfor %}
 			</div>
-			{% endif %}
+		{% endif %}
 	{% endfor %}
 </div>
 {% endif %}
@@ -102,36 +73,12 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 	This album at <a href="http://fotki.yandex.ru/users/i-like-spam/album/{{page.YaFotki}}/">Yandex.Fotki</a>.
 </div>
 {% endif %}
-{% if page.Dropbox %}<div class="preview">
+{% if page.Dropbox %}
+<div class="preview">
 	This album at <a href="https://www.dropbox.com/sh/{{page.Dropbox}}/">Dropbox</a>.
-</div>{% endif %}
+</div>
+{% endif %}
 
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-(function (d, w, c) {
-    (w[c] = w[c] || []).push(function() {
-        try {
-            w.yaCounter22777420 = new Ya.Metrika({id:22777420,
-                    webvisor:true,
-                    clickmap:true,
-                    trackLinks:true,
-                    accurateTrackBounce:true});
-        } catch(e) { }
-    });
-
-    var n = d.getElementsByTagName("script")[0],
-        s = d.createElement("script"),
-        f = function () { n.parentNode.insertBefore(s, n); };
-    s.type = "text/javascript";
-    s.async = true;
-    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
-
-    if (w.opera == "[object Opera]") {
-        d.addEventListener("DOMContentLoaded", f, false);
-    } else { f(); }
-})(document, window, "yandex_metrika_callbacks");
-</script>
-<noscript><div><img src="//mc.yandex.ru/watch/22777420" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
+{% include yandex_metrika.html %}
 </body>
 </html>

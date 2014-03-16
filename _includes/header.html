@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>burmisha &middot; {{ page.title }}</title>
+	<link rel="icon" type="image/png" href="http://img-fotki.yandex.ru/get/4129/82500796.1/0_96722_8003ecc8_orig" />
+	<link href="http://fonts.googleapis.com/css?family=Lobster" media="screen" rel="stylesheet" type="text/css">
+	<link href='http://fonts.googleapis.com/css?family=Roboto:100&subset=cyrillic,latin' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" type="text/css" href="/css/colortheme.css">
+	<link rel="stylesheet" type="text/css" href="/css/photos.css">
+	<script src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script>
+	<script src="/js/ga.js"></script>
+	<script src="/js/jquery.unveil.js"></script>
+	<script>
+	$(document).ready(function(event){
+		$("img").unveil(1000);
+		});
+	</script>
+
+	{%if page.twitter %}	
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:creator" content="@burmisha">
+	<meta name="twitter:title" content="{{page.title}}">
+	<meta name="twitter:description" content="{{ page.twitter.text}}">
+	<meta name="twitter:image:src" content="http://img-fotki.yandex.ru/get/{{ page.twitter.photo }}_L.jpg">
+	<meta name="twitter:domain" content="burmisha.com">	
+	{% endif %}
+</head>
