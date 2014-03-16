@@ -85,9 +85,9 @@ ul {
 	margin-top: 11pt;
 	li {
 		float: left;
-		min-width: 40pt;
+		min-width: 35pt;
 		text-align: right;
-		width: 33%;
+		width: 25%;
 	}
 }
 
