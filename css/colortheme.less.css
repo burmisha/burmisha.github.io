@@ -121,19 +121,6 @@ a.enumeration {
 	};
 }
 
-#hello {
-	float: left;
-	max-width: 60%;
-	min-width: 180px;
-}
-
-#avatar {
-	float: right;
-	max-height: 450px;
-	min-width: 180px;
-	max-width: 35%;
-}
-
 #resume p {
 	float: left;
 	clear: both;
@@ -218,3 +205,32 @@ div.pagination {
 		color: @darklight;
 	}
 }
+
+#about {
+	width: 150pt;
+	float: right;
+}
+
+#avatar {
+	float: right;
+	max-height: 240pt;
+	min-width: 80pt;
+	max-width: 15%;
+	margin: 3pt 3pt;
+}
+
+div.public_links {
+	float: right;
+}
+
+div.public_link_wrap {
+	font-size: 25pt;
+	width: 30pt;
+	height: 30pt;
+	display: inline-block;
+}
+
+div.public_link {
+	overflow: hidden;
+}
+

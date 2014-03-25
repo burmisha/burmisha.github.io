@@ -1,11 +1,42 @@
 ---
 layout: default
 title: Homepage
+profiles:
+- link: https://vk.com/burmisha
+  icon: "003"
+- link: https://vimeo.com/burmisha
+  icon: "004"
+- link: https://twitter.com/burmisha
+  icon: "005"
+- link: http://burmisha.tumblr.com
+  icon: "006"
+- link: http://www.linkedin.com/in/burmisha
+  icon: "015"
+- link: http://burmisha.livejournal.com
+  icon: "016"
+- link: http://www.lastfm.ru/user/burmisha
+  icon: "017"
+- link: https://plus.google.com/+MikhailBurmistrov
+  icon: "01b"
+- link: https://github.com/burmisha
+  icon: "01d"
+- link: https://facebook.com/burmisha
+  icon: "021"
 ---
 
-<img id="avatar" src="http://img-fotki.yandex.ru/get/4129/82500796.1/0_96721_d12f107e_orig" alt="Photo of burmisha">
-<p id="hello">
-	Hi! My name is Mikhail Burmistrov. 
-	I'm a 6<sup>th</sup> year MIPT student and an intern developer at Yandex. 
-	My hobbies are digital photography, jogging and handling this page.
-</p>
+<div id="about">
+<div id="desc">
+	<p>Mikhail Burmistrov. </p>
+	<p>Yandex, SDA, MIPT. </p>
+	<p>Photo, jogging, lindy hop.</p>
+</div>
+<div class="public_links">
+{% for profile in page.profiles %}<div class="public_link_wrap">
+<a style="display:block" href="{{ profile.link }}">
+<div class="public_link box-sizing" data-icon="&#xe{{ profile.icon }};"></div>
+</a>
+</div>{% endfor %}
+</div>
+</div>
+
+<img id="avatar" src="http://img-fotki.yandex.ru/get/4129/82500796.1/0_96721_d12f107e_M" alt="burmisha">
