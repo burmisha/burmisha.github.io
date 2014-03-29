@@ -58,7 +58,6 @@ body {
 }
 
 #burmisha {
-	float: left;
 	font-family: Lobster;
 	font-size: 24pt;
 	font-weight: normal;
@@ -168,10 +167,9 @@ a.enumeration {
 }
 
 .preview {
-	float: left;
-	clear: both;
 	width: 80%;
-	margin: 0pt 10%;
+	max-width: 1024px;
+	margin: 0pt auto;
 }
 
 .info {
