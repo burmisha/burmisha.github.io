@@ -24,7 +24,6 @@ if __name__ == "__main__":
 		yaml_file.write("""---
 layout: default
 title: Wishlist
-Grands: true
 """)
 		yaml_file.write(yaml.safe_dump(y, allow_unicode=True, default_flow_style=False))
 		yaml_file.write("""---
