@@ -94,9 +94,9 @@ ul {
 	margin-top: 11pt;
 	li {
 		float: left;
-		min-width: 35pt;
+		min-width: 40pt;
 		text-align: right;
-		width: 25%;
+		width: 33%;
 	}
 }
 
