@@ -1,0 +1,59 @@
+---
+layout: default
+title: Wishlist
+Grands: true
+wishes:
+- items:
+  - title: Доп аккумулятор для Canon 650D
+  - currency: RUR
+    price: '700'
+    title: Canon ES-71 II (бленда к Canon EF 50/1.4)
+  name: фото
+- items:
+  - title: Утяжелители на руки-ноги (2 шт) по 1 или 2 кг
+  - currency: RUR
+    link: http://market.yandex.ru/guru.xml?CMD=-RR=0,0,0,0-PF=1801946~EQ~sel~1870551-PF=1801946~EQ~sel~1870599-PF=1801946~EQ~sel~12423344-PF=1801946~EQ~sel~3333746-PF=1801946~EQ~sel~4123708-PF=1801946~EQ~sel~1870803-PF=1801946~EQ~sel~11019092-PF=2140131888~GT~sel~25.994812-PF=2140131887~LT~sel~64.987358-PF=2142584599~TR~des~exclude-PF=2142584598~EQ~uni~8-PF=2142584598~EQ~uni~5-PF=2142584598~EQ~uni~4-PF=2142584598~EQ~uni~16-PF=2142584598~EQ~uni~12-PF=2142584598~EQ~uni~10-PF=2142584597~TR~sel~select-PF=2142584596~TR~sel~select-PF=2142584594~EQ~sel~x1088676770-PF=2142584594~EQ~sel~x4933670-PF=2142584607~GT~sel~120-PF=2142584606~EQ~uni~0.1-PF=2142584606~EQ~uni~0.05-PF=2142584610~EQ~sel~x1523976564-VIS=8070-CAT_ID=974546-EXC=1-PG=10&amp;hid=90567&amp;filter=&amp;num=&amp;greed_mode=false
+    price: '2000'
+    title: весы
+  name: здоровье
+- items:
+  - currency: RUR
+    price: '2000'
+    title: Проект Манхэттен
+  name: игра
+- items:
+  - title: Механическая клавиатура
+  name: компы
+- items:
+  - currency: RUR
+    link: http://www.alivetypography.ru/
+    price: '400'
+    title: Живая типографика
+  name: книга
+---
+<div id="wishlist">
+{% for category in page.wishes %}
+<h2>{{ category.name }}</h2>
+<ul>
+{% for item in category.items %}
+  <li>
+    {% if item.link %}
+    <a href="{{ item.link }}">{{ item.title }}</a>
+    {% else %}
+      {{ item.title }}
+    {% endif %}  
+    {% if item.price %}
+      – {{ item.price }}&nbsp;руб.
+    {% endif %}
+  </li>
+{% endfor %}
+</ul>
+{% endfor %}
+</div>
+
+<p>
+Это иногда обновляемая копия моего wishlist'а 
+на <a href=http://wantr.ru/burmisha>Wantrе</a>, 
+который, в свою очередь, является копей странички 
+<a href=http://mywishlist.ru/wishlist/burmisha>mywishlist</a>. 
+</p>

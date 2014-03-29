@@ -1,0 +1,75 @@
+---
+layout: default
+title: Wishlist
+Grands: true
+_id: 532edf2874ae85fa3200004b
+updated: 1395838997047
+wishes:
+  2b7f0f1395838997047:
+    content:
+      '0':
+        currency: RUR
+        link: http://www.alivetypography.ru/
+        price: '400'
+        title: Живая типографика
+    name: книга
+  63fdd81395838997047:
+    content:
+      '0':
+        currency: RUR
+        price: '2000'
+        title: Проект Манхэттен
+    name: игра
+  829b8f1395838997047:
+    content:
+      '0':
+        currency: RUR
+        price: '700'
+        title: Canon ES-71 II (бленда к Canon EF 50/1.4)
+      '1':
+        title: Доп аккумулятор для Canon 650D
+    name: фото
+  ac82ca1395838997047:
+    content:
+      '0':
+        title: Механическая клавиатура
+    name: компы
+  e024f31395838997047:
+    content:
+      '0':
+        currency: RUR
+        link: http://market.yandex.ru/guru.xml?CMD=-RR=0,0,0,0-PF=1801946~EQ~sel~1870551-PF=1801946~EQ~sel~1870599-PF=1801946~EQ~sel~12423344-PF=1801946~EQ~sel~3333746-PF=1801946~EQ~sel~4123708-PF=1801946~EQ~sel~1870803-PF=1801946~EQ~sel~11019092-PF=2140131888~GT~sel~25.994812-PF=2140131887~LT~sel~64.987358-PF=2142584599~TR~des~exclude-PF=2142584598~EQ~uni~8-PF=2142584598~EQ~uni~5-PF=2142584598~EQ~uni~4-PF=2142584598~EQ~uni~16-PF=2142584598~EQ~uni~12-PF=2142584598~EQ~uni~10-PF=2142584597~TR~sel~select-PF=2142584596~TR~sel~select-PF=2142584594~EQ~sel~x1088676770-PF=2142584594~EQ~sel~x4933670-PF=2142584607~GT~sel~120-PF=2142584606~EQ~uni~0.1-PF=2142584606~EQ~uni~0.05-PF=2142584610~EQ~sel~x1523976564-VIS=8070-CAT_ID=974546-EXC=1-PG=10&amp;hid=90567&amp;filter=&amp;num=&amp;greed_mode=false
+        price: '2000'
+        title: весы
+      '1':
+        title: Утяжелители на руки-ноги (2 шт) по 1 или 2 кг
+    name: здоровье
+---
+{% for category in page.wishes %}
+<h2>{{ category.name }}</h2>
+{% for items in category.items %}
+  <div class="info">
+  &nbsp;
+  {% if wish.link %}
+    <p class="text">
+    <div class="public_link_wrap">
+    <a style="display:block" href="{{ wish.link }}">
+    <div class="public_link box-sizing" data-icon="&#xe00b;"></div>
+    </a>
+    </div>
+    </p>
+  {% endif %}  
+  </div>
+  <div class="content">
+  &nbsp;
+  {{ wish.title }}
+  </div>
+{% endfor %}
+{% endfor %}
+
+<p>
+Это иногда обновляемая копия моего wishlist'а 
+на <a href=http://wantr.ru/burmisha>Wantrе</a>, 
+который, в свою очередь, является копей странички 
+<a href=http://mywishlist.ru/wishlist/burmisha>mywishlist</a>. 
+</p>

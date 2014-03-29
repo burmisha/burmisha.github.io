@@ -72,11 +72,20 @@ body {
 
 h2 {
 	font-size: 15pt;
-	margin: 0pt 0pt 5pt 0pt;
+	margin: 5pt 0pt 1pt 0pt;
 }
 
 ul {
 	list-style-type: none; 
+}
+
+#wishlist {
+	ul {
+		margin: 5pt 0pt;
+		li {
+			margin: 3pt 0pt 3pt 20pt;
+		}
+	}
 }
 
 #menu {
