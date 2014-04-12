@@ -72,6 +72,11 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 	This album at <a href="https://www.dropbox.com/sh/{{page.Dropbox}}/">Dropbox</a>.
 </div>
 {% endif %}
+{% if page.map_path %}
+<div class="preview">
+	More photos on the <a href="{{ page.map_path }}/">map</a> ("Esc" is the most useful button).
+</div>
+{% endif %}
 
 {% include yandex_metrika.html %}
 </body>
