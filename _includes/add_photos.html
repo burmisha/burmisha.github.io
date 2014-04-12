@@ -1,0 +1,23 @@
+{% if skip == null %}{% assign skip = 0 %}{% endif %}
+{% assign size = photo_urls | size | minus:skip %}
+{% if size >= 2  %}
+<div class="photo_group">
+{% case size %}
+	{% when 2 or 4 or 6 or 8 %}{% assign postfix = "XL" %}{% assign row = "2" %}
+	{% when 3 or 9 %}{% assign postfix = "L" %}{% assign row = "3" %}
+{% endcase %}
+{% if debug %}
+	{% assign j = 0 %}
+	{% for url in photo_urls %}
+		<div class="caption">{{ url }}</div>
+	{% endfor %}
+{% endif %}
+{% assign j = 0 %}
+{% for url in photo_urls %}{% assign j = j | plus: 1 %}{% if j > skip %}<div 
+	class="photo box-sizing photo_one_of_{{ row }}"><a 
+	style="display:block" name="{{ url | remove: '/' | remove: '.' | remove: '_' }}"><img 
+	src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_{{ postfix }}"
+	data-src="http://img-fotki.yandex.ru/get/{{ url }}_{{ postfix }}.jpg"
+	/></a></div>{% assign i = i | plus: 1 %}{% endif %}{% endfor %}
+</div>
+{% endif %}

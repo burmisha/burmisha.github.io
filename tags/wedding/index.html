@@ -9,14 +9,9 @@ title: "tag: wedding"
 {% if post.main_photos %}
 	<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
 				data-src="http://img-fotki.yandex.ru/get/{{ post.main_photos | first }}_XXXL.jpg"/>
-	<div class="photo_group"> 
-	{% assign size = post.main_photos | size | minus:1 %}
-	{% assign i = 0 %}
-	{% case size %}{% when 2 or 4 or 6 or 8 %}{% assign postfix = "L" %}{% assign row = "2" %}{% when 3 or 9 %}{% assign postfix = "M" %}{% assign row = "3" %}{% endcase %}
-	{% for url in post.main_photos %}{% assign i = i | plus: 1 %}{% if i > 1 %}<div class="photo box-sizing photo_one_of_{{ row }}"><img src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_{{ postfix }}"
-			data-src="http://img-fotki.yandex.ru/get/{{ url }}_{{ postfix }}.jpg"/></div>{% endif %}{% endfor %}
-	</div>
-{% else %}
+	{% assign skip = 1 %}
+	{% assign photo_urls = post.main_photos %}
+	{% include add_photos.html %}{% else %}
 No preview
 {% endif %}
 {% endfor %}

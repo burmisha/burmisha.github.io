@@ -49,14 +49,8 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 		{% endif %}
 
 		{% if photo.urls %}
-			{% assign i = i | plus: 1 %}
-			<div class="photo_group"> 
-			{% assign size = photo.urls | size %}
-			{% case size %}{% when 2 or 4 or 6 or 8 %}{% assign postfix = "L" %}{% assign row = "2" %}{% when 3 or 9 %}{% assign postfix = "M" %}{% assign row = "3" %}{% endcase %}
-			{% if page.debug %}{% for url in photo.urls %}<div class="caption">{{ url }}</div>{% endfor %}{% endif %}
-			{% for url in photo.urls %}<div class="photo box-sizing photo_one_of_{{ row }}"><a style="display:block" name="{{ url | remove: '/' | remove: '.' | remove: '_' }}"><img src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_{{ postfix }}"
-				data-src="http://img-fotki.yandex.ru/get/{{ url }}_{{ postfix }}.jpg"/></a></div>{% endfor %}
-			</div>
+			{% assign photo_urls = photo.urls %}
+			{% include add_photos.html %}
 		{% endif %}
 	{% endfor %}
 </div>

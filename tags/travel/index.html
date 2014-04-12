@@ -1,0 +1,20 @@
+---
+layout: default
+title: "tag: travel"
+---
+{% for page in site.pages %}
+{% if page.tags contains 'travel' %}
+	{% if page.title %}
+		<h2><a href="{{ page.url }}">{{ page.title }}</a></h2>
+	{% endif %}
+	{% if page.main_photos %}
+		<img class="bigphoto" src="http://img-fotki.yandex.ru/get/6708/82500796.25/0_ccdf2_73d68fa4_M"
+					data-src="http://img-fotki.yandex.ru/get/{{ page.main_photos | first }}_XXXL.jpg"/>
+		{% assign skip = 1 %}
+		{% assign photo_urls = page.main_photos %}
+		{% include add_photos.html %}
+	{% else %}
+	No preview
+	{% endif %}
+{% endif %}
+{% endfor %}
