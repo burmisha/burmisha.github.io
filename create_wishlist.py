@@ -48,9 +48,9 @@ title: Wishlist
 </div>
 
 <p>
-Это иногда обновляемая копия моего wishlist'а 
-на <a href=http://wantr.ru/burmisha>Wantrе</a>, 
+Это иногда обновляемая копия моего wishlist'а (далеко не всегда актуальна) 
+на <a href=http://wantr.ru/burmisha>Wantrе</a> (актуален), 
 который, в свою очередь, является копей странички 
-<a href=http://mywishlist.ru/wishlist/burmisha>mywishlist</a>. 
+<a href=http://mywishlist.ru/wishlist/burmisha>mywishlist</a> (он неактуален). 
 </p>
 """)
