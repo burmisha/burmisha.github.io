@@ -5,6 +5,7 @@
 {% case size %}
 	{% when 2 or 4 or 6 or 8 %}{% assign postfix = "XL" %}{% assign row = "2" %}
 	{% when 3 or 9 %}{% assign postfix = "L" %}{% assign row = "3" %}
+	{% when 25 or 35 %}{% assign postfix = "M" %}{% assign row = "5" %}
 {% endcase %}
 {% if debug %}
 	{% assign j = 0 %}

@@ -23,6 +23,10 @@ div.photo_one_of_3 {
 	width: 33.3333%;
 }
 
+div.photo_one_of_5 {
+	width: 20%;
+}
+
 img.bigphoto {
 	max-height: 720px;
 	max-width: 100%;
