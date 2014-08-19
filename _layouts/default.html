@@ -78,6 +78,15 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 </div>
 {% endif %}
 
+{% if page.map %}
+<div class="preview">
+
+	{% assign map_track = page.map.track %}
+	{% assign map_center = page.map.center %}
+	{% include track.html %}
+</div>
+{% endif %}
+
 {% include yandex_metrika.html %}
 </body>
 </html>
