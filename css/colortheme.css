@@ -222,6 +222,11 @@ a.enumeration:hover .hidden {
   max-width: 1024px;
   margin: 0pt auto;
 }
+.preview #map {
+  position: absolute;
+  width: 80%;
+  height: 300pt;
+}
 .info {
   float: left;
   clear: left;

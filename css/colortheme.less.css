@@ -170,6 +170,11 @@ a.enumeration {
 	width: 80%;
 	max-width: 1024px;
 	margin: 0pt auto;
+	#map { 
+		position: absolute;
+		width: 80%;
+		height: 300pt;
+	}
 }
 
 .info {
@@ -240,4 +245,5 @@ div.public_link_wrap {
 div.public_link {
 	overflow: hidden;
 }
+
 

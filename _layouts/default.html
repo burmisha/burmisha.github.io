@@ -13,6 +13,18 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 	</ul>
 </div>
 
+{% if page.map.strava %}
+<div class="preview">
+	{% assign strava_track = page.map.strava %}
+	{% assign map_center = page.map.center %}
+	{% include track.html %}
+</div>
+
+<div class="preview">
+	This track at <a href="http://www.strava.com/activities/179848851{{page.map.strava}}/">Strava</a>.
+</div>
+{% endif %}
+
 {% if page.photos %}
 <div class="preview">
 	{% if page.title %}
@@ -78,14 +90,6 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 </div>
 {% endif %}
 
-{% if page.map %}
-<div class="preview">
-
-	{% assign map_track = page.map.track %}
-	{% assign map_center = page.map.center %}
-	{% include track.html %}
-</div>
-{% endif %}
 
 {% include yandex_metrika.html %}
 </body>
