@@ -223,8 +223,8 @@ a.enumeration:hover .hidden {
   margin: 0pt auto;
 }
 .preview #map {
-  position: absolute;
-  width: 80%;
+  position: relative;
+  width: 100%;
   height: 300pt;
 }
 .info {

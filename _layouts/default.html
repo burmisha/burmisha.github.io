@@ -13,23 +13,21 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 	</ul>
 </div>
 
-{% if page.map.strava %}
-<div class="preview">
-	{% assign strava_track = page.map.strava %}
-	{% assign map_center = page.map.center %}
-	{% include track.html %}
-</div>
 
-<div class="preview">
-	This track at <a href="http://www.strava.com/activities/179848851{{page.map.strava}}/">Strava</a>.
-</div>
-{% endif %}
 
 {% if page.photos %}
 <div class="preview">
 	{% if page.title %}
 		<h2>{{page.title}}</h2>
 	{% endif %}
+
+{% if page.map.strava %}
+	{% assign strava_track = page.map.strava %}
+	{% assign map_center = page.map.center %}
+	{% include track.html %}
+
+	This track at <a href="http://www.strava.com/activities/{{page.map.strava}}">Strava</a>.
+{% endif %}
 
 	{% assign i = 1 %}
 	{% for photo in page.photos %}
