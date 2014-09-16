@@ -1,7 +1,7 @@
 <div id='map'></div>
 
 <script>
-	var map = L.mapbox.map('map', 'examples.map-i86nkdio').setView({{ map_center }}, 11);
+	var map = L.mapbox.map('map', 'examples.map-i86nkdio').setView({{ map_center }}, {{ map_scale }});
 	var featureGroup = L.featureGroup().addTo(map);
 	// curl https://www.strava.com/api/v3/activities/160251932/streams/latlng -H "Authorization: Bearer 3496af3a7307c7875a6249761a696429add"
 	// http://www.strava.com/stream/160251932?streams[]=latlng
