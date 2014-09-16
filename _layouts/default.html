@@ -24,6 +24,11 @@ http://img-fotki.yandex.ru/get/(.*)_.*
 {% if page.map.strava %}
 	{% assign strava_track = page.map.strava %}
 	{% assign map_center = page.map.center %}
+	{% if page.map.scale %}
+		{% assign map_scale = page.map.scale %}
+	{% else %}
+		{% assign map_scale = 11 %}
+	{% endif %}
 	{% include track.html %}
 
 	This track at <a href="http://www.strava.com/activities/{{page.map.strava}}">Strava</a>.
