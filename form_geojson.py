@@ -123,6 +123,7 @@ def CreateArgumentsParser():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument('--debug', help='Enable debug logging', action='store_true')
+    parser.add_argument('--log-format', help='Custom logging format', default='%(asctime)s [%(levelname)s] %(message)s')
     parser.add_argument('--user', help='Username for Yandex.Fotki', default='i-like-spam')
     parser.add_argument('--root-name', help='Root album name', choices=DEFAULTS['RootNames'], default='2013 UK')
     parser.add_argument('--prefixes', help='Allowed prefixes', default=DEFAULTS['AllowedPrefixes'], action='append')
@@ -133,7 +134,7 @@ def CreateArgumentsParser():
 if __name__ == '__main__':
     parser = CreateArgumentsParser()
     args = parser.parse_args()
-    logging.basicConfig(format='%(asctime)s [%(levelname)s] %(message)s')
+    logging.basicConfig(format=args.log_format)
     log.setLevel(logging.DEBUG if args.debug else logging.INFO)
     log.info('Start')
     main(args)

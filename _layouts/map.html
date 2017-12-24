@@ -1,115 +1,124 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset=utf-8 />
-	<title>Map</title>
-	<script src='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.js'></script>
-	<link href='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.css' rel='stylesheet' />
-	<script src="/js/leaflet.markercluster.js"></script>
-	<script src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script>
-	<link  href="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.3/fotorama.css" rel="stylesheet">
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.3/fotorama.js"></script>
-	<link rel="stylesheet" href="/css/MarkerCluster.css"/>
-	<link rel="stylesheet" href="/css/MarkerCluster.Default.css" />
-	<link rel="stylesheet" type="text/css" href="/css/colortheme.css">
-	<link rel="stylesheet" type="text/css" href="/css/photos.css">
-	<link rel="stylesheet" type="text/css" href="/css/map.css">
+    <meta charset=utf-8 />
+    <title>Map</title>
+    <script src='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.js'></script>
+    <link href='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.css' rel='stylesheet' />
+    <script src="/js/leaflet.markercluster.js"></script>
+    <script src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script>
+    <link  href="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.3/fotorama.css" rel="stylesheet">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.3/fotorama.js"></script>
+    <link rel="stylesheet" href="/css/MarkerCluster.css"/>
+    <link rel="stylesheet" href="/css/MarkerCluster.Default.css" />
+    <link rel="stylesheet" type="text/css" href="/css/colortheme.css">
+    <link rel="stylesheet" type="text/css" href="/css/photos.css">
+    <link rel="stylesheet" type="text/css" href="/css/map.css">
 </head>
 <body>
-	<div id="map-container">
-		<div id='map'></div>
-		<div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>
-	</div>
+    <div id="map-container">
+        <div id='map'></div>
+        <div class="fotorama" data-auto="false" data-width="100%" data-ratio="16/9" data-maxheight="100%" data-minheight="200" data-nav="thumbs" data-keyboard="true" data-allowfullscreen="native" data-shadows="false" data-thumbheight="48"></div>
+    </div>
 
-	<script>
-		var request = new XMLHttpRequest();
-		request.open("GET", '{{ page.geojson }}', false);
-		request.send(null);
-		var geoJson = JSON.parse(request.responseText);
-		
-		var fotorama = $('.fotorama').fotorama().data('fotorama');
+    <script>
+        var request = new XMLHttpRequest();
+        request.open("GET", '{{ page.geojson }}', false);
+        request.send(null);
+        var geoJson = JSON.parse(request.responseText);
 
-		function disableMap(m) {
-			m.keyboard.disable();
-			m.scrollWheelZoom.disable();
-			m.dragging.disable();
-			m.touchZoom.disable();
-			m.doubleClickZoom.disable();
-			m.scrollWheelZoom.disable();
-			if (m.tap) m.tap.disable();
-		}
+        var fotorama = $('.fotorama').fotorama().data('fotorama');
 
-		function enableMap(m) {
-			m.keyboard.enable();
-			m.scrollWheelZoom.enable();
-			m.dragging.enable();
-			m.touchZoom.enable();
-			m.doubleClickZoom.enable();
-			m.scrollWheelZoom.enable();
-			if (m.tap) m.tap.enable();
-		}
+        function disableMap(m) {
+            m.keyboard.disable();
+            m.scrollWheelZoom.disable();
+            m.dragging.disable();
+            m.touchZoom.disable();
+            m.doubleClickZoom.disable();
+            m.scrollWheelZoom.disable();
+            if (m.tap) m.tap.disable();
+        }
 
-		function fotoramaImg(a) {
-			return { img: a.options.properties.orig_url, thumb: a.options.properties.S_url }
-		}
+        function enableMap(m) {
+            m.keyboard.enable();
+            m.scrollWheelZoom.enable();
+            m.dragging.enable();
+            m.touchZoom.enable();
+            m.doubleClickZoom.enable();
+            m.scrollWheelZoom.enable();
+            if (m.tap) m.tap.enable();
+        }
 
-		var map = L.mapbox.map('map', 'examples.map-20v6611k').setView(geoJson.view_point, {{ page.scale }});
+        function fotoramaImg(a) {
+            return { img: a.options.properties.orig_url, thumb: a.options.properties.S_url }
+        }
 
-		var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
-			iconCreateFunction: function(cluster) {
-				return new L.DivIcon({ html: '<div style="background-image:url(' + cluster.getAllChildMarkers()[0].options.properties.S_url + ')" class="mapphoto"></div>'});
-			}
-			, singleMarkerMode: true
-			, maxClusterRadius: 55
-			, spiderfyDistanceMultiplier: 1
-			, disableClusteringAtZoom: 20
-		});
 
-		for (var i = 0; i < geoJson.features.length; i++) {
-			var a = geoJson.features[i];
-			var marker = L.marker([a.geometry.coordinates[1], a.geometry.coordinates[0]], {
-				properties: a.properties
-			});
-			markers.addLayer(marker);
-		}
-		map.addLayer(markers);
 
-		function reloadFotorama(Markers) {
-			fotorama.destroy();
-			disableMap(map);
-			$("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
-			fotorama.load(Markers.map(fotoramaImg));
-		}
+        var map = L.mapbox.map('map', 'examples.map-20v6611k').setView(geoJson.view_point, {{ page.scale }});
 
-		markers.on('click', function (a) {
-			reloadFotorama([ a.layer ])
-		});
+        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            maxZoom: 18,
+            id: 'mapbox.streets',
+            accessToken: 'pk.eyJ1IjoiYnVybWlzaGEiLCJhIjoiY2o4b2xpYWtvMDRyMTJ2cGNpcmt0a2U4bSJ9.QrFKEyYCkHxJ7TkrYqO5PQ'
+        }).addTo(map);
 
-		markers.on('clusterclick', function (a) {
-			reloadFotorama(a.layer.getAllChildMarkers());
-		});
+        var markers = new L.MarkerClusterGroup({showCoverageOnHover: false, zoomToBoundsOnClick: false,
+            iconCreateFunction: function(cluster) {
+                return new L.DivIcon({ html: '<div style="background-image:url(' + cluster.getAllChildMarkers()[0].options.properties.S_url + ')" class="mapphoto"></div>'});
+            }
+            , singleMarkerMode: true
+            , maxClusterRadius: 55
+            , spiderfyDistanceMultiplier: 1
+            , disableClusteringAtZoom: 20
+        });
 
-		map.on('click',function(e){
-			fotorama.destroy();
-			enableMap(map);
-		});
+        for (var i = 0; i < geoJson.features.length; i++) {
+            var a = geoJson.features[i];
+            var marker = L.marker([a.geometry.coordinates[1], a.geometry.coordinates[0]], {
+                properties: a.properties
+            });
+            markers.addLayer(marker);
+        }
+        map.addLayer(markers);
 
-		$(window).scroll(function(){
-			var scrolledFF = document.documentElement.scrollTop;
-			var scrolledWk = $(window).scrollTop();
-			if ((scrolledFF < 1) && (scrolledWk < 1)) {
-				setTimeout( function () {
-					enableMap(map);
-				} , 800 )
-			}
-		});
+        function reloadFotorama(Markers) {
+            fotorama.destroy();
+            disableMap(map);
+            $("html, body").animate({scrollTop: $(".fotorama").position().top}, 800);
+            fotorama.load(Markers.map(fotoramaImg));
+        }
 
-		$(document).keydown(function(e) {
-			if ((e.keyCode === 27) || (e.keyCode === 33)) { // ESC
-				$("html, body").animate({scrollTop: $("#map").position().top}, 800);			
-			}  
-		});
-	</script>
-	{% include yandex_metrika.html %}
+        markers.on('click', function (a) {
+            reloadFotorama([ a.layer ])
+        });
+
+        markers.on('clusterclick', function (a) {
+            reloadFotorama(a.layer.getAllChildMarkers());
+        });
+
+        map.on('click',function(e){
+            fotorama.destroy();
+            enableMap(map);
+        });
+
+        $(window).scroll(function(){
+            var scrolledFF = document.documentElement.scrollTop;
+            var scrolledWk = $(window).scrollTop();
+            if ((scrolledFF < 1) && (scrolledWk < 1)) {
+                setTimeout( function () {
+                    enableMap(map);
+                } , 800 )
+            }
+        });
+
+        $(document).keydown(function(e) {
+            if ((e.keyCode === 27) || (e.keyCode === 33)) { // ESC
+                $("html, body").animate({scrollTop: $("#map").position().top}, 800);
+            }
+        });
+    </script>
+    {% include yandex_metrika.html %}
 </body>
 </html>
