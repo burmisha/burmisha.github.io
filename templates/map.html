@@ -5,15 +5,15 @@
     <title>Map</title>
     <script src='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.js'></script>
     <link href='//api.tiles.mapbox.com/mapbox.js/v1.4.2/mapbox.css' rel='stylesheet' />
-    <script src="/js/leaflet.markercluster.js"></script>
+    <script src="//burmisha.com/js/leaflet.markercluster.js"></script>
     <script src="http://yandex.st/jquery/2.0.3/jquery.min.js"></script>
     <link  href="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.3/fotorama.css" rel="stylesheet">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/fotorama/4.6.3/fotorama.js"></script>
-    <link rel="stylesheet" href="/css/MarkerCluster.css"/>
-    <link rel="stylesheet" href="/css/MarkerCluster.Default.css" />
-    <link rel="stylesheet" type="text/css" href="/css/colortheme.css">
-    <link rel="stylesheet" type="text/css" href="/css/photos.css">
-    <link rel="stylesheet" type="text/css" href="/css/map.css">
+    <link rel="stylesheet" href="//burmisha.com/css/MarkerCluster.css"/>
+    <link rel="stylesheet" href="//burmisha.com/css/MarkerCluster.Default.css" />
+    <link rel="stylesheet" type="text/css" href="//burmisha.com/css/colortheme.css">
+    <link rel="stylesheet" type="text/css" href="//burmisha.com/css/photos.css">
+    <link rel="stylesheet" type="text/css" href="//burmisha.com/css/map.css">
 </head>
 <body>
     <div id="map-container">
@@ -23,7 +23,7 @@
 
     <script>
         var request = new XMLHttpRequest();
-        request.open("GET", '{{ page.geojson }}', false);
+        request.open("GET", '{{ geojson }}', false);
         request.send(null);
         var geoJson = JSON.parse(request.responseText);
 
@@ -53,11 +53,9 @@
             return { img: a.options.properties.orig_url, thumb: a.options.properties.S_url }
         }
 
+        var map = L.mapbox.map('map').setView(geoJson.view_point, {{ scale }});
 
-
-        var map = L.mapbox.map('map', 'examples.map-20v6611k').setView(geoJson.view_point, {{ page.scale }});
-
-        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
+        L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}@2x?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             maxZoom: 18,
             id: 'mapbox.streets',
@@ -76,7 +74,7 @@
 
         for (var i = 0; i < geoJson.features.length; i++) {
             var a = geoJson.features[i];
-            var marker = L.marker([a.geometry.coordinates[1], a.geometry.coordinates[0]], {
+            var marker = L.marker(a.geometry.coordinates, {
                 properties: a.properties
             });
             markers.addLayer(marker);
@@ -119,6 +117,34 @@
             }
         });
     </script>
-    {% include yandex_metrika.html %}
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+(function (d, w, c) {
+    (w[c] = w[c] || []).push(function() {
+        try {
+            w.yaCounter22777420 = new Ya.Metrika({id:22777420,
+                    webvisor:true,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true});
+        } catch(e) { }
+    });
+
+    var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+    s.type = "text/javascript";
+    s.async = true;
+    s.src = (d.location.protocol == "https:" ? "https:" : "http:") + "//mc.yandex.ru/metrika/watch.js";
+
+    if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+    } else { f(); }
+})(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="//mc.yandex.ru/watch/22777420" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
 </body>
 </html>

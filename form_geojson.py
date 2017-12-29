@@ -2,10 +2,80 @@
 
 import argparse
 import json
+import os
 import requests
+import pprint
+
+# https://stuvel.eu/flickrapi
+import flickrapi
 
 import logging
 log = logging.getLogger(__file__)
+
+
+class Secrets(object):
+    def Init(self, filename):
+        with open(filename) as f:
+            self.Data = json.load(f)
+
+    def Get(self, secretKey):
+        return self.Data[secretKey]
+
+
+secrets = Secrets()
+
+
+class Photo(object):
+    def SetUrls(self, smallSquare=None, original=None, medium=None):
+        self.SmallSquareUrl = smallSquare
+        self.OriginalUrl = original
+        self.MediumUrl = medium
+
+    def SetCoordinates(self, coordinates={}, longitude=None, latitude=None):
+        self.Latitude = coordinates.get('latitude', latitude)
+        self.Longitude = coordinates.get('longitude', longitude)
+
+    def __str__(self):
+        return {
+            'SmallSquareUrl': self.SmallSquareUrl,
+            'OriginalUrl': self.OriginalUrl,
+            'Latitude': self.Latitude,
+            'Longitude': self.Longitude,
+        }
+
+    def __repr__(self):
+        return str(self.__str__())
+
+
+class MinMax(object):
+    def __init__(self):
+        self.Min = None
+        self.Max = None
+        self.Values = []
+
+    def __call__(self, value):
+        self.Values.append(value)
+        v = float(value)
+        if self.Min is None or v < self.Min:
+            self.Min = v
+        if self.Max is None or v > self.Max:
+            self.Max = v
+
+    def Median(self):
+        return (self.Min + self.Max) / 2
+
+    def Mean(self):
+        # TODO: index 1 or 2 mean
+        self.Values.sort()
+        return self.Values[len(self.Values) / 2]
+
+    def Center(self, rejectRate):
+        values = sorted(self.Values)
+        left = values[int(len(values) * rejectRate)]
+        right = values[int(len(values) * (1 - rejectRate))]
+        return (float(left) + right) / 2
+
+
 
 class YandexFotki(object):
     def __init__(self, username, rootAlbumName=None, prefixes=[]):
@@ -54,41 +124,117 @@ class YandexFotki(object):
         albumsInfo = self.GetAlbumsInfo()['entries']
         rootAlbumPath = self.FindAlbumByName(albumsInfo, self.RootAlbumName)['links']['self']
         chosenAlbumsInfo = self.FindAlbumsByRoot(albumsInfo, rootAlbumPath)
-        for photo in self.GetPhotosFromAlbums(chosenAlbumsInfo):
+        for photoItem in self.GetPhotosFromAlbums(chosenAlbumsInfo):
+            if 'geo' in photoItem:
+                photo = Photo()
+                # longitude, latitude = photoItem['geo']['coordinates'].split(' ')
+                latitude, longitude = photoItem['geo']['coordinates'].split(' ')
+                photo.SetCoordinates(
+                    longitude=float(longitude),
+                    latitude=float(latitude)
+                )
+                photo.SetUrls(
+                    smallSquare=photoItem['img']['S']['href'],
+                    medium=photoItem['img']['M']['href'],
+                    original=photoItem['img']['orig']['href'],
+                )
+                yield photo
+
+
+class Flickr(object):
+    def __init__(self, username):
+        apiKey = secrets.Get('FlickrApiKey')
+        apiSecret = secrets.Get('FlickrApiSecret')
+        self.FlickrAPI = flickrapi.FlickrAPI(apiKey, apiSecret, format='parsed-json')
+
+        nsid = self.FlickrAPI.people.findByUsername(username=username)
+        self.Nsid = nsid['user']['nsid']
+        log.info('nsid: %s', self.Nsid)
+
+    def GetSizes(self, photoId, sizes):
+        data = self.FlickrAPI.photos.getSizes(photo_id=photoId)
+        result = {}
+        availableSizes = dict((size['label'], size) for size in data['sizes']['size'])
+        for size in sizes:
+            result[size] = availableSizes[size]['source']
+        return result
+
+    def GetLocation(self, photoId):
+        count = 0
+        ok = False
+        while not ok and count <= 3:
+            try:
+                data = self.FlickrAPI.photos.geo.getLocation(photo_id=photoId)
+                ok = True
+            except flickrapi.exceptions.FlickrError:
+                log.info('failure')
+                count += 1
+        if not ok:
+            raise RuntimeError()
+
+        result = {}
+        for key in ['latitude', 'longitude']:
+            result[key] = float(data['photo']['location'][key])
+        return result
+
+    def GetPhotos(self, photosetId):
+        r = self.FlickrAPI.photosets.getPhotos(photoset_id=photosetId, user_id=self.Nsid)
+        assert len(r['photoset']['photo']) == r['photoset']['total']
+        for index, photoItem in enumerate(r['photoset']['photo']):
+            photoId = photoItem['id']
+            log.info('Getting photo %s (%d)', photoId, index + 1)
+            photo = Photo()
+            sizes = self.GetSizes(photoId, ['Large Square', 'Medium', 'Original'])
+            photo.SetUrls(
+                smallSquare=sizes['Large Square'],
+                medium=sizes['Medium'],
+                original=sizes['Original'],
+            )
+            photo.SetCoordinates(self.GetLocation(photoId))
             yield photo
 
 
 class GeoJson(object):
-    def GetCoordinates(self, photo):
-        c = photo['geo']['coordinates'].split(' ')
-        return [c[1], c[0]]
+    def FormCoordinates(self, photo):
+        # platform dependent
+        return [photo.Latitude, photo.Longitude]
+        # return [photo.Longitude, photo.Latitude]
 
     def GeoPoint(self, photo):
         return {
             'type': 'Feature',
             'geometry': {
                 'type': 'Point',
-                'coordinates': self.GetCoordinates(photo),
+                'coordinates': self.FormCoordinates(photo),
             },
             'properties': {
-                'M_url':    photo['img']['M']['href'],
-                'S_url':    photo['img']['S']['href'],
-                'orig_url': photo['img']['orig']['href'],
+                'M_url':    photo.MediumUrl,
+                'S_url':    photo.SmallSquareUrl,
+                'orig_url': photo.OriginalUrl,
             },
         }
 
-    def GetMiddlePoint(self, photos, idx, rejectRate):
-        coords = sorted([self.GetCoordinates(p)[idx] for p in photos if 'geo' in p]);
-        left = float(coords[int(len(coords) * rejectRate)])
-        right = float(coords[int(len(coords) * (1 - rejectRate))])
-        return (left + right) / 2
-
     def Form(self, photos):
-        return {
+        features = []
+        minMaxLongitude = MinMax()
+        minMaxLatitude = MinMax()
+        for photo in photos:
+            minMaxLongitude(photo.Longitude)
+            minMaxLatitude(photo.Latitude)
+            features.append(self.GeoPoint(photo))
+
+        rejectRate = 0.2
+        photoMock = Photo()
+        photoMock.SetCoordinates(
+            longitude=minMaxLongitude.Center(rejectRate),
+            latitude=minMaxLatitude.Center(rejectRate),
+        )
+        data = {
             'type': 'FeatureCollection',
-            'view_point': [self.GetMiddlePoint(photos, i, 0.4) for i in [1, 0]],
-            'features': [self.GeoPoint(photo) for photo in photos],
+            'features': features,
+            'view_point': self.FormCoordinates(photoMock),
         }
+        return data
 
     def FormAndSave(self, photos, filename):
         log.info('Saving %d photos to %r', len(photos), filename)
@@ -97,25 +243,55 @@ class GeoJson(object):
             json.dump(geojson, f, indent=4, separators=(',', ': '))
 
 
-def main(args):
-    rootName = args.root_name
-    yandexFotki = YandexFotki(args.user, rootAlbumName=rootName, prefixes=args.prefixes)
-    photos = list(yandexFotki.FindPhotos())
-    geoPhotos = [photo for photo in photos if 'geo' in photo]
-    geoJson = GeoJson()
-    resultFile = args.geojson
-    if not resultFile:
-        resultFile = DEFAULTS['RootNames'][rootName]
-    geoJson.FormAndSave(geoPhotos, resultFile)
-
-
-DEFAULTS = {
+DefaultConfig = {
+    'YandexFotkiUser': 'i-like-spam',
     'RootNames': {
         '2013 UK':          'uk.geojson',
         '2014.01 Istanbul': 'tur.geojson',
     },
-    'AllowedPrefixes': ['July', 'Aug', '2014'],
+    'AllowedPrefixes': [
+        'July',
+        'Aug',
+        '2014',
+    ],
+    'FlickrUser': 'burmisha',
+    'FlickrAlbums': {
+        '72157650399997108': 'germany14-1.geojson',
+    },
 }
+
+
+def findAllPhotos():
+    for rootName, basename in DefaultConfig['RootNames'].iteritems():
+        yandexFotki = YandexFotki(
+            DefaultConfig['YandexFotkiUser'],
+            rootAlbumName=rootName,
+            prefixes=DefaultConfig['AllowedPrefixes'],
+        )
+        photos = list(yandexFotki.FindPhotos())
+        yield photos, basename
+
+    flickr = Flickr(DefaultConfig['FlickrUser'])
+    for albumKey, basename in DefaultConfig['FlickrAlbums'].iteritems():
+        photos = list(flickr.GetPhotos(albumKey))
+        yield photos, basename
+
+
+class Filename(object):
+    def __init__(self, dirname):
+        self.Dirname = dirname
+
+    def __call__(self, basename):
+        return os.path.join(self.Dirname, basename)
+
+
+def main(args):
+    secrets.Init(args.secrets)
+    filename = Filename(args.dir)
+    geoJson = GeoJson()
+    for photos, basename in findAllPhotos():
+        geoJson.FormAndSave(photos, filename(basename))
+
 
 def CreateArgumentsParser():
     parser = argparse.ArgumentParser(
@@ -123,11 +299,9 @@ def CreateArgumentsParser():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument('--debug', help='Enable debug logging', action='store_true')
+    parser.add_argument('--secrets', help='Secrets json', default='secrets.json')
     parser.add_argument('--log-format', help='Custom logging format', default='%(asctime)s [%(levelname)s] %(message)s')
-    parser.add_argument('--user', help='Username for Yandex.Fotki', default='i-like-spam')
-    parser.add_argument('--root-name', help='Root album name', choices=DEFAULTS['RootNames'], default='2013 UK')
-    parser.add_argument('--prefixes', help='Allowed prefixes', default=DEFAULTS['AllowedPrefixes'], action='append')
-    parser.add_argument('--geojson', help='Custom output file with geojson')
+    parser.add_argument('--dir', help='Dir name to store results', default='static')
     return parser
 
 
