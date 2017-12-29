@@ -19,6 +19,9 @@ def user(username, methods=['GET']):
 
 
 class MapRenderer():
+    def __init__(self):
+        self.Format = 'http://beta.burmisha.com/static/{}'
+
     def SetFormat(self, fmt):
         self.Format = fmt
 
@@ -73,12 +76,10 @@ if __name__ == '__main__':
         log.info('Running in local mode')
         port = 8080
         debug = True
-        fmt = '/static/{}'
+        mapRenderer.SetFormat('/static/{}')
     else:
         port = None
         debug = None
-        fmt = 'http://beta.burmisha.com/static/{}'
-    mapRenderer.SetFormat(fmt)
     app.run(port=port, debug=debug)
     log.info('Finish')
 
