@@ -50,6 +50,7 @@ def DbMap():
 def IstanbulMap():
     return mapRenderer('tur.geojson')
 
+
 @app.route('/2014/1')
 def Germany():
     return mapRenderer('germany14-1.geojson')
