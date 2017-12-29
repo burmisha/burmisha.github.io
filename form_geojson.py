@@ -83,35 +83,54 @@ class MinMax(object):
         return (float(left) + right) / 2
 
 
-
 class YandexFotki(object):
     def __init__(self, username, rootAlbumName=None, prefixes=[]):
         self.Username = username
         self.RootAlbumName = rootAlbumName
         self.Prefixes = prefixes
+        self.AlbumsInfo = None
 
     def GetAlbumsInfo(self):
+        if self.AlbumsInfo:
+            return self.AlbumsInfo
+
         albumsInfo = requests.get(
             'http://api-fotki.yandex.ru/api/users/{}/albums/published/'.format(self.Username),
             params={'format': 'json'}
         ).json()
-        return albumsInfo
+        answer = albumsInfo['entries']
+        while 'next' in albumsInfo['links']:
+            albumsInfo = requests.get(albumsInfo['links']['next']).json()
+            answer.extend(albumsInfo['entries'])
+        self.AlbumsInfo = answer
+        return self.AlbumsInfo
 
-    def GetPhotosFromAlbum(self, albumPath):
+    def GetPhotosFromAlbumImpl(self, albumPath):
         answer = requests.get(albumPath).json()
         photos = answer['entries']
         if 'next' in answer['links']:
-            photos.extend(self.GetPhotosFromAlbum(answer['links']['next']))
+            photos.extend(self.GetPhotosFromAlbumImpl(answer['links']['next']))
         return photos
 
-    def FindAlbumByName(self, albums, albumName):
-        for album in albums:
-            if album['title'] == albumName:
+    def FindAlbum(self, albumName=None, albumId=None):
+        matched = []
+        for album in self.GetAlbumsInfo():
+            if albumName and album['title'] == albumName:
                 log.info('Got album %r', album['title'])
-                return album
+                matched.append(album)
+            if albumId and album['id'] == 'urn:yandex:fotki:{}:album:{}'.format(self.Username, albumId):
+                log.info('Got album %r', album['title'])
+                matched.append(album)
 
-    def FindAlbumsByRoot(self, albums, rootAlbumPath):
-        for album in albums:
+        if len(matched) != 1:
+            pprint.pprint(self.GetAlbumsInfo())
+            raise RuntimeError('Error searching album: {}, {}: {}'.format(albumName, albumId, matched))
+        link = matched[0]['links']['self']
+        log.info('Link: %r', link)
+        return link
+
+    def FindAlbumsByRoot(self, rootAlbumPath):
+        for album in self.GetAlbumsInfo():
             if ('album' in album['links']) and (album['links']['album'] == rootAlbumPath):
                 if self.Prefixes:
                     if any(album['title'].startswith(prefix) for prefix in self.Prefixes):
@@ -119,32 +138,44 @@ class YandexFotki(object):
                 else:
                     yield album
 
-    def GetPhotosFromAlbums(self, albumsInfo):
-        for albumInfo in albumsInfo:
+    def GetPhotosFromAlbum(self, albumInfo=None, url=None):
+        if albumInfo:
             log.info('Getting photos from %r', albumInfo['title'])
-            albumPath = albumInfo['links']['self'].split('?', 1)[0] + 'photos/?format=json'
-            for photo in self.GetPhotosFromAlbum(albumPath):
-                yield photo
+            albumPath = albumInfo['links']['self']
+        else:
+            log.info('Getting photos from %r', url)
+            albumPath = url
 
+        albumPath = albumPath.split('?', 1)[0] + 'photos/?format=json'
+        log.info('Getting photos from %r', albumPath)
+        for photo in self.GetPhotosFromAlbumImpl(albumPath):
+            yield photo
+
+    def GetPhoto(self, photoInfo=None, url=None):
+        if photoInfo:
+            photoPath = photoInfo['links']['self']
+        else:
+            photoPath = url
+        return requests.get(photoPath).json()
 
     def FindPhotos(self):
-        albumsInfo = self.GetAlbumsInfo()['entries']
-        rootAlbumPath = self.FindAlbumByName(albumsInfo, self.RootAlbumName)['links']['self']
-        chosenAlbumsInfo = self.FindAlbumsByRoot(albumsInfo, rootAlbumPath)
-        for photoItem in self.GetPhotosFromAlbums(chosenAlbumsInfo):
-            if 'geo' in photoItem:
-                photo = Photo()
-                latitude, longitude = photoItem['geo']['coordinates'].split(' ')
-                photo.SetCoordinates(
-                    longitude=float(longitude),
-                    latitude=float(latitude)
-                )
-                photo.SetUrls(
-                    smallSquare=photoItem['img']['S']['href'],
-                    medium=photoItem['img']['M']['href'],
-                    original=photoItem['img']['orig']['href'],
-                )
-                yield photo
+        rootAlbumPath = self.FindAlbum(albumName=self.RootAlbumName)
+        chosenAlbumsInfo = self.FindAlbumsByRoot(rootAlbumPath)
+        for albumInfo in chosenAlbumsInfo:
+            for photoItem in self.GetPhotosFromAlbum(albumInfo=albumInfo):
+                if 'geo' in photoItem:
+                    photo = Photo()
+                    latitude, longitude = photoItem['geo']['coordinates'].split(' ')
+                    photo.SetCoordinates(
+                        longitude=float(longitude),
+                        latitude=float(latitude)
+                    )
+                    photo.SetUrls(
+                        smallSquare=photoItem['img']['S']['href'],
+                        medium=photoItem['img']['M']['href'],
+                        original=photoItem['img']['orig']['href'],
+                    )
+                    yield photo
 
 
 class Flickr(object):
@@ -387,6 +418,139 @@ title: Wishlist
 """)
 
 
+class Converter(object):
+    def __init__(self):
+        self.YandexFotki = YandexFotki(DefaultConfig['YandexFotkiUser'])
+
+    def YaFotkiUrl(self, url):
+        return 'http://img-fotki.yandex.ru/get/{}_orig'.format(url)
+
+    def ReadYaml(self, filename):
+        lines = []
+        tail = []
+        inTail = False
+        with open(filename) as f:
+            for line in f:
+                if line == '---\n':
+                    if lines:
+                        inTail = True
+                else:
+                    if inTail:
+                        tail.append(line)
+                    else:
+                        lines.append(line)
+
+        postProps = yaml.load(''.join(lines))
+        return postProps, tail
+
+    def Load(self, filename):
+        log.info('Reading %r', filename)
+        date = os.path.basename(filename)[:10]
+        postProps, tail = self.ReadYaml(filename)
+
+        knownPhotos = {}
+        if 'YaFotki' in postProps:
+            albumPath = self.YandexFotki.FindAlbum(albumId=postProps['YaFotki'])
+            for photo in self.YandexFotki.GetPhotosFromAlbum(url=albumPath):
+                knownPhotos[photo['img']['orig']['href']] = photo['title']
+
+        title = None
+        twitterPhoto = None
+        twitterText = None
+        mapStrava = None
+        mapCenter = None
+        mapScale = None
+        series = []
+        captions = []
+        for key, value in postProps.iteritems():
+            if key == 'YaFotki':
+                pass
+            elif key == 'Dropbox':
+                pass
+            elif key == 'main_photos':
+                pass
+            elif key == 'tags':
+                pass
+            elif key == 'layout':
+                assert value == 'default'
+            elif key == 'photos':
+                postTitles = set()
+                for index, item in enumerate(value):
+                    urls = []
+                    caption = None
+                    isText = False
+                    for photoKey, photoValue in item.iteritems():
+                        if photoKey == 'url':
+                            urls.append(photoValue)
+                        elif photoKey == 'urls':
+                            urls.extend(photoValue)
+                        elif photoKey == 'caption':
+                            caption = photoValue
+                        elif photoKey == 'text':
+                            caption = photoValue
+                            isText = True
+                        else:
+                            raise RuntimeError('Unknown photo key: {!r}'.format(photoKey))
+                    matched = []
+                    for url in urls:
+                        yaFotki = self.YaFotkiUrl(url)
+                        matchedTitle = knownPhotos.get(yaFotki)
+                        if not matchedTitle:
+                            raise RuntimeError('No title for {}: {}'.format(yaFotki, knownPhotos))
+                        matched.append(matchedTitle)
+                    if matched:
+                        postTitles |= set(matched)
+                        series.append(matched)
+                    if caption:
+                        if series:
+                            captions.append((caption, series[-1], isText))
+                        else:
+                            if index >= 1:
+                                raise RuntimeError('Caption and no photos: {!r}, {}, {}'.format(caption, index, item))
+                            else:
+                                captions.append((caption, [], isText))
+                                log.warn('Text in the beginning')
+                        log.debug('%r, %r, %r', caption, matched, isText)
+
+                assert not postTitles - set(knownPhotos.values())
+                for k, v in knownPhotos.iteritems():
+                    if v not in postTitles:
+                        log.warn('Photo %r missing in post: %r', v, k)
+            elif key == 'title':
+                title = value
+            elif key == 'twitter':
+                for twitterKey, twitterValue in value.iteritems():
+                    if twitterKey == 'photo':
+                        twitterPhoto = self.YaFotkiUrl(twitterValue)
+                    elif twitterKey == 'text':
+                        twitterText = twitterValue
+                    else:
+                        raise RuntimeError('Unknown twitter key: {!r}'.format(twitterKey))
+            elif key == 'map':
+                for mapKey, mapValue in value.iteritems():
+                    if mapKey == 'strava':
+                        mapStrava = self.YaFotkiUrl(mapValue)
+                    elif mapKey == 'center':
+                        mapCenter = mapValue
+                    elif mapKey == 'scale':
+                        mapScale = mapValue
+                    else:
+                        raise RuntimeError('Unknown map key: {!r}'.format(mapKey))
+            else:
+                raise RuntimeError('Unknown key {!r}'.format(key))
+
+        return [
+            date,
+            title,
+            twitterPhoto,
+            twitterText,
+            mapStrava,
+            mapCenter,
+            # series,
+            # captions,
+        ]
+
+
 def downloadStrava(args):
     strava = Strava(secrets.Get('StravaBearer'))
     trackId = args.track_id
@@ -396,6 +560,18 @@ def downloadStrava(args):
 def downloadWantr(args):
     wantr = Wantr()
     wantr.Save(args.output, args.username)
+
+
+def convertPost(args):
+    converter = Converter()
+    # post = converter.Load(args.input)
+    for root, _, files in os.walk('_posts'):
+        for filename in files:
+            filename = os.path.join(root, filename)
+            if filename < '_posts/2014-06-05':
+                continue
+            post = converter.Load(filename)
+            pprint.pprint(post)
 
 
 def CreateArgumentsParser():
@@ -420,6 +596,11 @@ def CreateArgumentsParser():
     wantrParser.add_argument('--username', help='username', default='burmisha')
     wantrParser.add_argument('--output', help='output file', default='wishlist/index.html')
     wantrParser.set_defaults(func=downloadWantr)
+
+    convertParser = subparsers.add_parser('convert', help='Convert old post to new one', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    convertParser.add_argument('--input', help='input yaml file', default='_posts/2011-08-15-tartu.html')
+    convertParser.add_argument('--output', help='result file', default='tmp.yaml')
+    convertParser.set_defaults(func=convertPost)
 
     return parser
 
