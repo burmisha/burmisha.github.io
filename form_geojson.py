@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import argparse
 import json
 import os
 import requests
 import pprint
+import yaml
 
 # https://stuvel.eu/flickrapi
 import flickrapi
@@ -23,6 +25,11 @@ class Secrets(object):
 
 
 secrets = Secrets()
+
+
+def savePrettyJson(filename, data):
+    with open(filename, 'w') as f:
+        json.dump(data, f, indent=4, separators=(',', ': '))
 
 
 class Photo(object):
@@ -127,7 +134,6 @@ class YandexFotki(object):
         for photoItem in self.GetPhotosFromAlbums(chosenAlbumsInfo):
             if 'geo' in photoItem:
                 photo = Photo()
-                # longitude, latitude = photoItem['geo']['coordinates'].split(' ')
                 latitude, longitude = photoItem['geo']['coordinates'].split(' ')
                 photo.SetCoordinates(
                     longitude=float(longitude),
@@ -239,8 +245,7 @@ class GeoJson(object):
     def FormAndSave(self, photos, filename):
         log.info('Saving %d photos to %r', len(photos), filename)
         geojson = self.Form(photos)
-        with open(filename, 'w') as f:
-            json.dump(geojson, f, indent=4, separators=(',', ': '))
+        savePrettyJson(filename, geojson)
 
 
 DefaultConfig = {
@@ -285,12 +290,112 @@ class Filename(object):
         return os.path.join(self.Dirname, basename)
 
 
-def main(args):
-    secrets.Init(args.secrets)
+def downloadPhotos(args):
     filename = Filename(args.dir)
     geoJson = GeoJson()
     for photos, basename in findAllPhotos():
         geoJson.FormAndSave(photos, filename(basename))
+
+
+class Strava(object):
+    def __init__(self, bearer):
+        self.Bearer = bearer
+
+    def GetTrack(self, trackId):
+        headers = {'Authorization': 'Bearer {}'.format(self.Bearer)}
+        url = 'https://www.strava.com/api/v3/activities/{}/streams/latlng'.format(trackId)
+        return requests.get(url, headers=headers).json()
+
+    def FormPage(self, filename, trackId):
+        data = self.GetTrack(trackId)
+        latlng = None
+        for d in data:
+            if d['type'] == 'latlng':
+                latlng = d['data']
+        assert latlng is not None
+        count = len(latlng)
+
+        log.info('''Add snippet to your page
+map:
+  strava: {}
+  center: "[{}, {}]"
+'''.format(
+    trackId,
+    sum([l[0] for l in latlng]) / count,
+    sum([l[1] for l in latlng]) / count)
+)
+
+        data = {
+            'type': 'Feature',
+            'geometry': {
+                'type': 'LineString',
+                'coordinates': latlng,
+            }
+        }
+        savePrettyJson(filename, data)
+
+
+class Wantr(object):
+    def __init__(self):
+        self.ApiUrl = 'http://api.wantr.ru/0.1'
+
+    def Save(self, filename, username):
+        user  = requests.get('{}/user/{}'.format(self.ApiUrl, username)).json()
+        wishlist  = requests.get('{}/wishlist/{}'.format(self.ApiUrl, user['id'])).json()
+        y = {'wishes':[]}
+
+        for t in w['wishes']:
+            items = []
+            for wish in w['wishes'][t]['content']:
+                items.append(w['wishes'][t]['content'][wish])
+            y['wishes'].append({'name'  : w['wishes'][t]['name'], 
+                                'items' : items})
+
+        with open(filename, 'w') as yaml_file:
+            yaml_file.write("""---
+layout: default
+title: Wishlist
+""")
+        yaml_file.write(yaml.safe_dump(y, allow_unicode=True, default_flow_style=False))
+        yaml_file.write(r"""---
+<div id="wishlist">
+{% for category in page.wishes %}
+<h2>{{ category.name }}</h2>
+<ul>
+{% for item in category.items %}
+  <li>
+    {% if item.link %}
+    <a href="{{ item.link }}">{{ item.title }}</a>
+    {% else %}
+      {{ item.title }}
+    {% endif %}  
+    {% if item.price %}
+      – {{ item.price }}&nbsp;руб.
+    {% endif %}
+  </li>
+{% endfor %}
+</ul>
+{% endfor %}
+</div>
+
+<p>
+Это иногда обновляемая копия моего wishlist'а (далеко не всегда актуальна) 
+на <a href=http://wantr.ru/burmisha>Wantrе</a> (актуален), 
+который, в свою очередь, является копей странички 
+<a href=http://mywishlist.ru/wishlist/burmisha>mywishlist</a> (он неактуален). 
+</p>
+""")
+
+
+def downloadStrava(args):
+    strava = Strava(secrets.Get('StravaBearer'))
+    trackId = args.track_id
+    strava.FormPage('data/tracks/{}_2.geojson'.format(trackId), trackId)
+
+
+def downloadWantr(args):
+    wantr = Wantr()
+    wantr.Save(args.output, args.username)
 
 
 def CreateArgumentsParser():
@@ -302,6 +407,20 @@ def CreateArgumentsParser():
     parser.add_argument('--secrets', help='Secrets json', default='secrets.json')
     parser.add_argument('--log-format', help='Custom logging format', default='%(asctime)s [%(levelname)s] %(message)s')
     parser.add_argument('--dir', help='Dir name to store results', default='static')
+    subparsers = parser.add_subparsers()
+
+    photoParser = subparsers.add_parser('geojson', help='Download photos locations')
+    photoParser.set_defaults(func=downloadPhotos)
+
+    stravaParser = subparsers.add_parser('strava', help='Download strava track', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    stravaParser.add_argument('--track-id', default='160251932', help='track id', type=int)
+    stravaParser.set_defaults(func=downloadStrava)
+
+    wantrParser = subparsers.add_parser('wantr', help='Download wantr wishlist', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    wantrParser.add_argument('--username', help='username', default='burmisha')
+    wantrParser.add_argument('--output', help='output file', default='wishlist/index.html')
+    wantrParser.set_defaults(func=downloadWantr)
+
     return parser
 
 
@@ -311,5 +430,6 @@ if __name__ == '__main__':
     logging.basicConfig(format=args.log_format)
     log.setLevel(logging.DEBUG if args.debug else logging.INFO)
     log.info('Start')
-    main(args)
+    secrets.Init(args.secrets)
+    args.func(args)
     log.info('Finish')
