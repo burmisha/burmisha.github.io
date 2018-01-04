@@ -28,11 +28,22 @@ secrets = Secrets()
 
 
 def savePrettyJson(filename, data):
+    try:
+        result = json.dumps(data, indent=4, separators=(',', ': '), ensure_ascii=False, sort_keys=True).encode('utf8')
+    except:
+        log.exception(data)
+        raise
     with open(filename, 'w') as f:
-        json.dump(data, f, indent=4, separators=(',', ': '))
+        f.write(result)
 
 
 class Photo(object):
+    def __init__(self):
+        self.HasGeo = False
+
+    def SetTitle(self, title):
+        self.Title = title
+
     def SetUrls(self, smallSquare=None, original=None, medium=None):
         self.SmallSquareUrl = smallSquare
         self.OriginalUrl = original
@@ -41,6 +52,7 @@ class Photo(object):
     def SetCoordinates(self, coordinates={}, longitude=None, latitude=None):
         self.Latitude = coordinates.get('latitude', latitude)
         self.Longitude = coordinates.get('longitude', longitude)
+        self.HasGeo = self.Latitude is not None and self.Longitude is not None
 
     def __str__(self):
         return {
@@ -148,7 +160,21 @@ class YandexFotki(object):
 
         albumPath = albumPath.split('?', 1)[0] + 'photos/?format=json'
         log.info('Getting photos from %r', albumPath)
-        for photo in self.GetPhotosFromAlbumImpl(albumPath):
+
+        for photoItem in self.GetPhotosFromAlbumImpl(albumPath):
+            photo = Photo()
+            photo.SetUrls(
+                smallSquare=photoItem['img']['S']['href'],
+                medium=photoItem['img']['M']['href'],
+                original=photoItem['img']['orig']['href'],
+            )
+            photo.SetTitle(photoItem['title'])
+            if 'geo' in photoItem:
+                latitude, longitude = photoItem['geo']['coordinates'].split(' ')
+                photo.SetCoordinates(
+                    longitude=float(longitude),
+                    latitude=float(latitude)
+                )
             yield photo
 
     def GetPhoto(self, photoInfo=None, url=None):
@@ -162,20 +188,8 @@ class YandexFotki(object):
         rootAlbumPath = self.FindAlbum(albumName=self.RootAlbumName)
         chosenAlbumsInfo = self.FindAlbumsByRoot(rootAlbumPath)
         for albumInfo in chosenAlbumsInfo:
-            for photoItem in self.GetPhotosFromAlbum(albumInfo=albumInfo):
-                if 'geo' in photoItem:
-                    photo = Photo()
-                    latitude, longitude = photoItem['geo']['coordinates'].split(' ')
-                    photo.SetCoordinates(
-                        longitude=float(longitude),
-                        latitude=float(latitude)
-                    )
-                    photo.SetUrls(
-                        smallSquare=photoItem['img']['S']['href'],
-                        medium=photoItem['img']['M']['href'],
-                        original=photoItem['img']['orig']['href'],
-                    )
-                    yield photo
+            for photo in self.GetPhotosFromAlbum(albumInfo=albumInfo):
+                yield photo
 
 
 class Flickr(object):
@@ -235,7 +249,6 @@ class GeoJson(object):
     def FormCoordinates(self, photo):
         # platform dependent
         return [photo.Latitude, photo.Longitude]
-        # return [photo.Longitude, photo.Latitude]
 
     def GeoPoint(self, photo):
         return {
@@ -304,7 +317,7 @@ def findAllPhotos():
             rootAlbumName=rootName,
             prefixes=DefaultConfig['AllowedPrefixes'],
         )
-        photos = list(yandexFotki.FindPhotos())
+        photos = [photo for photo in yandexFotki.FindPhotos() if photo.HasGeo]
         yield photos, basename
 
     flickr = Flickr(DefaultConfig['FlickrUser'])
@@ -436,11 +449,15 @@ class Converter(object):
                         inTail = True
                 else:
                     if inTail:
-                        tail.append(line)
+                        tail.append(line.rstrip('\n').decode('utf-8'))
                     else:
                         lines.append(line)
 
         postProps = yaml.load(''.join(lines))
+        if tail and tail[0] == '<p>':
+            tail = tail[1:]
+        if tail and tail[-1] == '</p>':
+            tail = tail[:-1]
         return postProps, tail
 
     def Load(self, filename):
@@ -452,7 +469,7 @@ class Converter(object):
         if 'YaFotki' in postProps:
             albumPath = self.YandexFotki.FindAlbum(albumId=postProps['YaFotki'])
             for photo in self.YandexFotki.GetPhotosFromAlbum(url=albumPath):
-                knownPhotos[photo['img']['orig']['href']] = photo['title']
+                knownPhotos[photo.OriginalUrl] = photo.Title
 
         title = None
         twitterPhoto = None
@@ -462,15 +479,17 @@ class Converter(object):
         mapScale = None
         series = []
         captions = []
+        mainPhotos = []
         for key, value in postProps.iteritems():
             if key == 'YaFotki':
-                pass
+                log.debug('Already processed')
             elif key == 'Dropbox':
-                pass
+                log.warn('Dropbox links are deprecated')
             elif key == 'main_photos':
-                pass
+                for photo in value:
+                    mainPhotos.append(knownPhotos[self.YaFotkiUrl(photo)])
             elif key == 'tags':
-                pass
+                log.warn('Got tags: {}'.format(value))
             elif key == 'layout':
                 assert value == 'default'
             elif key == 'photos':
@@ -485,9 +504,9 @@ class Converter(object):
                         elif photoKey == 'urls':
                             urls.extend(photoValue)
                         elif photoKey == 'caption':
-                            caption = photoValue
+                            caption = photoValue.rstrip()
                         elif photoKey == 'text':
-                            caption = photoValue
+                            caption = photoValue.rstrip()
                             isText = True
                         else:
                             raise RuntimeError('Unknown photo key: {!r}'.format(photoKey))
@@ -521,7 +540,7 @@ class Converter(object):
             elif key == 'twitter':
                 for twitterKey, twitterValue in value.iteritems():
                     if twitterKey == 'photo':
-                        twitterPhoto = self.YaFotkiUrl(twitterValue)
+                        twitterPhoto = knownPhotos[self.YaFotkiUrl(twitterValue)]
                     elif twitterKey == 'text':
                         twitterText = twitterValue
                     else:
@@ -529,7 +548,7 @@ class Converter(object):
             elif key == 'map':
                 for mapKey, mapValue in value.iteritems():
                     if mapKey == 'strava':
-                        mapStrava = self.YaFotkiUrl(mapValue)
+                        mapStrava = 'https://www.strava.com/activities/{}'.format(mapValue)
                     elif mapKey == 'center':
                         mapCenter = mapValue
                     elif mapKey == 'scale':
@@ -539,16 +558,19 @@ class Converter(object):
             else:
                 raise RuntimeError('Unknown key {!r}'.format(key))
 
-        return [
-            date,
-            title,
-            twitterPhoto,
-            twitterText,
-            mapStrava,
-            mapCenter,
-            # series,
-            # captions,
-        ]
+        return {
+            'date': date,
+            'title': title,
+            'mainPhotos': mainPhotos,
+            'twitterPhoto': twitterPhoto,
+            'twitterText': twitterText,
+            'mapStrava': mapStrava,
+            'mapCenter': mapCenter,
+            'mapScale': mapScale,
+            'series': series,
+            'captions': captions,
+            'tail': tail,
+        }
 
 
 def downloadStrava(args):
@@ -562,16 +584,18 @@ def downloadWantr(args):
     wantr.Save(args.output, args.username)
 
 
-def convertPost(args):
-    converter = Converter()
-    # post = converter.Load(args.input)
+def walkFiles(dirname):
     for root, _, files in os.walk('_posts'):
         for filename in files:
-            filename = os.path.join(root, filename)
-            if filename < '_posts/2014-06-05':
-                continue
-            post = converter.Load(filename)
-            pprint.pprint(post)
+            yield os.path.join(root, filename)
+
+
+def convertPost(args):
+    converter = Converter()
+    for filename in walkFiles('_posts'):
+        post = converter.Load(filename)
+        resultFile = os.path.join('tmp', os.path.basename(filename))
+        savePrettyJson(resultFile, post)
 
 
 def CreateArgumentsParser():
