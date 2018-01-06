@@ -40,30 +40,55 @@ def savePrettyJson(filename, data):
 class Photo(object):
     def __init__(self):
         self.HasGeo = False
+        self.Title = None
 
     def SetTitle(self, title):
         self.Title = title
 
-    def SetUrls(self, smallSquare=None, original=None, medium=None):
+    def SetUrls(self, smallSquare=None, medium=None, original=None):
         self.SmallSquareUrl = smallSquare
-        self.OriginalUrl = original
         self.MediumUrl = medium
+        self.OriginalUrl = original
 
     def SetCoordinates(self, coordinates={}, longitude=None, latitude=None):
         self.Latitude = coordinates.get('latitude', latitude)
         self.Longitude = coordinates.get('longitude', longitude)
         self.HasGeo = self.Latitude is not None and self.Longitude is not None
 
-    def __str__(self):
-        return {
-            'SmallSquareUrl': self.SmallSquareUrl,
-            'OriginalUrl': self.OriginalUrl,
-            'Latitude': self.Latitude,
-            'Longitude': self.Longitude,
-        }
+    # def __str__(self):
+    #     return self.ToDict()
 
-    def __repr__(self):
-        return str(self.__str__())
+    def ToDict(self):
+        result = {
+            'HasGeo': self.HasGeo,
+            'Title': self.Title,
+            'SmallSquareUrl': self.SmallSquareUrl,
+            'MediumUrl': self.MediumUrl,
+            'OriginalUrl': self.OriginalUrl,
+        }
+        if self.HasGeo:
+            result.update({
+                'Latitude': self.Latitude,
+                'Longitude': self.Longitude,
+            })
+        return result
+
+    @staticmethod
+    def FromDict(data):
+        photo = Photo()
+        photo.SetUrls(
+            smallSquare=data['SmallSquareUrl'],
+            medium=data['MediumUrl'],
+            original=data['OriginalUrl'],
+        )
+        if data.get('title'):
+            photo.SetTitle(data['title'])
+        if data.get('HasGeo'):
+            photo.SetCoordinates(longitude=data['Longitude'], latitude=data['Latitude'])
+        return photo
+
+    # def __repr__(self):
+    #     return str(self.__str__())
 
 
 class MinMax(object):
@@ -392,7 +417,7 @@ class Wantr(object):
             items = []
             for wish in w['wishes'][t]['content']:
                 items.append(w['wishes'][t]['content'][wish])
-            y['wishes'].append({'name'  : w['wishes'][t]['name'], 
+            y['wishes'].append({'name'  : w['wishes'][t]['name'],
                                 'items' : items})
 
         with open(filename, 'w') as yaml_file:
@@ -412,7 +437,7 @@ title: Wishlist
     <a href="{{ item.link }}">{{ item.title }}</a>
     {% else %}
       {{ item.title }}
-    {% endif %}  
+    {% endif %}
     {% if item.price %}
       – {{ item.price }}&nbsp;руб.
     {% endif %}
@@ -423,10 +448,10 @@ title: Wishlist
 </div>
 
 <p>
-Это иногда обновляемая копия моего wishlist'а (далеко не всегда актуальна) 
-на <a href=http://wantr.ru/burmisha>Wantrе</a> (актуален), 
-который, в свою очередь, является копей странички 
-<a href=http://mywishlist.ru/wishlist/burmisha>mywishlist</a> (он неактуален). 
+Это иногда обновляемая копия моего wishlist'а (далеко не всегда актуальна)
+на <a href=http://wantr.ru/burmisha>Wantrе</a> (актуален),
+который, в свою очередь, является копей странички
+<a href=http://mywishlist.ru/wishlist/burmisha>mywishlist</a> (он неактуален).
 </p>
 """)
 
@@ -465,11 +490,13 @@ class Converter(object):
         date = os.path.basename(filename)[:10]
         postProps, tail = self.ReadYaml(filename)
 
+        yaFotki = None
         knownPhotos = {}
         if 'YaFotki' in postProps:
-            albumPath = self.YandexFotki.FindAlbum(albumId=postProps['YaFotki'])
+            yaFotki = postProps['YaFotki']
+            albumPath = self.YandexFotki.FindAlbum(albumId=yaFotki)
             for photo in self.YandexFotki.GetPhotosFromAlbum(url=albumPath):
-                knownPhotos[photo.OriginalUrl] = photo.Title
+                knownPhotos[photo.OriginalUrl] = photo
 
         title = None
         twitterPhoto = None
@@ -480,6 +507,7 @@ class Converter(object):
         series = []
         captions = []
         mainPhotos = []
+        usedPhotos = {}
         for key, value in postProps.iteritems():
             if key == 'YaFotki':
                 log.debug('Already processed')
@@ -487,13 +515,13 @@ class Converter(object):
                 log.warn('Dropbox links are deprecated')
             elif key == 'main_photos':
                 for photo in value:
-                    mainPhotos.append(knownPhotos[self.YaFotkiUrl(photo)])
+                    mainPhotos.append(knownPhotos[self.YaFotkiUrl(photo)].Title)
             elif key == 'tags':
                 log.warn('Got tags: {}'.format(value))
             elif key == 'layout':
                 assert value == 'default'
             elif key == 'photos':
-                postTitles = set()
+                usedTitles = set()
                 for index, item in enumerate(value):
                     urls = []
                     caption = None
@@ -510,16 +538,17 @@ class Converter(object):
                             isText = True
                         else:
                             raise RuntimeError('Unknown photo key: {!r}'.format(photoKey))
-                    matched = []
+                    matchedTitles = []
                     for url in urls:
-                        yaFotki = self.YaFotkiUrl(url)
-                        matchedTitle = knownPhotos.get(yaFotki)
+                        yaFotkiUrl = self.YaFotkiUrl(url)
+                        matchedTitle = knownPhotos.get(yaFotkiUrl).Title
                         if not matchedTitle:
-                            raise RuntimeError('No title for {}: {}'.format(yaFotki, knownPhotos))
-                        matched.append(matchedTitle)
-                    if matched:
-                        postTitles |= set(matched)
-                        series.append(matched)
+                            raise RuntimeError('No title for {}: {}'.format(yaFotkiUrl, knownPhotos))
+                        matchedTitles.append(matchedTitle)
+                    if matchedTitles:
+                        usedTitles |= set(matchedTitles)
+                        series.append(matchedTitles)
+
                     if caption:
                         if series:
                             captions.append((caption, series[-1], isText))
@@ -529,18 +558,20 @@ class Converter(object):
                             else:
                                 captions.append((caption, [], isText))
                                 log.warn('Text in the beginning')
-                        log.debug('%r, %r, %r', caption, matched, isText)
+                        log.debug('%r, %r, %r', caption, matchedTitles, isText)
 
-                assert not postTitles - set(knownPhotos.values())
-                for k, v in knownPhotos.iteritems():
-                    if v not in postTitles:
-                        log.warn('Photo %r missing in post: %r', v, k)
+                for photoUrl, photo in knownPhotos.iteritems():
+                    if photo.Title in usedTitles:
+                        usedPhotos[photo.Title] = photo.ToDict()
+                    else:
+                        log.warn('Photo %r missing in post: %r', photo.Title, photo.OriginalUrl)
+
             elif key == 'title':
                 title = value
             elif key == 'twitter':
                 for twitterKey, twitterValue in value.iteritems():
                     if twitterKey == 'photo':
-                        twitterPhoto = knownPhotos[self.YaFotkiUrl(twitterValue)]
+                        twitterPhoto = knownPhotos[self.YaFotkiUrl(twitterValue)].Title
                     elif twitterKey == 'text':
                         twitterText = twitterValue
                     else:
@@ -570,6 +601,8 @@ class Converter(object):
             'series': series,
             'captions': captions,
             'tail': tail,
+            'yaFotki': yaFotki,
+            'photos': usedPhotos,
         }
 
 
