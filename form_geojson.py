@@ -7,6 +7,10 @@ import os
 import requests
 import pprint
 import yaml
+import datetime
+
+import fitparse
+import gpxpy.gpx
 
 # https://stuvel.eu/flickrapi
 import flickrapi
@@ -332,6 +336,25 @@ DefaultConfig = {
     'FlickrAlbums': {
         '72157650399997108': 'germany14-1.geojson',
     },
+    'GpxFolders': [
+        '2014-05-Baltic',
+        '2014-07-Hungary',
+        '2014-07-NNov',
+        '2014-08-Moldova',
+        '2014-11-Germany',
+        '2014-12-Switzerland',
+        '2015-01-Prague',
+        '2015-05-Italy',
+        '2015-07-Greece',
+        '2015-07-Klyazma',
+        '2015-08-Karelia',
+        '2016-05-Montenegro',
+        '2016-07-Baku',
+        '2016-08-Georgia',
+        '2017-09-Italy',
+        '2017-11-Germany',
+        '2017-12-Germany',
+    ],
 }
 
 
@@ -606,6 +629,100 @@ class Converter(object):
         }
 
 
+class GeoPoint(object):
+    def __init__(self, longitude=None, latitude=None, altitude=None, timestamp=None):
+        self.Longitude = longitude
+        self.Latitude = latitude
+        self.Altitude = altitude
+        self.Timestamp = timestamp
+
+    def GetDatetime(self):
+        return datetime.datetime.fromtimestamp(self.Timestamp)
+
+    def __repr__(self):
+        return str(self.__str__())
+
+    def __str__(self):
+        return {
+            'Lng': self.Longitude,
+            'Lat':  self.Latitude,
+            'Alt':  self.Altitude,
+            'Ts': self.Timestamp,
+            'Dt': self.GetDatetime(),
+        }
+
+
+class FitParser(object):
+    def __init__(self):
+        pass
+
+    def FromSemicircles(self, value):
+        # https://forums.garmin.com/forum/developers/garmin-developer-information/60220-
+        return float(value) * 180 / (2 ** 31)
+
+    def __call__(self, filename):
+        log.debug('Reading {}'.format(filename))
+        fitFile = fitparse.FitFile(filename)
+        fitFile.parse()
+        failures = []
+        count = 0
+        for index, message in enumerate(fitFile.get_messages(name='record')):
+            count = index + 1
+            values = message.get_values()
+            timestamp = int((values['timestamp'] - datetime.datetime(1970, 1, 1)).total_seconds())
+            try:
+                assert timestamp > 100000000
+                if 'enhanced_altitude' in values:
+                    assert values['enhanced_altitude'] == values['altitude']
+                if 'position_long' not in values:
+                    failures.append(count)
+                    continue
+                geoPoint = GeoPoint(
+                    longitude=self.FromSemicircles(values['position_long']),
+                    latitude=self.FromSemicircles(values['position_lat']),
+                    altitude=values['altitude'],
+                    timestamp=timestamp,
+                )
+                yield geoPoint
+            except:
+                log.exception('Complete failure on {}'.format(count))
+                pprint.pprint(values)
+                raise
+
+        log.info('File {} has {} points and {} failures: {}...'.format(filename, count, len(failures), failures[:3]))
+        if len(failures) > 150 or len(failures) > 0.2 * count:
+            raise RuntimeError('A lot of failures')
+
+
+class GpxWriter(object):
+    def __call__(self, points=[], filename=None):
+        if not points:
+            raise RuntimeError('No points')
+
+        gpx = gpxpy.gpx.GPX()
+
+        # Create first track in our GPX:
+        gpx_track = gpxpy.gpx.GPXTrack()
+        gpx.tracks.append(gpx_track)
+
+        # Create first segment in our GPX track:
+        gpx_segment = gpxpy.gpx.GPXTrackSegment()
+        gpx_track.segments.append(gpx_segment)
+
+        # Create points:
+        for geoPoint in points:
+            gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(
+                latitude=geoPoint.Latitude,
+                longitude=geoPoint.Longitude,
+                elevation=geoPoint.Altitude,
+                time=geoPoint.GetDatetime(),
+            ))
+
+        log.info('Writing {} points to {}'.format(len(points), filename))
+        with open(filename, 'w') as f:
+            f.write(gpx.to_xml())
+
+
 def downloadStrava(args):
     strava = Strava(secrets.Get('StravaBearer'))
     trackId = args.track_id
@@ -617,10 +734,16 @@ def downloadWantr(args):
     wantr.Save(args.output, args.username)
 
 
-def walkFiles(dirname):
-    for root, _, files in os.walk('_posts'):
-        for filename in files:
-            yield os.path.join(root, filename)
+def walkFiles(dirname, extensions=[], dirsOnly=False):
+    log.debug('Looking for {} of types {} in {}'.format('dirs' if dirsOnly else 'files', extensions, dirname))
+    for root, dirs, files in os.walk(str(dirname)):
+        if dirsOnly:
+            for directory in dirs:
+                yield os.path.join(root, directory)
+        else:
+            for filename in files:
+                if not extensions or any(filename.endswith(extension) for extension in extensions):
+                    yield os.path.join(root, filename)
 
 
 def convertPost(args):
@@ -629,6 +752,30 @@ def convertPost(args):
         post = converter.Load(filename)
         resultFile = os.path.join('tmp', os.path.basename(filename))
         savePrettyJson(resultFile, post)
+
+
+def joinTracks(dirname, resultFile):
+    fitParser = FitParser()
+    geoPoints = []
+    for filename in walkFiles(dirname, ['.FIT']):
+        geoPoints.extend(list(fitParser(filename)))
+
+    if geoPoints:
+        gpxWriter = GpxWriter()
+        gpxWriter(points=geoPoints, filename=resultFile)
+    else:
+        log.warn('No valid FIT files in {}'.format(dirname))
+
+
+def parseFit(args):
+    tracksDir = secrets.Get('TracksDir')
+    for dirname in DefaultConfig['GpxFolders']:
+        assert os.path.basename(dirname) == dirname
+        resultFile = os.path.join(tracksDir, dirname, '{}-joined.gpx'.format(dirname))
+        if args.force or not os.path.exists(resultFile):
+            joinTracks(os.path.join(tracksDir, dirname), resultFile)
+        else:
+            log.info('Skipping {}: result exists'.format(dirname))
 
 
 def CreateArgumentsParser():
@@ -658,6 +805,10 @@ def CreateArgumentsParser():
     convertParser.add_argument('--input', help='input yaml file', default='_posts/2011-08-15-tartu.html')
     convertParser.add_argument('--output', help='result file', default='tmp.yaml')
     convertParser.set_defaults(func=convertPost)
+
+    parseFitParser = subparsers.add_parser('parse-fit', help='Parse fit files', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parseFitParser.add_argument('--force', help='Force generation for existing files', action='store_true')
+    parseFitParser.set_defaults(func=parseFit)
 
     return parser
 
