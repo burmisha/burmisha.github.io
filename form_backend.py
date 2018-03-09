@@ -21,6 +21,7 @@ log = logging.getLogger(__file__)
 
 class Secrets(object):
     def Init(self, filename):
+        log.info('Loading secrets from %r', filename)
         with open(filename) as f:
             self.Data = json.load(f)
 
@@ -735,15 +736,21 @@ def downloadWantr(args):
 
 
 def walkFiles(dirname, extensions=[], dirsOnly=False):
-    log.debug('Looking for {} of types {} in {}'.format('dirs' if dirsOnly else 'files', extensions, dirname))
+    logName = 'dirs' if dirsOnly else 'files'
+    log.info('Looking for {} of types {} in {}'.format(logName, extensions, dirname))
+    count = 0
     for root, dirs, files in os.walk(str(dirname)):
         if dirsOnly:
             for directory in dirs:
+                count += 1
                 yield os.path.join(root, directory)
         else:
             for filename in files:
                 if not extensions or any(filename.endswith(extension) for extension in extensions):
+                    count += 1
                     yield os.path.join(root, filename)
+    log.info('Found {} {} in {}'.format(count, logName, dirname))
+
 
 
 def convertPost(args):
@@ -763,8 +770,6 @@ def joinTracks(dirname, resultFile):
     if geoPoints:
         gpxWriter = GpxWriter()
         gpxWriter(points=geoPoints, filename=resultFile)
-    else:
-        log.warn('No valid FIT files in {}'.format(dirname))
 
 
 def parseFit(args):
@@ -779,34 +784,36 @@ def parseFit(args):
 
 
 def CreateArgumentsParser():
-    parser = argparse.ArgumentParser(
-        description='Form GeoJson file from one album with subalbums.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
-    )
-    parser.add_argument('--debug', help='Enable debug logging', action='store_true')
+    fmtClass = {'formatter_class': argparse.ArgumentDefaultsHelpFormatter}
+    parser = argparse.ArgumentParser(description='Form GeoJson file from one album with subalbums.', **fmtClass)
     parser.add_argument('--secrets', help='Secrets json', default='secrets.json')
-    parser.add_argument('--log-format', help='Custom logging format', default='%(asctime)s [%(levelname)s] %(message)s')
     parser.add_argument('--dir', help='Dir name to store results', default='static')
+
+    loggingGroup = parser.add_argument_group('Logging arguments')
+    loggingGroup.add_argument('--log-format', help='Logging str', default='%(asctime)s %(name)15s:%(lineno)3d [%(levelname)s] %(message)s')
+    loggingGroup.add_argument('--log-separator', help='Logging string separator', choices=['space', 'tab'], default='space')
+    loggingGroup.add_argument('--verbose', help='Enable debug logging', action='store_true')
+
     subparsers = parser.add_subparsers()
 
     photoParser = subparsers.add_parser('geojson', help='Download photos locations')
     photoParser.set_defaults(func=downloadPhotos)
 
-    stravaParser = subparsers.add_parser('strava', help='Download strava track', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    stravaParser = subparsers.add_parser('strava', help='Download strava track', **fmtClass)
     stravaParser.add_argument('--track-id', default='160251932', help='track id', type=int)
     stravaParser.set_defaults(func=downloadStrava)
 
-    wantrParser = subparsers.add_parser('wantr', help='Download wantr wishlist', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    wantrParser = subparsers.add_parser('wantr', help='Download wantr wishlist', **fmtClass)
     wantrParser.add_argument('--username', help='username', default='burmisha')
     wantrParser.add_argument('--output', help='output file', default='wishlist/index.html')
     wantrParser.set_defaults(func=downloadWantr)
 
-    convertParser = subparsers.add_parser('convert', help='Convert old post to new one', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    convertParser = subparsers.add_parser('convert', help='Convert old post to new one', **fmtClass)
     convertParser.add_argument('--input', help='input yaml file', default='_posts/2011-08-15-tartu.html')
     convertParser.add_argument('--output', help='result file', default='tmp.yaml')
     convertParser.set_defaults(func=convertPost)
 
-    parseFitParser = subparsers.add_parser('parse-fit', help='Parse fit files', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parseFitParser = subparsers.add_parser('parse-fit', help='Parse fit files', **fmtClass)
     parseFitParser.add_argument('--force', help='Force generation for existing files', action='store_true')
     parseFitParser.set_defaults(func=parseFit)
 
@@ -816,8 +823,12 @@ def CreateArgumentsParser():
 if __name__ == '__main__':
     parser = CreateArgumentsParser()
     args = parser.parse_args()
-    logging.basicConfig(format=args.log_format)
-    log.setLevel(logging.DEBUG if args.debug else logging.INFO)
+
+    logFormat = args.log_format.replace('\t', ' ')
+    logFormat = logFormat.replace(' ', {'space': ' ', 'tab': '\t'}[args.log_separator])
+    logLevel = logging.DEBUG if args.verbose else logging.INFO
+    logging.basicConfig(level=logLevel, format=logFormat)
+
     log.info('Start')
     secrets.Init(args.secrets)
     args.func(args)
