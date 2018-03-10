@@ -755,9 +755,11 @@ def walkFiles(dirname, extensions=[], dirsOnly=False):
 
 def convertPost(args):
     converter = Converter()
-    for filename in walkFiles('_posts'):
+    srcDir = args.src_dir
+    dstDir = args.dst_dir
+    for filename in walkFiles(srcDir):
         post = converter.Load(filename)
-        resultFile = os.path.join('tmp', os.path.basename(filename))
+        resultFile = os.path.join(dstDir, os.path.basename(filename).split('.')[0] + '.json')
         savePrettyJson(resultFile, post)
 
 
@@ -809,8 +811,10 @@ def CreateArgumentsParser():
     wantrParser.set_defaults(func=downloadWantr)
 
     convertParser = subparsers.add_parser('convert', help='Convert old post to new one', **fmtClass)
-    convertParser.add_argument('--input', help='input yaml file', default='_posts/2011-08-15-tartu.html')
-    convertParser.add_argument('--output', help='result file', default='tmp.yaml')
+    # convertParser.add_argument('--input', help='input yaml file', default='_posts/2011-08-15-tartu.html')
+    # convertParser.add_argument('--output', help='result file', default='tmp.yaml')
+    convertParser.add_argument('--src-dir', help='input', default='_posts')
+    convertParser.add_argument('--dst-dir', help='results', default='tmp')
     convertParser.set_defaults(func=convertPost)
 
     parseFitParser = subparsers.add_parser('parse-fit', help='Parse fit files', **fmtClass)
