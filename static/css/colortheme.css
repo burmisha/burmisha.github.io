@@ -1,0 +1,289 @@
+.box-sizing {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+* {
+  margin: 0pt;
+  padding: 0pt;
+  /*.showborder;*/
+  /*.box-sizing;*/
+}
+html {
+  padding: 2pt;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+body {
+  background-color: #1b2022;
+  color: #c6cfd2;
+  font-family: Roboto, Marmelad, arial;
+  font-size: 13pt;
+  line-height: 1.3;
+  top-margin: 20pt;
+  text-align: left;
+}
+#burmisha {
+  font-family: Lobster;
+  font-size: 24pt;
+  font-weight: normal;
+  width: 33%;
+}
+#header {
+  margin-top: 8pt;
+  margin-bottom: 8pt;
+}
+h2 {
+  font-size: 15pt;
+  margin: 5pt 0pt 1pt 0pt;
+}
+ul {
+  list-style-type: none;
+}
+#wishlist ul {
+  margin: 5pt 0pt;
+}
+#wishlist ul li {
+  margin: 3pt 0pt 3pt 20pt;
+}
+#menu {
+  float: right;
+  width: 60%;
+  margin-top: 11pt;
+}
+#menu li {
+  float: left;
+  min-width: 40pt;
+  text-align: right;
+  width: 33%;
+}
+a {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a:hover {
+  text-decoration: none;
+  color: #e8eced;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration {
+  text-decoration: none;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: all 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: all 0.3s ease-in-out;
+  /* Opera */
+  transition: all 0.3s ease-in-out;
+  color: #9babb0;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration .hidden {
+  color: #1b2022;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration:hover {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+a.enumeration:hover .hidden {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+.text {
+  color: #9babb0;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+.text:hover {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+#resume p {
+  float: left;
+  clear: both;
+  margin: 0pt;
+  max-width: 100%;
+}
+#resume > li > p {
+  padding-top: 12pt;
+}
+#resume > li > ul {
+  padding-bottom: 3pt;
+}
+#resume > li > ul li {
+  float: left;
+}
+#resume > li > ul li:nth-child(odd) {
+  clear: left;
+  min-width: 140pt;
+  width: 20%;
+  max-width: 160pt;
+  color: #9babb0;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+#resume > li > ul li:nth-child(odd):hover {
+  color: #c6cfd2;
+  /* http://anthonyvscode.com/2010/11/15/simplify-css3-with-less-cssmix-ins/ */
+  -moz-transition: color 0.3s ease-in-out;
+  /* Firefox 4 */
+  -ms-transition: color 0.3s ease-in-out;
+  -webkit-transition: color 0.3s ease-in-out;
+  /* Safari and Chrome */
+  -o-transition: color 0.3s ease-in-out;
+  /* Opera */
+  transition: color 0.3s ease-in-out;
+}
+#resume > li > ul li:nth-child(even) {
+  clear: right;
+  max-width: 66%;
+  min-width: 50%;
+}
+#resume > li > ul li > ul > li:nth-child(odd) {
+  min-width: 50pt;
+  width: 15%;
+}
+.preview {
+  width: 80%;
+  max-width: 1024px;
+  margin: 0pt auto;
+}
+.preview #map {
+  position: relative;
+  width: 100%;
+  height: 300pt;
+}
+.info {
+  float: left;
+  clear: left;
+  width: 28%;
+  min-width: 28%;
+  margin-right: 2%;
+}
+.info h2 {
+  text-align: right;
+}
+.content {
+  float: left;
+  clear: right;
+  width: 70%;
+}
+.story {
+  margin-bottom: 10pt;
+}
+.caption,
+.story {
+  max-width: 1080px;
+  margin: 12pt auto 1px;
+}
+div.pagination {
+  float: left;
+  clear: both;
+  width: 66%;
+  margin: 0pt 17% 0pt 17%;
+  text-align: center;
+}
+div.pagination .pagination_element {
+  float: left;
+  width: 33%;
+}
+div.pagination .disabled {
+  color: #9babb0;
+}
+#about {
+  width: 150pt;
+  float: right;
+}
+#avatar {
+  float: right;
+  max-height: 240pt;
+  min-width: 80pt;
+  max-width: 15%;
+  margin: 3pt 3pt;
+}
+div.public_links {
+  float: right;
+}
+div.public_link_wrap {
+  font-size: 25pt;
+  width: 30pt;
+  height: 30pt;
+  display: inline-block;
+}
+div.public_link {
+  overflow: hidden;
+}
