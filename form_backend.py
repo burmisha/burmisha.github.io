@@ -16,7 +16,7 @@ import gpxpy.gpx
 import flickrapi
 
 import logging
-log = logging.getLogger(__file__)
+log = logging.getLogger('backend')
 
 
 class Secrets(object):
@@ -32,12 +32,24 @@ class Secrets(object):
 secrets = Secrets()
 
 
-def savePrettyJson(filename, data):
+def savePrettyJson(filename, data, force=True):
+    if not isinstance(filename, (str, unicode)):
+        raise RuntimeError('Invalid filename: {!r}'.format(filename))
+    else:
+        log.info('Saving to %r', filename)
+
+    if os.path.exists(filename):
+        if force:
+            log.warn('Overwriting %r', filename)
+        else:
+            raise RuntimeError('File {!r} already exists')
+
     try:
         result = json.dumps(data, indent=4, separators=(',', ': '), ensure_ascii=False, sort_keys=True).encode('utf8')
     except:
         log.exception(data)
         raise
+
     with open(filename, 'w') as f:
         f.write(result)
 
@@ -46,9 +58,13 @@ class Photo(object):
     def __init__(self):
         self.HasGeo = False
         self.Title = None
+        self.AlbumTitle = None
 
     def SetTitle(self, title):
         self.Title = title
+
+    def SetAlbumTitle(self, albumTitle):
+        self.AlbumTitle = albumTitle
 
     def SetUrls(self, smallSquare=None, medium=None, original=None):
         self.SmallSquareUrl = smallSquare
@@ -59,9 +75,6 @@ class Photo(object):
         self.Latitude = coordinates.get('latitude', latitude)
         self.Longitude = coordinates.get('longitude', longitude)
         self.HasGeo = self.Latitude is not None and self.Longitude is not None
-
-    # def __str__(self):
-    #     return self.ToDict()
 
     def ToDict(self):
         result = {
@@ -76,6 +89,8 @@ class Photo(object):
                 'Latitude': self.Latitude,
                 'Longitude': self.Longitude,
             })
+        if self.AlbumTitle:
+            result['AlbumTitle'] = self.AlbumTitle
         return result
 
     @staticmethod
@@ -86,14 +101,13 @@ class Photo(object):
             medium=data['MediumUrl'],
             original=data['OriginalUrl'],
         )
+        if data.get('AlbumTitle'):
+            photo.SetAlbumTitle(data['AlbumTitle'])
         if data.get('title'):
             photo.SetTitle(data['title'])
         if data.get('HasGeo'):
             photo.SetCoordinates(longitude=data['Longitude'], latitude=data['Latitude'])
         return photo
-
-    # def __repr__(self):
-    #     return str(self.__str__())
 
 
 class MinMax(object):
@@ -182,22 +196,27 @@ class YandexFotki(object):
 
     def GetPhotosFromAlbum(self, albumInfo=None, url=None):
         if albumInfo:
-            log.info('Getting photos from %r', albumInfo['title'])
             albumPath = albumInfo['links']['self']
         else:
-            log.info('Getting photos from %r', url)
             albumPath = url
 
         albumPath = albumPath.split('?', 1)[0] + 'photos/?format=json'
         log.info('Getting photos from %r', albumPath)
 
-        for photoItem in self.GetPhotosFromAlbumImpl(albumPath):
+        index = -1
+        for index, photoItem in enumerate(self.GetPhotosFromAlbumImpl(albumPath)):
             photo = Photo()
-            photo.SetUrls(
-                smallSquare=photoItem['img']['S']['href'],
-                medium=photoItem['img']['M']['href'],
-                original=photoItem['img']['orig']['href'],
-            )
+            result = {}
+            for item, letter in [
+                ('smallSquare', 'S'),
+                ('medium', 'M'),
+                ('original', 'orig'),
+            ]:
+                if letter in photoItem['img']:
+                    result[item] = photoItem['img'][letter]['href']
+                else:
+                    result[item] = None
+            photo.SetUrls(**result)
             photo.SetTitle(photoItem['title'])
             if 'geo' in photoItem:
                 latitude, longitude = photoItem['geo']['coordinates'].split(' ')
@@ -206,6 +225,8 @@ class YandexFotki(object):
                     latitude=float(latitude)
                 )
             yield photo
+
+        log.info('Got %d photos from %r', index + 1, albumPath)
 
     def GetPhoto(self, photoInfo=None, url=None):
         if photoInfo:
@@ -230,7 +251,16 @@ class Flickr(object):
 
         nsid = self.FlickrAPI.people.findByUsername(username=username)
         self.Nsid = nsid['user']['nsid']
-        log.info('nsid: %s', self.Nsid)
+        log.info('Flickr nsid: %s', self.Nsid)
+
+    def GetAlbums(self):
+        albums = self.FlickrAPI.photosets.getList(user_id=self.Nsid)
+        albums = albums['photosets']['photoset']
+        log.info('Got %d albums:', len(albums))
+        for album in albums:
+            albumTitle = album['title']['_content']
+            log.info('  id: %s, title: %s (%r), photos: %d', album['id'], albumTitle, albumTitle, album['photos'])
+        return albums
 
     def GetSizes(self, photoId, sizes):
         data = self.FlickrAPI.photos.getSizes(photo_id=photoId)
@@ -243,13 +273,18 @@ class Flickr(object):
     def GetLocation(self, photoId):
         count = 0
         ok = False
-        while not ok and count <= 3:
+        while not ok and count <= 5:
             try:
                 data = self.FlickrAPI.photos.geo.getLocation(photo_id=photoId)
                 ok = True
-            except flickrapi.exceptions.FlickrError:
-                log.info('failure')
-                count += 1
+            except flickrapi.exceptions.FlickrError as e:
+                if str(e) == 'Error: 2: Photo has no location information.':
+                    log.info('    Photo %s has no location information', photoId)
+                    ok = True
+                    return None
+                else:
+                    log.exception('FlickrError')
+                    count += 1
         if not ok:
             raise RuntimeError()
 
@@ -261,18 +296,58 @@ class Flickr(object):
     def GetPhotos(self, photosetId):
         r = self.FlickrAPI.photosets.getPhotos(photoset_id=photosetId, user_id=self.Nsid)
         assert len(r['photoset']['photo']) == r['photoset']['total']
+        log.info('Yielding %d photos from album %s', r['photoset']['total'], photosetId)
         for index, photoItem in enumerate(r['photoset']['photo']):
             photoId = photoItem['id']
-            log.info('Getting photo %s (%d)', photoId, index + 1)
+            log.debug('  Getting photo %s (%-3d of %3d)', photoId, index + 1, r['photoset']['total'])
             photo = Photo()
             sizes = self.GetSizes(photoId, ['Large Square', 'Medium', 'Original'])
+            photo.SetTitle(self.FlickrAPI.photos.getInfo(photo_id=photoId)['photo']['title']['_content'])
             photo.SetUrls(
                 smallSquare=sizes['Large Square'],
                 medium=sizes['Medium'],
                 original=sizes['Original'],
             )
-            photo.SetCoordinates(self.GetLocation(photoId))
+            location = self.GetLocation(photoId)
+            if location:
+                photo.SetCoordinates(location)
             yield photo
+        log.info('Yielded %d photos from album %s', index + 1, r['photoset']['total'])
+
+
+class PhotosDatabase(object):
+    def __init__(self, yandexFotki=None, flickr=None):
+        self.YandexFotki = yandexFotki
+        self.Flickr = flickr
+        self.Photos = []
+
+    def Load(self, filename):
+        with open(f) as f:
+            self.Photos = json.load(f)
+
+    # def Save(self, filename, force=False):
+    def Save(self, filename, force=True):
+        data = [photo.ToDict() for photo in self.Photos]
+        savePrettyJson(filename, data, force=force)
+
+    def GetAllPhotos(self):
+        if self.YandexFotki:
+            for albumInfo in self.YandexFotki.GetAlbumsInfo():
+                albumUrl = albumInfo['links']['self']
+                for photo in self.YandexFotki.GetPhotosFromAlbum(url=albumUrl):
+                    photo.SetAlbumTitle(albumInfo['title'])
+                    yield photo
+
+        if self.Flickr:
+            albums = self.Flickr.GetAlbums()
+            for album in albums:
+                albumId = album['id']
+                for photo in self.Flickr.GetPhotos(albumId):
+                    photo.SetAlbumTitle(album['title']['_content'])
+                    yield photo
+
+    def __call__(self):
+        self.Photos = list(self.GetAllPhotos())
 
 
 class GeoJson(object):
@@ -355,6 +430,8 @@ DefaultConfig = {
         '2017-09-Italy',
         '2017-11-Germany',
         '2017-12-Germany',
+        '2018-04-Gent',
+        '2018-12 Poland'
     ],
 }
 
@@ -383,11 +460,20 @@ class Filename(object):
         return os.path.join(self.Dirname, basename)
 
 
-def downloadPhotos(args):
+def downloadGeoJson(args):
     filename = Filename(args.dir)
     geoJson = GeoJson()
     for photos, basename in findAllPhotos():
         geoJson.FormAndSave(photos, filename(basename))
+
+
+def downloadPhotos(args):
+    photosDatabase = PhotosDatabase(
+        yandexFotki=YandexFotki(DefaultConfig['YandexFotkiUser']),
+        flickr=Flickr(DefaultConfig['FlickrUser']),
+    )
+    photosDatabase()
+    photosDatabase.Save(args.filename)
 
 
 class Strava(object):
@@ -690,14 +776,27 @@ class FitParser(object):
                 pprint.pprint(values)
                 raise
 
-        log.info('File {} has {} points and {} failures: {}...'.format(filename, count, len(failures), failures[:3]))
-        if len(failures) > 150 or len(failures) > 0.2 * count:
-            raise RuntimeError('A lot of failures')
+        log.info('File %r has %d points and %d failures: %r...', filename, count, len(failures), failures[:3])
+        if len(failures) > 200 or len(failures) > 0.25 * count:
+            raise RuntimeError('A lot of failures: {} out of {}'.format(len(failures), count))
 
 
 class GpxWriter(object):
-    def __call__(self, points=[], filename=None):
-        if not points:
+    def __init__(self):
+        self.Points = []
+
+    def AddPoints(self, points):
+        for point in points:
+            gpxTrackPoint = gpxpy.gpx.GPXTrackPoint(
+                latitude=point.Latitude,
+                longitude=point.Longitude,
+                elevation=point.Altitude,
+                time=point.GetDatetime(),
+            )
+            self.Points.append(gpxTrackPoint)
+
+    def ToXml(self):
+        if not self.Points:
             raise RuntimeError('No points')
 
         gpx = gpxpy.gpx.GPX()
@@ -710,24 +809,18 @@ class GpxWriter(object):
         gpx_segment = gpxpy.gpx.GPXTrackSegment()
         gpx_track.segments.append(gpx_segment)
 
+        allPoints = []
         # Create points:
-        for geoPoint in points:
-            gpx_segment.points.append(gpxpy.gpx.GPXTrackPoint(
-                latitude=geoPoint.Latitude,
-                longitude=geoPoint.Longitude,
-                elevation=geoPoint.Altitude,
-                time=geoPoint.GetDatetime(),
-            ))
+        self.Points.sort(key=lambda point: point.time)
+        gpx_segment.points.extend(self.Points)
 
-        log.info('Writing {} points to {}'.format(len(points), filename))
-        with open(filename, 'w') as f:
-            f.write(gpx.to_xml())
+        return gpx.to_xml()
 
 
 def downloadStrava(args):
     strava = Strava(secrets.Get('StravaBearer'))
-    trackId = args.track_id
-    strava.FormPage('data/tracks/{}_2.geojson'.format(trackId), trackId)
+    for trackId in args.track_id:
+        strava.FormPage('data/tracks/{}_2.geojson'.format(trackId), trackId)
 
 
 def downloadWantr(args):
@@ -765,13 +858,14 @@ def convertPost(args):
 
 def joinTracks(dirname, resultFile):
     fitParser = FitParser()
-    geoPoints = []
+    gpxWriter = GpxWriter()
     for filename in walkFiles(dirname, ['.FIT']):
-        geoPoints.extend(list(fitParser(filename)))
+        gpxWriter.AddPoints(fitParser(filename))
 
-    if geoPoints:
-        gpxWriter = GpxWriter()
-        gpxWriter(points=geoPoints, filename=resultFile)
+    if gpxWriter.Points:
+        log.info('Writing {} points to {}'.format(len(gpxWriter.Points), filename))
+        with open(resultFile, 'w') as f:
+            f.write(gpxWriter.ToXml())
 
 
 def parseFit(args):
@@ -792,17 +886,22 @@ def CreateArgumentsParser():
     parser.add_argument('--dir', help='Dir name to store results', default='static')
 
     loggingGroup = parser.add_argument_group('Logging arguments')
-    loggingGroup.add_argument('--log-format', help='Logging str', default='%(asctime)s %(name)15s:%(lineno)3d [%(levelname)s] %(message)s')
+    loggingGroup.add_argument('--log-format', help='Logging str', default='%(asctime)s.%(msecs)03d %(name)10s:%(lineno)-3d %(levelname)-7s %(message)s')
+    # loggingGroup.add_argument('--log-format', help='Logging str', default='%(relativeCreated)d %(name)15s:%(lineno)-3d %(levelname)-7s %(message)s')
     loggingGroup.add_argument('--log-separator', help='Logging string separator', choices=['space', 'tab'], default='space')
     loggingGroup.add_argument('--verbose', help='Enable debug logging', action='store_true')
 
     subparsers = parser.add_subparsers()
 
     photoParser = subparsers.add_parser('geojson', help='Download photos locations')
-    photoParser.set_defaults(func=downloadPhotos)
+    photoParser.set_defaults(func=downloadGeoJson)
+
+    photosParser = subparsers.add_parser('photos', help='Download all photos info', **fmtClass)
+    photosParser.add_argument('--filename', help='File to save to', default='tmp.json')
+    photosParser.set_defaults(func=downloadPhotos)
 
     stravaParser = subparsers.add_parser('strava', help='Download strava track', **fmtClass)
-    stravaParser.add_argument('--track-id', default='160251932', help='track id', type=int)
+    stravaParser.add_argument('--track-id', default=[160251932], help='track id', type=int, action='append')
     stravaParser.set_defaults(func=downloadStrava)
 
     wantrParser = subparsers.add_parser('wantr', help='Download wantr wishlist', **fmtClass)
@@ -831,7 +930,17 @@ if __name__ == '__main__':
     logFormat = args.log_format.replace('\t', ' ')
     logFormat = logFormat.replace(' ', {'space': ' ', 'tab': '\t'}[args.log_separator])
     logLevel = logging.DEBUG if args.verbose else logging.INFO
-    logging.basicConfig(level=logLevel, format=logFormat)
+    logging.basicConfig(level=logLevel, format=logFormat,
+        datefmt='%H:%M:%S'
+    )
+
+    for logName, logLevel in [
+        ('urllib3.connectionpool', logging.WARN),
+        ('flickrapi.core', logging.WARN),
+        ('requests_oauthlib.oauth1_auth', logging.WARN),
+        ('oauthlib.oauth1.rfc5849', logging.WARN),
+    ]:
+        logging.getLogger(logName).setLevel(logLevel)
 
     log.info('Start')
     secrets.Init(args.secrets)
