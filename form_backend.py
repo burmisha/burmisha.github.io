@@ -9,9 +9,6 @@ import pprint
 import yaml
 import datetime
 
-import fitparse
-import gpxpy.gpx
-
 # https://stuvel.eu/flickrapi
 import flickrapi
 
@@ -716,106 +713,6 @@ class Converter(object):
         }
 
 
-class GeoPoint(object):
-    def __init__(self, longitude=None, latitude=None, altitude=None, timestamp=None):
-        self.Longitude = longitude
-        self.Latitude = latitude
-        self.Altitude = altitude
-        self.Timestamp = timestamp
-
-    def GetDatetime(self):
-        return datetime.datetime.fromtimestamp(self.Timestamp)
-
-    def __repr__(self):
-        return str(self.__str__())
-
-    def __str__(self):
-        return {
-            'Lng': self.Longitude,
-            'Lat':  self.Latitude,
-            'Alt':  self.Altitude,
-            'Ts': self.Timestamp,
-            'Dt': self.GetDatetime(),
-        }
-
-
-class FitParser(object):
-    def __init__(self):
-        pass
-
-    def FromSemicircles(self, value):
-        # https://forums.garmin.com/forum/developers/garmin-developer-information/60220-
-        return float(value) * 180 / (2 ** 31)
-
-    def __call__(self, filename):
-        log.debug('Reading {}'.format(filename))
-        fitFile = fitparse.FitFile(filename)
-        fitFile.parse()
-        failures = []
-        count = 0
-        for index, message in enumerate(fitFile.get_messages(name='record')):
-            count = index + 1
-            values = message.get_values()
-            timestamp = int((values['timestamp'] - datetime.datetime(1970, 1, 1)).total_seconds())
-            try:
-                assert timestamp > 100000000
-                if 'enhanced_altitude' in values:
-                    assert values['enhanced_altitude'] == values['altitude']
-                if 'position_long' not in values:
-                    failures.append(count)
-                    continue
-                geoPoint = GeoPoint(
-                    longitude=self.FromSemicircles(values['position_long']),
-                    latitude=self.FromSemicircles(values['position_lat']),
-                    altitude=values['altitude'],
-                    timestamp=timestamp,
-                )
-                yield geoPoint
-            except:
-                log.exception('Complete failure on {}'.format(count))
-                pprint.pprint(values)
-                raise
-
-        log.info('File %r has %d points and %d failures: %r...', filename, count, len(failures), failures[:3])
-        if len(failures) > 200 or len(failures) > 0.25 * count:
-            raise RuntimeError('A lot of failures: {} out of {}'.format(len(failures), count))
-
-
-class GpxWriter(object):
-    def __init__(self):
-        self.Points = []
-
-    def AddPoints(self, points):
-        for point in points:
-            gpxTrackPoint = gpxpy.gpx.GPXTrackPoint(
-                latitude=point.Latitude,
-                longitude=point.Longitude,
-                elevation=point.Altitude,
-                time=point.GetDatetime(),
-            )
-            self.Points.append(gpxTrackPoint)
-
-    def ToXml(self):
-        if not self.Points:
-            raise RuntimeError('No points')
-
-        gpx = gpxpy.gpx.GPX()
-
-        # Create first track in our GPX:
-        gpx_track = gpxpy.gpx.GPXTrack()
-        gpx.tracks.append(gpx_track)
-
-        # Create first segment in our GPX track:
-        gpx_segment = gpxpy.gpx.GPXTrackSegment()
-        gpx_track.segments.append(gpx_segment)
-
-        allPoints = []
-        # Create points:
-        self.Points.sort(key=lambda point: point.time)
-        gpx_segment.points.extend(self.Points)
-
-        return gpx.to_xml()
-
 
 def downloadStrava(args):
     strava = Strava(secrets.Get('StravaBearer'))
@@ -856,29 +753,6 @@ def convertPost(args):
         savePrettyJson(resultFile, post)
 
 
-def joinTracks(dirname, resultFile):
-    fitParser = FitParser()
-    gpxWriter = GpxWriter()
-    for filename in walkFiles(dirname, ['.FIT']):
-        gpxWriter.AddPoints(fitParser(filename))
-
-    if gpxWriter.Points:
-        log.info('Writing {} points to {}'.format(len(gpxWriter.Points), filename))
-        with open(resultFile, 'w') as f:
-            f.write(gpxWriter.ToXml())
-
-
-def parseFit(args):
-    tracksDir = secrets.Get('TracksDir')
-    for dirname in DefaultConfig['GpxFolders']:
-        assert os.path.basename(dirname) == dirname
-        resultFile = os.path.join(tracksDir, dirname, '{}-joined.gpx'.format(dirname))
-        if args.force or not os.path.exists(resultFile):
-            joinTracks(os.path.join(tracksDir, dirname), resultFile)
-        else:
-            log.info('Skipping {}: result exists'.format(dirname))
-
-
 def CreateArgumentsParser():
     fmtClass = {'formatter_class': argparse.ArgumentDefaultsHelpFormatter}
     parser = argparse.ArgumentParser(description='Form GeoJson file from one album with subalbums.', **fmtClass)
@@ -915,10 +789,6 @@ def CreateArgumentsParser():
     convertParser.add_argument('--src-dir', help='input', default='_posts')
     convertParser.add_argument('--dst-dir', help='results', default='tmp')
     convertParser.set_defaults(func=convertPost)
-
-    parseFitParser = subparsers.add_parser('parse-fit', help='Parse fit files', **fmtClass)
-    parseFitParser.add_argument('--force', help='Force generation for existing files', action='store_true')
-    parseFitParser.set_defaults(func=parseFit)
 
     return parser
 
